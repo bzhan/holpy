@@ -247,7 +247,25 @@
                 "a > 0",
                 "b > 0"
             ],
-            "path": "Chapter3Practice07"
+            "path": "Chapter3Practice02"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[-oo, oo]. cos(a * x) / (b ^ 4 - x ^ 4)) = pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+            "conds": [
+                "a > 0",
+                "b > 0"
+            ],
+            "path": "Chapter3Practice03"
+        },
+                {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = pi / 2 * cos(a * b)",
+            "conds": [
+                "a > 0",
+                "b > 0"
+            ],
+            "path": "Chapter3Practice04"
         },
         {
             "type": "problem",
@@ -257,7 +275,7 @@
                 "a > 0",
                 "b > 0"
             ],
-            "path": "Chapter3Practice02"
+            "path": "Chapter3Practice05"
         },
         {
             "type": "problem",
@@ -267,7 +285,7 @@
                 "a > 0",
                 "b > 0"
             ],
-            "path": "Chapter3Practice02"
+            "path": "Chapter3Practice05"
         },
         {
             "type": "problem",
@@ -277,12 +295,12 @@
                 "a > 0",
                 "b > 0"
             ],
-            "path": "Chapter3Practice02"
+            "path": "Chapter3Practice05"
         },
         {
             "type": "problem",
             "expr": "(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi",
-            "path": "Chapter3Practice03"
+            "path": "Chapter3Practice06"
         },
         {
             "type": "problem",
@@ -290,7 +308,7 @@
             "conds": [
                 "a > 0"
             ],
-            "path": "Chapter3Practice04"
+            "path": "Chapter3Practice07"
         },
         {
             "type": "problem",
@@ -298,17 +316,17 @@
             "conds": [
                 "a > 0"
             ],
-            "path": "Chapter3Practice04"
+            "path": "Chapter3Practice07"
         },
         {
             "type": "problem",
             "expr": "(INT x:[-oo, oo]. x * exp(-x^2-x)) = -1/2 * sqrt(pi * sqrt(exp(1)))",
-            "path": "Chapter3Practice04"
+            "path": "Chapter3Practice07"
         },
         {
             "type": "problem",
             "expr": "(INT x:[-oo, oo]. x^2 * exp(-x^2-x)) = 3/4 * sqrt(pi * sqrt(exp(1)))",
-            "path": "Chapter3Practice04"
+            "path": "Chapter3Practice07"
         },
         {
             "type": "problem",
@@ -317,7 +335,7 @@
                 "a > 0",
                 "m > 0"
             ],
-            "path": "Chapter3Practice05"
+            "path": "Chapter3Practice08"
         },
         {
             "type": "problem",
@@ -326,7 +344,7 @@
                 "a != 0",
                 "b != 0"
             ],
-            "path": "Chapter3Practice06"
+            "path": "Chapter3Practice09"
         },
         {
             "type": "problem",
@@ -335,7 +353,7 @@
                 "a != 0",
                 "b != 0"
             ],
-            "path": "Chapter3Practice06"
+            "path": "Chapter3Practice09"
         },
         {
             "type": "header",
@@ -366,6 +384,16 @@
             "type": "header",
             "name": "4.2 Wallis' Integral and the Beta Function",
             "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, 1]. (x - x ^ 2) ^ n) = (factorial(n) ^ 2) / (factorial(2 * n + 1))",
+            "path": "BetaWallis"
         },
         {
             "type": "header",

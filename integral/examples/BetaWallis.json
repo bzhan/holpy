@@ -1,0 +1,247 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "B(m,n) = 2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+            "latex_goal": "B(m,n) = 2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)",
+            "proof": {
+                "finished": true,
+                "goal": "B(m,n) = 2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+                "latex_goal": "B(m,n) = 2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)",
+                "lhs_calc": {
+                    "latex_start": "B(m,n)",
+                    "start": "B(m,n)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {m - 1} (-x + 1) ^ {n - 1} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (m - 1) * (-x + 1) ^ (n - 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\pi/2} (\\cos^{2}(x)) ^ {m - 1} (-\\cos^{2}(x) + 1) ^ {n - 1} (-2 \\cos{x} \\sin{x}) \\,dx)",
+                            "res": "-(INT x:[0,pi / 2]. cos(x) ^ 2 ^ (m - 1) * (-(cos(x) ^ 2) + 1) ^ (n - 1) * (-2 * cos(x) * sin(x)))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\cos^{2}(x)\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for cos(x) ^ 2",
+                                "var_name": "x",
+                                "var_subst": "cos(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\pi/2} (\\cos^{2}(x)) ^ {m - 1} (-(1 - \\sin^{2}(x)) + 1) ^ {n - 1} (-2 \\cos{x} \\sin{x}) \\,dx)",
+                            "res": "-(INT x:[0,pi / 2]. cos(x) ^ 2 ^ (m - 1) * (-(1 - sin(x) ^ 2) + 1) ^ (n - 1) * (-2 * cos(x) * sin(x)))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(1 - \\sin^{2}(x)\\) using identity at 0.0.0.1.0.0.0",
+                                "loc": "0.0.0.1.0.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "cos(x) ^ 2",
+                                "str": "rewrite cos(x) ^ 2 to 1 - sin(x) ^ 2 using identity at 0.0.0.1.0.0.0",
+                                "target": "1 - sin(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)",
+                            "res": "2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)",
+                    "start": "2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx",
+                    "start": "INT x:[0,1]. (x - x ^ 2) ^ n",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} (x (1 - x)) ^ {n} \\,dx",
+                            "res": "INT x:[0,1]. (x * (1 - x)) ^ n",
+                            "rule": {
+                                "latex_str": "rewriting \\(x - x ^ {2}\\) to \\(x (1 - x)\\)",
+                                "name": "Equation",
+                                "new_expr": "x * (1 - x)",
+                                "old_expr": "x - x ^ 2",
+                                "str": "rewriting x - x ^ 2 to x * (1 - x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {n} (1 - x) ^ {n} \\,dx",
+                            "res": "INT x:[0,1]. x ^ n * (1 - x) ^ n",
+                            "rule": {
+                                "latex_str": "rewrite \\((x (1 - x)) ^ {n}\\) to \\(x ^ {n} (1 - x) ^ {n}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(x * (1 - x)) ^ n",
+                                "str": "rewrite (x * (1 - x)) ^ n to x ^ n * (1 - x) ^ n using identity",
+                                "target": "x ^ n * (1 - x) ^ n"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "B(n + 1,n + 1)",
+                    "start": "B(n + 1,n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {n} (-x + 1) ^ {n} \\,dx",
+                            "res": "INT x:[0,1]. x ^ n * (-x + 1) ^ n",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {n} (1 - x) ^ {n} \\,dx",
+                            "res": "INT x:[0,1]. x ^ n * (1 - x) ^ n",
+                            "rule": {
+                                "latex_str": "rewriting \\(-x + 1\\) to \\(1 - x\\)",
+                                "name": "Equation",
+                                "new_expr": "1 - x",
+                                "old_expr": "-x + 1",
+                                "str": "rewriting -x + 1 to 1 - x"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+            "latex_goal": "B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}",
+            "proof": {
+                "finished": true,
+                "goal": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                "latex_goal": "B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}",
+                "lhs_calc": {
+                    "latex_start": "B(n + 1,n + 1)",
+                    "start": "B(n + 1,n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\Gamma{(n + 1)} \\Gamma{(n + 1)}}{\\Gamma{(2 n + 2)}}",
+                            "res": "Gamma(n + 1) * Gamma(n + 1) / Gamma(2 * n + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(n + 1,n + 1)\\) to \\(\\frac{\\Gamma{(n + 1)} \\Gamma{(n + 1)}}{\\Gamma{(2 n + 2)}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(n + 1,n + 1)",
+                                "str": "rewrite B(n + 1,n + 1) to Gamma(n + 1) * Gamma(n + 1) / Gamma(2 * n + 2) using identity",
+                                "target": "Gamma(n + 1) * Gamma(n + 1) / Gamma(2 * n + 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\Gamma{(n + 1)} ^ {2}}{\\Gamma{(2 n + 2)}}",
+                            "res": "Gamma(n + 1) ^ 2 / Gamma(2 * n + 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{(n!)^{2}}{\\Gamma{(2 n + 2)}}",
+                            "res": "factorial(n) ^ 2 / Gamma(2 * n + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(n + 1)}\\) to \\(n!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(n + 1)",
+                                "str": "rewrite Gamma(n + 1) to factorial(n) using identity",
+                                "target": "factorial(n)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{(n!)^{2}}{(2 n + 1)!}",
+                            "res": "factorial(n) ^ 2 / factorial(2 * n + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(2 n + 2)}\\) to \\((2 n + 1)!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(2 * n + 2)",
+                                "str": "rewrite Gamma(2 * n + 2) to factorial(2 * n + 1) using identity",
+                                "target": "factorial(2 * n + 1)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{(n!)^{2}}{(2 n + 1)!}",
+                    "start": "factorial(n) ^ 2 / factorial(2 * n + 1)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+                "start": {
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
+                    "start": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+                            "res": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                            "rule": {
+                                "eq": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                                "latex_str": "apply equation \\(B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1) at 1"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "BetaWallis"
+}

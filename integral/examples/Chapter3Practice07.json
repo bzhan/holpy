@@ -5,109 +5,68 @@
                 {
                     "cond": "a > 0",
                     "latex_cond": "a > 0"
-                },
+                }
+            ],
+            "eq": "I(a,b) = (INT x:[-oo,oo]. exp(-a * x ^ 2 + b * x))",
+            "latex_eq": "I(a,b) = \\int_{-\\infty}^{\\infty} e^{(-a) x ^ {2} + b x} \\,dx",
+            "latex_lhs": "I(a,b)",
+            "type": "FuncDef"
+        },
+        {
+            "conds": [
                 {
-                    "cond": "b > 0",
-                    "latex_cond": "b > 0"
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
-            "goal": "(INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2)) = pi * (sin(a * b) / b)",
-            "latex_goal": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx = \\pi (\\frac{\\sin{(a b)}}{b})",
+            "goal": "I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "latex_goal": "I(a,b) = e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2)) = pi * (sin(a * b) / b)",
-                "latex_goal": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx = \\pi (\\frac{\\sin{(a b)}}{b})",
+                "goal": "I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                "latex_goal": "I(a,b) = e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
                 "lhs_calc": {
-                    "latex_start": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx",
-                    "start": "INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2)",
+                    "latex_start": "I(a,b)",
+                    "start": "I(a,b)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{(b + x) (b - x)} \\,dx",
-                            "res": "INT x:[-oo,oo]. cos(a * x) / ((b + x) * (b - x))",
+                            "latex_res": "\\int_{-\\infty}^{\\infty} e^{-a x ^ {2} + b x} \\,dx",
+                            "res": "INT x:[-oo,oo]. exp(-(a * x ^ 2) + b * x)",
                             "rule": {
-                                "latex_str": "rewriting \\(b ^ {2} - x ^ {2}\\) to \\((b + x) (b - x)\\)",
+                                "func_name": "I",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} e^{b ^ {2}/(4 a) - a (x - b/(2 a)) ^ {2}} \\,dx",
+                            "res": "INT x:[-oo,oo]. exp(b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-a x ^ {2} + b x\\) to \\(\\frac{b ^ {2}}{4 a} - a (x - \\frac{b}{2 a}) ^ {2}\\)",
                                 "name": "Equation",
-                                "new_expr": "(b + x) * (b - x)",
-                                "old_expr": "b ^ 2 - x ^ 2",
-                                "str": "rewriting b ^ 2 - x ^ 2 to (b + x) * (b - x)"
+                                "new_expr": "b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2",
+                                "old_expr": "-(a * x ^ 2) + b * x",
+                                "str": "rewriting -(a * x ^ 2) + b * x to b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{1}{2 b} (\\frac{\\cos{(a x)}}{b + x} + \\frac{\\cos{(a x)}}{b - x}) \\,dx",
-                            "res": "INT x:[-oo,oo]. 1 / (2 * b) * (cos(a * x) / (b + x) + cos(a * x) / (b - x))",
+                            "latex_res": "\\int_{-\\infty}^{\\infty} e^{b ^ {2}/(4 a)} e^{(-a) (x - b/(2 a)) ^ {2}} \\,dx",
+                            "res": "INT x:[-oo,oo]. exp(b ^ 2 / (4 * a)) * exp(-a * (x - b / (2 * a)) ^ 2)",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\cos{(a x)}}{(b + x) (b - x)}\\) to \\(\\frac{1}{2 b} (\\frac{\\cos{(a x)}}{b + x} + \\frac{\\cos{(a x)}}{b - x})\\)",
-                                "name": "Equation",
-                                "new_expr": "1 / (2 * b) * (cos(a * x) / (b + x) + cos(a * x) / (b - x))",
-                                "old_expr": "cos(a * x) / ((b + x) * (b - x))",
-                                "str": "rewriting cos(a * x) / ((b + x) * (b - x)) to 1 / (2 * b) * (cos(a * x) / (b + x) + cos(a * x) / (b - x))"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b + x} \\,dx) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b - x} \\,dx)}{b})",
-                            "res": "1/2 * (((INT x:[-oo,oo]. cos(a * x) / (b + x)) + (INT x:[-oo,oo]. cos(a * x) / (b - x))) / b)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (-b + u))}}{u} \\,du) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b - x} \\,dx)}{b})",
-                            "res": "1/2 * (((INT u:[-oo,oo]. cos(a * (-b + u)) / u) + (INT x:[-oo,oo]. cos(a * x) / (b - x))) / b)",
-                            "rule": {
-                                "latex_str": "substitute \\(u\\) for \\(b + x\\) at 1.0.0",
-                                "loc": "1.0.0",
-                                "name": "Substitution",
-                                "str": "substitute u for b + x at 1.0.0",
-                                "var_name": "u",
-                                "var_subst": "b + x"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (-b + u))}}{u} \\,du) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (b - u))}}{u} \\,du)}{b})",
-                            "res": "1/2 * (((INT u:[-oo,oo]. cos(a * (-b + u)) / u) + (INT u:[-oo,oo]. cos(a * (b - u)) / u)) / b)",
-                            "rule": {
-                                "latex_str": "substitute \\(u\\) for \\(b - x\\) at 1.0.1",
-                                "loc": "1.0.1",
-                                "name": "Substitution",
-                                "str": "substitute u for b - x at 1.0.1",
-                                "var_name": "u",
-                                "var_subst": "b - x"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(-a (b - u))}}{u} \\,du) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (b - u))}}{u} \\,du)}{b})",
-                            "res": "1/2 * (((INT u:[-oo,oo]. cos(-(a * (b - u))) / u) + (INT u:[-oo,oo]. cos(a * (b - u)) / u)) / b)",
-                            "rule": {
-                                "latex_str": "rewriting \\(a (-b + u)\\) to \\(-a (b - u)\\)",
-                                "name": "Equation",
-                                "new_expr": "-(a * (b - u))",
-                                "old_expr": "a * (-b + u)",
-                                "str": "rewriting a * (-b + u) to -(a * (b - u))"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (b - u))}}{u} \\,du) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (b - u))}}{u} \\,du)}{b})",
-                            "res": "1/2 * (((INT u:[-oo,oo]. cos(a * (b - u)) / u) + (INT u:[-oo,oo]. cos(a * (b - u)) / u)) / b)",
-                            "rule": {
-                                "latex_str": "rewrite \\(\\cos{(-a (b - u))}\\) to \\(\\cos{(a (b - u))}\\) using identity",
+                                "latex_str": "rewrite \\(e^{b ^ {2}/(4 a) - a (x - b/(2 a)) ^ {2}}\\) to \\(e^{b ^ {2}/(4 a)} e^{(-a) (x - b/(2 a)) ^ {2}}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "source": "cos(-(a * (b - u)))",
-                                "str": "rewrite cos(-(a * (b - u))) to cos(a * (b - u)) using identity",
-                                "target": "cos(a * (b - u))"
+                                "source": "exp(b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2)",
+                                "str": "rewrite exp(b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2) to exp(b ^ 2 / (4 * a)) * exp(-a * (x - b / (2 * a)) ^ 2) using identity",
+                                "target": "exp(b ^ 2 / (4 * a)) * exp(-a * (x - b / (2 * a)) ^ 2)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a (b - u))}}{u} \\,du}{b}",
-                            "res": "(INT u:[-oo,oo]. cos(a * (b - u)) / u) / b",
+                            "latex_res": "e^{1/4\\cdot (b ^ {2}/a)} (\\int_{-\\infty}^{\\infty} e^{-a (-1/2\\cdot (b/a) + x) ^ {2}} \\,dx)",
+                            "res": "exp(1/4 * (b ^ 2 / a)) * (INT x:[-oo,oo]. exp(-(a * (-1/2 * (b / a) + x) ^ 2)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -115,118 +74,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a b - a u)}}{u} \\,du}{b}",
-                            "res": "(INT u:[-oo,oo]. cos(a * b - a * u) / u) / b",
+                            "latex_res": "e^{1/4\\cdot (b ^ {2}/a)} (\\int_{-\\infty}^{\\infty} e^{-a y ^ {2}} \\,dy)",
+                            "res": "exp(1/4 * (b ^ 2 / a)) * (INT y:[-oo,oo]. exp(-(a * y ^ 2)))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\cos{(a (b - u))}\\) to \\(\\cos{(a b - a u)}\\)",
-                                "name": "Equation",
-                                "new_expr": "cos(a * b - a * u)",
-                                "old_expr": "cos(a * (b - u))",
-                                "str": "rewriting cos(a * (b - u)) to cos(a * b - a * u)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a b)} \\cos{(a u)} + \\sin{(a b)} \\sin{(a u)}}{u} \\,du}{b}",
-                            "res": "(INT u:[-oo,oo]. (cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)) / u) / b",
-                            "rule": {
-                                "latex_str": "rewrite \\(\\cos{(a b - a u)}\\) to \\(\\cos{(a b)} \\cos{(a u)} + \\sin{(a b)} \\sin{(a u)}\\) using identity",
-                                "name": "ApplyIdentity",
-                                "source": "cos(a * b - a * u)",
-                                "str": "rewrite cos(a * b - a * u) to cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u) using identity",
-                                "target": "cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a b)} \\cos{(a u)}}{u} + \\frac{\\sin{(a b)} \\sin{(a u)}}{u} \\,du}{b}",
-                            "res": "(INT u:[-oo,oo]. cos(a * b) * cos(a * u) / u + sin(a * b) * sin(a * u) / u) / b",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\cos{(a b)} \\cos{(a u)} + \\sin{(a b)} \\sin{(a u)}}{u}\\) to \\(\\frac{\\cos{(a b)} \\cos{(a u)}}{u} + \\frac{\\sin{(a b)} \\sin{(a u)}}{u}\\)",
-                                "name": "Equation",
-                                "new_expr": "cos(a * b) * cos(a * u) / u + sin(a * b) * sin(a * u) / u",
-                                "old_expr": "(cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)) / u",
-                                "str": "rewriting (cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)) / u to cos(a * b) * cos(a * u) / u + sin(a * b) * sin(a * u) / u"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\cos{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du) + \\sin{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)}{b}",
-                            "res": "(cos(a * b) * (INT u:[-oo,oo]. cos(a * u) / u) + sin(a * b) * (INT u:[-oo,oo]. sin(a * u) / u)) / b",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\cos{(a b)}\\cdot 0 + \\sin{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)}{b}",
-                            "res": "(cos(a * b) * 0 + sin(a * b) * (INT u:[-oo,oo]. sin(a * u) / u)) / b",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du\\) to \\(0\\)",
-                                "name": "Equation",
-                                "new_expr": "0",
-                                "old_expr": "INT u:[-oo,oo]. cos(a * u) / u",
-                                "str": "rewriting INT u:[-oo,oo]. cos(a * u) / u to 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\sin{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)}{b}",
-                            "res": "sin(a * b) * (INT u:[-oo,oo]. sin(a * u) / u) / b",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\sin{(a b)} ((\\int_{-\\infty}^{0} \\frac{\\sin{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du))}{b}",
-                            "res": "sin(a * b) * ((INT u:[-oo,0]. sin(a * u) / u) + (INT u:[0,oo]. sin(a * u) / u)) / b",
-                            "rule": {
-                                "c": "0",
-                                "name": "SplitRegion",
-                                "str": "split region at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\sin{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\sin{(-a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du))}{b}",
-                            "res": "sin(a * b) * ((INT u:[0,oo]. -(sin(-(a * u)) / u)) + (INT u:[0,oo]. sin(a * u) / u)) / b",
-                            "rule": {
-                                "latex_str": "substitute \\(u\\) for \\(-u\\) at 0.1.0",
-                                "loc": "0.1.0",
+                                "latex_str": "substitute \\(y\\) for \\(x - \\frac{b}{2 a}\\)",
                                 "name": "Substitution",
-                                "str": "substitute u for -u at 0.1.0",
-                                "var_name": "u",
-                                "var_subst": "-u"
+                                "str": "substitute y for x - b / (2 * a)",
+                                "var_name": "y",
+                                "var_subst": "x - b / (2 * a)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\sin{(a b)} ((\\int_{0}^{\\infty} -\\frac{-\\sin{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du))}{b}",
-                            "res": "sin(a * b) * ((INT u:[0,oo]. -(-sin(a * u) / u)) + (INT u:[0,oo]. sin(a * u) / u)) / b",
-                            "rule": {
-                                "latex_str": "rewrite \\(\\sin{(-a u)}\\) to \\(-\\sin{(a u)}\\) using identity",
-                                "name": "ApplyIdentity",
-                                "source": "sin(-(a * u))",
-                                "str": "rewrite sin(-(a * u)) to -sin(a * u) using identity",
-                                "target": "-sin(a * u)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 (\\frac{\\sin{(a b)} (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)}{b})",
-                            "res": "2 * (sin(a * b) * (INT u:[0,oo]. sin(a * u) / u) / b)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 (\\frac{\\sin{(a b)}\\cdot (\\frac{\\pi}{2})}{b})",
-                            "res": "2 * (sin(a * b) * (pi / 2) / b)",
+                            "latex_res": "e^{1/4\\cdot (b ^ {2}/a)} (\\sqrt{\\pi} (\\frac{1}{\\sqrt{a}}))",
+                            "res": "exp(1/4 * (b ^ 2 / a)) * (sqrt(pi) * (1 / sqrt(a)))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -234,8 +95,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\pi (\\frac{\\sin{(a b)}}{b})",
-                            "res": "pi * (sin(a * b) / b)",
+                            "latex_res": "\\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{\\sqrt{a}})",
+                            "res": "sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / sqrt(a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -246,8 +107,373 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\pi (\\frac{\\sin{(a b)}}{b})",
-                    "start": "pi * (sin(a * b) / b)",
+                    "latex_start": "e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                    "start": "exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{\\sqrt{a}})",
+                            "res": "sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / sqrt(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(D a. I(a,b)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "latex_goal": "\\frac{d}{da} I(a,b) = (-\\frac{b ^ {2}}{4 a ^ {2}}) e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+            "proof": {
+                "finished": true,
+                "goal": "(D a. I(a,b)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                "latex_goal": "\\frac{d}{da} I(a,b) = (-\\frac{b ^ {2}}{4 a ^ {2}}) e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                "lhs_calc": {
+                    "latex_start": "\\frac{d}{da} I(a,b)",
+                    "start": "D a. I(a,b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{da} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                            "res": "D a. exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                            "rule": {
+                                "eq": "I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                                "latex_str": "apply equation \\(I(a,b) = e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a) on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-\\frac{\\sqrt{\\pi}}{4}) (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) - \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "-(sqrt(pi) / 4) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) - sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "(-\\frac{b ^ {2}}{4 a ^ {2}}) e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                    "start": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                    "steps": [
+                        {
+                            "latex_res": "(-\\frac{\\sqrt{\\pi}}{4}) (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) - \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "-(sqrt(pi) / 4) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) - sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(D b. I(a,b)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "latex_goal": "\\frac{d}{db} I(a,b) = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+            "proof": {
+                "finished": true,
+                "goal": "(D b. I(a,b)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                "latex_goal": "\\frac{d}{db} I(a,b) = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                "lhs_calc": {
+                    "latex_start": "\\frac{d}{db} I(a,b)",
+                    "start": "D b. I(a,b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{db} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                            "res": "D b. exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                            "rule": {
+                                "eq": "I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                                "latex_str": "apply equation \\(I(a,b) = e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a) on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{\\pi}}{2} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "sqrt(pi) / 2 * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                    "start": "b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\sqrt{\\pi}}{2} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "sqrt(pi) / 2 * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "latex_goal": "\\int_{-\\infty}^{\\infty} x e^{-a x ^ {2} + b x} \\,dx = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                "latex_goal": "\\int_{-\\infty}^{\\infty} x e^{-a x ^ {2} + b x} \\,dx = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        }
+                    ],
+                    "latex_start": "\\frac{d}{db} I(a,b) = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                    "start": "(D b. I(a,b)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{db} \\int_{-\\infty}^{\\infty} e^{-a x ^ {2} + b x} \\,dx = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                            "res": "(D b. INT x:[-oo,oo]. exp(-(a * x ^ 2) + b * x)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                            "rule": {
+                                "func_name": "I",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} x e^{-a x ^ {2} + b x} \\,dx = \\frac{\\sqrt{\\pi}}{2} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "(INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = sqrt(pi) / 2 * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = b ^ 2 / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "latex_goal": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx = \\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = b ^ 2 / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                "latex_goal": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx = \\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        }
+                    ],
+                    "latex_start": "\\frac{d}{da} I(a,b) = (-\\frac{b ^ {2}}{4 a ^ {2}}) e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                    "start": "(D a. I(a,b)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{da} \\int_{-\\infty}^{\\infty} e^{-a x ^ {2} + b x} \\,dx = (-\\frac{b ^ {2}}{4 a ^ {2}}) e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                            "res": "(D a. INT x:[-oo,oo]. exp(-(a * x ^ 2) + b * x)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                            "rule": {
+                                "func_name": "I",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx) = (-\\frac{\\sqrt{\\pi}}{4}) (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) - \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "-(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = -(sqrt(pi) / 4) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) - sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx = \\frac{\\sqrt{\\pi}}{4} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) + \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = sqrt(pi) / 4 * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) + sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)",
+                                "str": "solve equation for INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[-oo,oo]. x * exp(-(x ^ 2) - x)) = -1/2 * sqrt(pi * sqrt(exp(1)))",
+            "latex_goal": "\\int_{-\\infty}^{\\infty} x e^{-x ^ {2} - x} \\,dx = -\\frac{1}{2} \\sqrt{\\pi \\sqrt{e}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-oo,oo]. x * exp(-(x ^ 2) - x)) = -1/2 * sqrt(pi * sqrt(exp(1)))",
+                "latex_goal": "\\int_{-\\infty}^{\\infty} x e^{-x ^ {2} - x} \\,dx = -\\frac{1}{2} \\sqrt{\\pi \\sqrt{e}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{-\\infty}^{\\infty} x e^{-x ^ {2} - x} \\,dx",
+                    "start": "INT x:[-oo,oo]. x * exp(-(x ^ 2) - x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} x e^{-1 x ^ {2} + -1 x} \\,dx",
+                            "res": "INT x:[-oo,oo]. x * exp(-(1 * x ^ 2) + -1 * x)",
+                            "rule": {
+                                "latex_str": "rewriting \\(x e^{-x ^ {2} - x}\\) to \\(x e^{-1 x ^ {2} + -1 x}\\)",
+                                "name": "Equation",
+                                "new_expr": "x * exp(-(1 * x ^ 2) + -1 * x)",
+                                "old_expr": "x * exp(-(x ^ 2) - x)",
+                                "str": "rewriting x * exp(-(x ^ 2) - x) to x * exp(-(1 * x ^ 2) + -1 * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{-1}{2\\cdot 1} e^{(-1) ^ {2}/(4\\cdot 1)} \\sqrt{\\frac{\\pi}{1}}",
+                            "res": "-1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
+                            "rule": {
+                                "eq": "(INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                                "latex_str": "apply equation \\(\\int_{-\\infty}^{\\infty} x e^{-a x ^ {2} + b x} \\,dx = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{2} \\sqrt{\\pi \\sqrt{e}}",
+                            "res": "-1/2 * sqrt(pi * sqrt(exp(1)))",
+                            "rule": {
+                                "latex_str": "rewriting to \\(-\\frac{1}{2} \\sqrt{\\pi \\sqrt{e}}\\)",
+                                "name": "Equation",
+                                "new_expr": "-1/2 * sqrt(pi * sqrt(exp(1)))",
+                                "str": "rewriting to -1/2 * sqrt(pi * sqrt(exp(1)))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-\\frac{1}{2} \\sqrt{\\pi \\sqrt{e}}",
+                    "start": "-1/2 * sqrt(pi * sqrt(exp(1)))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[-oo,oo]. x ^ 2 * exp(-(x ^ 2) - x)) = 3/4 * sqrt(pi * sqrt(exp(1)))",
+            "latex_goal": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-x ^ {2} - x} \\,dx = \\frac{3}{4} \\sqrt{\\pi \\sqrt{e}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-oo,oo]. x ^ 2 * exp(-(x ^ 2) - x)) = 3/4 * sqrt(pi * sqrt(exp(1)))",
+                "latex_goal": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-x ^ {2} - x} \\,dx = \\frac{3}{4} \\sqrt{\\pi \\sqrt{e}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-x ^ {2} - x} \\,dx",
+                    "start": "INT x:[-oo,oo]. x ^ 2 * exp(-(x ^ 2) - x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-1 x ^ {2} + -1 x} \\,dx",
+                            "res": "INT x:[-oo,oo]. x ^ 2 * exp(-(1 * x ^ 2) + -1 * x)",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {2} e^{-x ^ {2} - x}\\) to \\(x ^ {2} e^{-1 x ^ {2} + -1 x}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ 2 * exp(-(1 * x ^ 2) + -1 * x)",
+                                "old_expr": "x ^ 2 * exp(-(x ^ 2) - x)",
+                                "str": "rewriting x ^ 2 * exp(-(x ^ 2) - x) to x ^ 2 * exp(-(1 * x ^ 2) + -1 * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{(-1) ^ {2}}{4 1 ^ {2}} e^{(-1) ^ {2}/(4\\cdot 1)} \\sqrt{\\frac{\\pi}{1}} + \\frac{1}{2\\cdot 1} e^{(-1) ^ {2}/(4\\cdot 1)} \\sqrt{\\frac{\\pi}{1}}",
+                            "res": "(-1) ^ 2 / (4 * 1 ^ 2) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1) + 1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
+                            "rule": {
+                                "eq": "(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = b ^ 2 / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                                "latex_str": "apply equation \\(\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx = \\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = b ^ 2 / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{3}{4} \\sqrt{\\pi \\sqrt{e}}",
+                            "res": "3/4 * sqrt(pi * sqrt(exp(1)))",
+                            "rule": {
+                                "latex_str": "rewriting to \\(\\frac{3}{4} \\sqrt{\\pi \\sqrt{e}}\\)",
+                                "name": "Equation",
+                                "new_expr": "3/4 * sqrt(pi * sqrt(exp(1)))",
+                                "str": "rewriting to 3/4 * sqrt(pi * sqrt(exp(1)))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{3}{4} \\sqrt{\\pi \\sqrt{e}}",
+                    "start": "3/4 * sqrt(pi * sqrt(exp(1)))",
                     "steps": [],
                     "type": "Calculation"
                 },

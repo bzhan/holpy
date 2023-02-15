@@ -1960,8 +1960,129 @@ class IntegralTest(unittest.TestCase):
 
     def testChapter3Practice02(self):
         # Reference:
-        # Inside interesting integrals, Section 3.10, C3.5
+        # Inside interesting integrals, Section C3.10, C3.2
         file = compstate.CompFile("interesting", "Chapter3Practice02")
+
+        goal = file.add_goal("(INT x:[-oo, oo]. cos(a * x) / (b ^ 2 - x ^ 2)) = pi * (sin(a * b) / b)",
+                             conds=["a > 0", "b > 0"])
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("b ^ 2 - x ^ 2",
+                                         "(b + x) * (b - x)"))
+        calc.perform_rule(rules.Equation("cos(a * x) / ((b + x) * (b - x))",
+                                         "(1 / (2 * b)) * (cos(a * x) / (b + x) + cos(a * x) / (b - x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b + x"), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b - x"), "1.0.1"))
+        calc.perform_rule(rules.Equation("a * (-b + u)", "-(a * (b - u))"))
+        calc.perform_rule(rules.ApplyIdentity("cos(-(a * (b - u)))", "cos(a * (b - u))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("cos(a * (b - u))", "cos(a * b - a * u)"))
+        calc.perform_rule(
+            rules.ApplyIdentity("cos(a * b - a * u)", "cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)"))
+        calc.perform_rule(rules.Equation("(cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)) / u",
+                                         "cos(a * b) * cos(a * u) / u + sin(a * b) * sin(a * u) / u"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(INT u:[-oo,oo]. cos(a * u) / u)", "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SplitRegion("0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "0.1.0"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-(a * u))", "-sin(a * u)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+
+        self.checkAndOutput(file)
+
+    def testChapter3Practice03(self):
+        # Reference:
+        # Inside interesting integrals, Section C3.10, C3.3
+        file = compstate.CompFile("interesting", "Chapter3Practice03")
+
+        goal = file.add_goal(
+            "(INT x:[-oo, oo]. cos(a * x) / (b ^ 4 - x ^ 4)) = pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+            conds=["a > 0", "b > 0"])
+        proof_of_goal = goal.proof_by_calculation()
+        calc = proof_of_goal.lhs_calc
+        calc.perform_rule(rules.Equation("b ^ 4 - x ^ 4", "(b ^ 2 + x ^ 2) * (b ^ 2- x ^ 2)"))
+        calc.perform_rule(rules.Equation("cos(a * x) / ((b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2))",
+                                         "(1 / (2 * b ^ 2)) * (cos(a * x) / (b ^ 2 + x ^ 2) + cos(a * x) / (b ^ 2 - x ^ 2))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="-x"), " 1.0.0.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("b ^ 2 + x ^ 2", "x ^ 2 + b ^ 2"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("1/2 * ((pi * (exp(-(a * b)) / b) + pi * (sin(a * b) / b)) / b ^ 2)",
+                                         "pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)"))
+
+        self.checkAndOutput(file)
+
+    def testChapter3Practice04(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.4
+        file = compstate.CompFile("interesting", "Chapter3Practice04")
+
+        goal01 = file.add_goal(
+            "(INT x:[0, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = 1/2 * (INT x:[-oo, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2))")
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.SplitRegion("0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="-x"), "1.0"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-(a * x))", "-sin(a * x)"))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal02 = file.add_goal("(INT x:[0, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = pi / 2 * cos(a * b)",
+                               conds=["a > 0", "b > 0"])
+        proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
+        calc = proof_of_goal02.begin
+        calc.perform_rule(rules.OnLocation(rules.Equation("x ^ 2 - b ^ 2", "(x + b) * (x - b)"), "1"))
+        calc.perform_rule(rules.Equation("x * sin(a * x) / ((x + b) * (x - b))",
+                                         "-x * sin(a * x) / ((b - x) * (b + x))"))
+        calc.perform_rule(rules.Equation("-x * sin(a * x) / ((b - x) * (b + x))",
+                                         "-1/(2 * b) * (x * sin(a * x) / (b + x) + x * sin(a * x) / (b - x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b + x"), "1.1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b - x"), "1.1.0.1"))
+        calc.perform_rule(rules.Equation("sin(a * (-b + u))", "sin(-(a * (b - u)))"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-(a * (b - u)))", "-sin(a * (b - u))"))
+        calc.perform_rule(rules.Equation("(-b + u) * -sin(a * (b - u))", "(b - u) * sin(a * (b - u))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(INT u:[-oo,oo]. (b - u) * sin(a * (b - u)) / u)",
+                                         "(INT u:[-oo,oo]. ((b - u) / u) * sin(a * (b - u)))"))
+        calc.perform_rule(rules.Equation("((b - u) / u) * sin(a * (b - u))",
+                                         "(b / u - 1) * sin(a * b - a * u)"))
+        calc.perform_rule(rules.Equation("(b / u - 1) * sin(a * b - a * u)",
+                                         "(b / u) * sin(a * b - a * u) - sin(a * b - a * u)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="s", var_subst="a * b - a * u"), "1.1.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.1.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="s", var_subst="-s"), "1.1.0.1.0"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-s)", "-sin(s)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(
+            rules.ApplyIdentity("sin(a * b - a * u)", "sin(a * b) * cos(a * u) - cos(a * b) * sin(a * u)"))
+        calc.perform_rule(rules.Equation("(sin(a * b) * cos(a * u) - cos(a * b) * sin(a * u)) / u",
+                                         "sin(a * b) * cos(a * u) / u - cos(a * b) * sin(a * u) / u"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.1.1"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "1.1.1.0"))
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "1.0.1.0"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-(a * u))", "-sin(a * u)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+
+        self.checkAndOutput(file)
+
+
+    def testChapter3Practice05(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.5
+        file = compstate.CompFile("interesting", "Chapter3Practice05")
 
         file.add_definition("I(a, b) = (INT x:[0, oo]. cos(a * x) * sin(b * x) / x)", conds=["a > 0", "b > 0"])
 
@@ -2005,48 +2126,28 @@ class IntegralTest(unittest.TestCase):
         self.checkAndOutput(file)
 
 
-    def testChapter3Practice03(self):
+    def testChapter3Practice06(self):
         # Reference:
         # Inside interesting integrals, Section 3.10, C3.6
-        file = compstate.CompFile("interesting", "Chapter3Practice03")
+        file = compstate.CompFile("interesting", "Chapter3Practice06")
 
-        goal01 = file.add_goal("(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2))"
-                               " = (INT x:[pi/2, 0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2))")
-        proof_of_goal01 = goal01.proof_by_calculation()
-        calc = proof_of_goal01.lhs_calc
+        goal = file.add_goal("(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi")
+        proof_of_goal = goal.proof_by_calculation()
+        calc = proof_of_goal.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse(var_name="u", var_subst="cos(2 * u)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(2 * u)", "2 * cos(u) ^ 2 - 1"), "0.0.0.0.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(2 * u)", "1 - 2 * sin(u) ^ 2"), "0.0.0.0.1.1"))
         calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.Substitution(var_name="u", var_subst="cos(2 * x)"))
-        calc.perform_rule(rules.FullSimplify())
-
-        goal02 = file.add_goal("(INT x:[pi/2, 0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi")
-        proof_of_goal02 = goal02.proof_by_calculation()
-        calc = proof_of_goal02.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(2 * x)", "2 * cos(x) ^ 2 - 1"), "0.1.0.0.1"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("cos(2 * x)", "cos(x + x)"), "0.1.0.1.1"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(x + x)", "cos(x) ^ 2 - sin(x) ^ 2"), "0.1.0.1.1"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(x) ^ 2", "1 - sin(x) ^ 2"), "0.1.0.1.1.0"))
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0.1.0.0"))
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0.1.0.1"))
-        calc.perform_rule(rules.ApplyIdentity("sin(2 * x)", "2 * sin(x) * cos(x)"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyIdentity("cos(x) ^ 2", "(1 + cos(2 * x)) / 2"))
-        calc.perform_rule(rules.Equation("(1 + cos(2 * x)) / 2", "1/2 + cos(2 * x) / 2"))
+        calc.perform_rule(rules.ApplyIdentity("sin(2 * u)", "2 * sin(u) * cos(u)"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
-
-        goal03 =file.add_goal("(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi")
-        proof_of_goal03 = goal03.proof_by_calculation()
-        calc = proof_of_goal03.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal01.goal))
-        calc.perform_rule(rules.ApplyEquation(goal02.goal))
         self.checkAndOutput(file)
 
-    def testChapter3Practice04(self):
+    def testChapter3Practice07(self):
         # Reference:
         # Inside interesting integrals, Section 3.10, C3.8
-        file = compstate.CompFile("interesting", "Chapter3Practice04")
+        file = compstate.CompFile("interesting", "Chapter3Practice07")
 
         file.add_definition("I(a, b) = (INT x:[-oo, oo]. exp(-a * x ^ 2 + b * x))", conds=["a > 0"])
 
@@ -2112,10 +2213,10 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
-    def testChapter3Practice05(self):
+    def testChapter3Practice08(self):
         # Reference:
         # Inside interesting integrals, Section 3.10, C3.9
-        file = compstate.CompFile("interesting", "Chapter3Practice05")
+        file = compstate.CompFile("interesting", "Chapter3Practice08")
 
         goal01 = file.add_goal("(INT x:[0, oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (pi * (1 - exp(-a * m))) / (2 * a ^ 2)", conds=["a > 0", "m > 0"])
         proof_of_goal01 = goal01.proof_by_calculation()
@@ -2138,10 +2239,10 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
-    def testChapter3Practice06(self):
+    def testChapter3Practice09(self):
         # Reference:
         # Inside interesting integrals, Section 3.10, C3.10
-        file = compstate.CompFile("interesting", "Chapter3Practice06")
+        file = compstate.CompFile("interesting", "Chapter3Practice09")
 
         goal01 = file.add_goal("(INT x:[0, 1]. 1 / (a * x + b * (1 - x)) ^ 2) = 1 / (a * b)", conds=["a != 0", "b != 0"])
         proof_of_goal01 = goal01.proof_by_calculation()
@@ -2165,123 +2266,43 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
-    def testChapter3Practice07(self):
+
+    def testBetaWallis(self):
         # Reference:
-        # Inside interesting integrals, Section C3.10, C3.2
-        file = compstate.CompFile("interesting", "Chapter3Practice07")
+        # Inside interesting integrals, Section 4.2
+        file = compstate.CompFile("interesting", "BetaWallis")
 
-        goal = file.add_goal("(INT x:[-oo, oo]. cos(a * x) / (b ^ 2 - x ^ 2)) = pi * (sin(a * b) / b)", conds=["a > 0", "b > 0"])
-        proof = goal.proof_by_calculation()
-        calc = proof.lhs_calc
-        calc.perform_rule(rules.Equation("b ^ 2 - x ^ 2",
-                                         "(b + x) * (b - x)"))
-        calc.perform_rule(rules.Equation("cos(a * x) / ((b + x) * (b - x))",
-                                         "(1 / (2 * b)) * (cos(a * x) / (b + x) + cos(a * x) / (b - x))"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b + x"), "1.0.0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b - x"), "1.0.1"))
-        calc.perform_rule(rules.Equation("a * (-b + u)", "-(a * (b - u))"))
-        calc.perform_rule(rules.ApplyIdentity("cos(-(a * (b - u)))", "cos(a * (b - u))"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("cos(a * (b - u))", "cos(a * b - a * u)"))
-        calc.perform_rule(rules.ApplyIdentity("cos(a * b - a * u)", "cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)"))
-        calc.perform_rule(rules.Equation("(cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)) / u",
-                                         "cos(a * b) * cos(a * u) / u + sin(a * b) * sin(a * u) / u"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("(INT u:[-oo,oo]. cos(a * u) / u)", "0"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.SplitRegion("0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "0.1.0"))
-        calc.perform_rule(rules.ApplyIdentity("sin(-(a * u))", "-sin(a * u)"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.DefiniteIntegralIdentity())
-        calc.perform_rule(rules.FullSimplify())
-
-        self.checkAndOutput(file)
-
-    def testChapter3Practice08(self):
-        # Reference:
-        # Inside interesting integrals, Section C3.10, C3.3
-        file = compstate.CompFile("interesting", "Chapter3Practice08")
-
-        goal = file.add_goal("(INT x:[-oo, oo]. cos(a * x) / (b ^ 4 - x ^ 4)) = pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
-                             conds=["a > 0", "b > 0"])
-        proof_of_goal = goal.proof_by_calculation()
-        calc = proof_of_goal.lhs_calc
-        calc.perform_rule(rules.Equation("b ^ 4 - x ^ 4", "(b ^ 2 + x ^ 2) * (b ^ 2- x ^ 2)"))
-        calc.perform_rule(rules.Equation("cos(a * x) / ((b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2))",
-                                         "(1 / (2 * b ^ 2)) * (cos(a * x) / (b ^ 2 + x ^ 2) + cos(a * x) / (b ^ 2 - x ^ 2))"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.0.0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="-x"), " 1.0.0.0"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("b ^ 2 + x ^ 2", "x ^ 2 + b ^ 2"))
-        calc.perform_rule(rules.DefiniteIntegralIdentity())
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("1/2 * ((pi * (exp(-(a * b)) / b) + pi * (sin(a * b) / b)) / b ^ 2)",
-                                         "pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)"))
-
-        self.checkAndOutput(file)
-
-    def testChapter3Practice09(self):
-        # Reference:
-        # Inside interesting integrals, Section 3.10, C3.4
-        ctx = context.Context()
-        ctx.load_book("base")
-        ctx.load_book("interesting")
-        file = compstate.CompFile(ctx, "Chapter3Practice09")
-
-        goal01 = file.add_goal("(INT x:[0, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = 1/2 * (INT x:[-oo, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2))")
+        goal01 = file.add_goal("B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))")
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.SplitRegion("0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="-x"), "1.0"))
-        calc.perform_rule(rules.ApplyIdentity("sin(-(a * x))", "-sin(a * x)"))
+        calc.perform_rule(rules.ExpandDefinition("B"))
+        calc.perform_rule(rules.SubstitutionInverse(var_name="x", var_subst="cos(x) ^ 2"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(x) ^ 2", "1 - sin(x) ^ 2"), "0.0.0.1.0.0.0"))
         calc.perform_rule(rules.FullSimplify())
 
-        goal02 = file.add_goal("(INT x:[0, oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = pi / 2 * cos(a * b)",
-                               conds=["a > 0", "b > 0"])
-        proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
-        calc = proof_of_goal02.begin
-        calc.perform_rule(rules.OnLocation(rules.Equation("x ^ 2 - b ^ 2", "(x + b) * (x - b)"), "1"))
-        calc.perform_rule(rules.Equation("x * sin(a * x) / ((x + b) * (x - b))",
-                                         "-x * sin(a * x) / ((b - x) * (b + x))"))
-        calc.perform_rule(rules.Equation("-x * sin(a * x) / ((b - x) * (b + x))",
-                                         "-1/(2 * b) * (x * sin(a * x) / (b + x) + x * sin(a * x) / (b - x))"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b + x"), "1.1.0.0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b - x"), "1.1.0.1"))
-        calc.perform_rule(rules.Equation("sin(a * (-b + u))", "sin(-(a * (b - u)))"))
-        calc.perform_rule(rules.ApplyIdentity("sin(-(a * (b - u)))", "-sin(a * (b - u))"))
-        calc.perform_rule(rules.Equation("(-b + u) * -sin(a * (b - u))", "(b - u) * sin(a * (b - u))"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("(INT u:[-oo,oo]. (b - u) * sin(a * (b - u)) / u)",
-                                         "(INT u:[-oo,oo]. ((b - u) / u) * sin(a * (b - u)))"))
-        calc.perform_rule(rules.Equation("((b - u) / u) * sin(a * (b - u))",
-                                         "(b / u - 1) * sin(a * b - a * u)"))
-        calc.perform_rule(rules.Equation("(b / u - 1) * sin(a * b - a * u)",
-                                         "(b / u) * sin(a * b - a * u) - sin(a * b - a * u)"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="s", var_subst="a * b - a * u"), "1.1.0.1"))
-        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.1.0.1"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="s", var_subst="-s"), "1.1.0.1.0"))
-        calc.perform_rule(rules.ApplyIdentity("sin(-s)", "-sin(s)"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyIdentity("sin(a * b - a * u)", "sin(a * b) * cos(a * u) - cos(a * b) * sin(a * u)"))
-        calc.perform_rule(rules.Equation("(sin(a * b) * cos(a * u) - cos(a * b) * sin(a * u)) / u",
-                                         "sin(a * b) * cos(a * u) / u - cos(a * b) * sin(a * u) / u"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.1.1"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "1.1.1.0"))
-        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.0.1"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "1.0.1.0"))
-        calc.perform_rule(rules.ApplyIdentity("sin(-(a * u))", "-sin(a * u)"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        goal02 = file.add_goal("(INT x:[0, 1]. (x - x ^ 2) ^ n) = B(n + 1, n + 1)")
+        proof_of_goal02 = goal02.proof_by_calculation()
+        calc = proof_of_goal02.lhs_calc
+        calc.perform_rule(rules.Equation("x - x ^ 2", "x * (1 - x)"))
+        calc.perform_rule(rules.ApplyIdentity("(x * (1 - x)) ^ n", "x ^ n * (1 - x) ^ n"))
+        calc = proof_of_goal02.rhs_calc
+        calc.perform_rule(rules.ExpandDefinition("B"))
+        calc.perform_rule(rules.Equation("-x + 1", "1 - x"))
 
-        self.checkAndOutput(file, "Chapter3Practice09")
+        goal03 = file.add_goal("B(n + 1, n + 1) = (factorial(n) ^ 2) / (factorial(2 * n + 1))")
+        proof_of_goal03 = goal03.proof_by_calculation()
+        calc = proof_of_goal03.lhs_calc
+        calc.perform_rule(rules.ApplyIdentity("B(n + 1, n + 1)", "Gamma(n + 1) * Gamma(n + 1) / Gamma(2 * n + 2)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ApplyIdentity("Gamma(n + 1)", "factorial(n)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(2 * n + 2)", "factorial(2 * n + 1)"))
+
+        goal04 = file.add_goal("(INT x:[0, 1]. (x - x ^ 2) ^ n) = (factorial(n) ^ 2) / (factorial(2 * n + 1))")
+        proof_of_goal04 = goal04.proof_by_rewrite_goal(begin=goal02)
+        calc = proof_of_goal04.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal03.goal), "1"))
+
+        self.checkAndOutput(file)
 
 
     def testChapter1Practice0101(self):

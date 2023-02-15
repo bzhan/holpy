@@ -7,33 +7,86 @@
                     "latex_cond": "a > 0"
                 },
                 {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0"
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "eq": "I(a,b) = (INT x:[0,oo]. cos(a * x) * sin(b * x) / x)",
+            "latex_eq": "I(a,b) = \\int_{0}^{\\infty} \\frac{\\cos{(a x)} \\sin{(b x)}}{x} \\,dx",
+            "latex_lhs": "I(a,b)",
+            "type": "FuncDef"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
-            "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
+            "goal": "I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+            "latex_goal": "I(a,b) = \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
+                "goal": "I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+                "latex_goal": "I(a,b) = \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx",
-                    "start": "INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))",
+                    "latex_start": "I(a,b)",
+                    "start": "I(a,b)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{\\pi}{2} (\\frac{-e^{-a m} + 1}{a ^ {2}})",
-                            "res": "pi / 2 * ((-exp(-(a * m)) + 1) / a ^ 2)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\cos{(a x)} \\sin{(b x)}}{x} \\,dx",
+                            "res": "INT x:[0,oo]. cos(a * x) * sin(b * x) / x",
                             "rule": {
-                                "name": "DefiniteIntegralIdentity",
-                                "str": "apply definite integral"
+                                "func_name": "I",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\pi}{2} (\\frac{-e^{-a m} + 1}{a ^ {2}})",
-                            "res": "pi / 2 * ((-exp(-(a * m)) + 1) / a ^ 2)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} (\\sin{(b x + a x)} - \\sin{(a x - b x)})}{x} \\,dx",
+                            "res": "INT x:[0,oo]. 1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos{(a x)} \\sin{(b x)}\\) to \\(\\frac{1}{2} (\\sin{(b x + a x)} - \\sin{(a x - b x)})\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "cos(a * x) * sin(b * x)",
+                                "str": "rewrite cos(a * x) * sin(b * x) to 1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) using identity",
+                                "target": "1/2 * (sin(b * x + a * x) - sin(a * x - b * x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} \\sin{(-(b - a) x)}}{x} \\,dx",
+                            "res": "INT x:[0,oo]. 1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\frac{1}{2} (\\sin{(b x + a x)} - \\sin{(a x - b x)})}{x}\\) to \\(\\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} \\sin{(-(b - a) x)}}{x}\\)",
+                                "name": "Equation",
+                                "new_expr": "1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x",
+                                "old_expr": "1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x",
+                                "str": "rewriting 1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x to 1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} (-\\sin{((b - a) x)})}{x} \\,dx",
+                            "res": "INT x:[0,oo]. 1/2 * sin((b + a) * x) / x - 1/2 * -sin((b - a) * x) / x",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sin{(-(b - a) x)}\\) to \\(-\\sin{((b - a) x)}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "sin(-((b - a) * x))",
+                                "str": "rewrite sin(-((b - a) * x)) to -sin((b - a) * x) using identity",
+                                "target": "-sin((b - a) * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (-a + b))}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (a + b))}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin(x * (-a + b)) / x) + 1/2 * (INT x:[0,oo]. sin(x * (a + b)) / x)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -44,12 +97,12 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
-                    "start": "pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
+                    "latex_start": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
+                    "start": "1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{\\pi}{2} (\\frac{-e^{-a m} + 1}{a ^ {2}})",
-                            "res": "pi / 2 * ((-exp(-(a * m)) + 1) / a ^ 2)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (-a + b))}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (a + b))}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin(x * (-a + b)) / x) + 1/2 * (INT x:[0,oo]. sin(x * (a + b)) / x)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -66,102 +119,204 @@
         {
             "conds": [
                 {
+                    "cond": "b - a > 0",
+                    "latex_cond": "b - a > 0"
+                },
+                {
                     "cond": "a > 0",
                     "latex_cond": "a > 0"
                 },
                 {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0"
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
-            "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
-            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})",
+            "goal": "I(a,b) = pi / 2",
+            "latex_goal": "I(a,b) = \\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
-                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})",
-                "start": {
-                    "conds": [
-                        {
-                            "cond": "a > 0",
-                            "latex_cond": "a > 0"
-                        },
-                        {
-                            "cond": "m > 0",
-                            "latex_cond": "m > 0"
-                        }
-                    ],
-                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
-                    "start": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
+                "goal": "I(a,b) = pi / 2",
+                "latex_goal": "I(a,b) = \\frac{\\pi}{2}",
+                "lhs_calc": {
+                    "latex_start": "I(a,b)",
+                    "start": "I(a,b)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
-                            "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
                             "rule": {
-                                "func_name": "I",
-                                "loc": "0",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition at 0"
+                                "eq": "I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+                                "latex_str": "apply equation \\(I(a,b) = \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
-                            "res": "(D a. INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (D a. pi * (1 - exp(-a * m)) / (2 * a ^ 2))",
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2} (\\frac{\\pi}{2})",
+                            "res": "1/2 * (pi / 2) + 1/2 * (pi / 2)",
                             "rule": {
-                                "name": "DerivEquation",
-                                "str": "derivate both sides",
-                                "var": "a"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
-                            "res": "(INT x:[0,oo]. D a. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (D a. pi * (1 - exp(-a * m)) / (2 * a ^ 2))",
-                            "rule": {
-                                "loc": "0",
-                                "name": "DerivIntExchange",
-                                "str": "exchange derivative and integral at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = \\frac{1}{4} (\\frac{(-4 \\pi) a (-e^{-a m} + 1) + 2 \\pi a ^ {2} m e^{-a m}}{a ^ {4}})",
-                            "res": "-2 * a * (INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = 1/4 * ((-(4 * pi) * a * (-exp(-(a * m)) + 1) + 2 * pi * a ^ 2 * m * exp(-(a * m))) / a ^ 4)",
+                            "latex_res": "\\frac{\\pi}{2}",
+                            "res": "pi / 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = -\\frac{1}{8} (\\frac{(-4 \\pi) a (-e^{-a m} + 1) + 2 \\pi a ^ {2} m e^{-a m}}{a ^ {5}})",
-                            "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = -1/8 * ((-(4 * pi) * a * (-exp(-(a * m)) + 1) + 2 * pi * a ^ 2 * m * exp(-(a * m))) / a ^ 5)",
-                            "rule": {
-                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx\\)",
-                                "name": "SolveEquation",
-                                "solve_for": "INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)",
-                                "str": "solve equation for INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})",
-                            "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
-                            "rule": {
-                                "latex_str": "rewriting to \\(\\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})\\) at 1",
-                                "loc": "1",
-                                "name": "Equation",
-                                "new_expr": "pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
-                                "str": "rewriting to pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m)) at 1"
                             },
                             "type": "CalculationStep"
                         }
                     ],
                     "type": "Calculation"
                 },
-                "type": "RewriteGoalProof"
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{2}",
+                    "start": "pi / 2",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "b - a < 0",
+                    "latex_cond": "b - a < 0"
+                },
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "I(a,b) = 0",
+            "latex_goal": "I(a,b) = 0",
+            "proof": {
+                "finished": true,
+                "goal": "I(a,b) = 0",
+                "latex_goal": "I(a,b) = 0",
+                "lhs_calc": {
+                    "latex_start": "I(a,b)",
+                    "start": "I(a,b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+                            "rule": {
+                                "eq": "I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+                                "latex_str": "apply equation \\(I(a,b) = \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2} (-\\frac{\\pi}{2})",
+                            "res": "1/2 * (pi / 2) + 1/2 * -(pi / 2)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0",
+                            "res": "0",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "b - a = 0",
+                    "latex_cond": "b - a = 0"
+                },
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "I(a,b) = pi / 4",
+            "latex_goal": "I(a,b) = \\frac{\\pi}{4}",
+            "proof": {
+                "finished": true,
+                "goal": "I(a,b) = pi / 4",
+                "latex_goal": "I(a,b) = \\frac{\\pi}{4}",
+                "lhs_calc": {
+                    "latex_start": "I(a,b)",
+                    "start": "I(a,b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+                            "rule": {
+                                "eq": "I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
+                                "latex_str": "apply equation \\(I(a,b) = \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2}\\cdot 0",
+                            "res": "1/2 * (pi / 2) + 1/2 * 0",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi}{4}",
+                            "res": "pi / 4",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{4}",
+                    "start": "pi / 4",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
             },
             "type": "Goal"
         }
