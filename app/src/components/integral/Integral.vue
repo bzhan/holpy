@@ -27,6 +27,7 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Rewrite" left>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="foldDefinition">Fold definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
@@ -586,14 +587,29 @@ export default {
     // Expand definition
     expandDefinition: async function() {
       const data = {
-        item: this.content[this.cur_id],
-        prev_items: this.content.slice(0, this.cur_id),
-        selected_item: this.selected_item,
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item
       }
-      console.log(this.content[this.cur_id])
-      console.log(this.content.slice(0, this.cur_id))
-      console.log(this.selected_item)
       const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      }
+    },
+
+    // Fold definition
+    foldDefinition: async function() {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/fold-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item

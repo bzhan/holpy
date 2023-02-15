@@ -195,7 +195,7 @@ def query_identities():
     subitem = st.get_by_label(label)
     try:
         e = integral.parser.parse_expr(data['expr'])
-        results = integral.rules.search_identity(e, subitem.ctx)
+        results = integral.rules.ApplyIdentity.search(e, subitem.ctx)
         json_results = []
         for res in results:
             json_results.append({
@@ -276,31 +276,80 @@ def proof_by_induction():
 @app.route("/api/expand-definition", methods=["POST"])
 def expand_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    prev_items = []
-    for prev_item in data['prev_items']:
-        prev_items.append(compstate.parse_item(prev_item))
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
-    func_defs = []
-    for prev_item in prev_items:
-        if isinstance(prev_item, compstate.FuncDef):
-            func_defs.append(prev_item.eq)
-    # assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
-    subitem = item.get_by_label(label)
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         if isinstance(subitem, compstate.Calculation):
-            ex = subitem.start
+            e = subitem.start
         else:
-            ex = subitem.res
-        for func_def in func_defs:
-            if ex.has_func(func_def.lhs.func_name):
-                rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_def))
-                subitem.perform_rule(rule)
+            e = subitem.res
+        results = integral.rules.ExpandDefinition.search(e, subitem.ctx)
+        if len(results) == 1:
+            sube, loc = results[0]
+            assert sube.is_fun()
+            rule = integral.rules.ExpandDefinition(sube.func_name)
+            if loc.data:
+                rule = integral.rules.OnLocation(rule, loc)
+            subitem.perform_rule(rule)
+            return jsonify({
+                "status": "ok",
+                "item": st.export(),
+                "selected_item": str(compstate.get_next_step_label(subitem, label))
+            })
+        else:
+            return jsonify({
+                "status": "choose",
+                "item": st.export(),
+                "selected_item": str(compstate.get_next_step_label(subitem, label))
+            })
+    else:
         return jsonify({
-            "status": "ok",
-            "item": item.export(),
-            "selected_item": str(compstate.get_next_step_label(subitem, label))
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
         })
+
+@app.route("/api/fold-definition", methods=["POST"])
+def fold_definition():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
+    label = compstate.Label(data['selected_item'])
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
+    if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
+        if isinstance(subitem, compstate.Calculation):
+            e = subitem.start
+        else:
+            e = subitem.res
+        results = integral.rules.FoldDefinition.search(e, subitem.ctx)
+        if len(results) == 1:
+            _, loc, func_name = results[0]
+            rule = integral.rules.FoldDefinition(func_name)
+            if loc.data:
+                rule = integral.rules.OnLocation(rule, loc)
+            subitem.perform_rule(rule)
+            return jsonify({
+                "status": "ok",
+                "item": st.export(),
+                "selected_item": str(compstate.get_next_step_label(subitem, label))
+            })
+        else:
+            return jsonify({
+                "status": "choose",
+                "item": st.export(),
+                "selected_item": str(compstate.get_next_step_label(subitem, label))
+            })
     else:
         return jsonify({
             "status": "error",

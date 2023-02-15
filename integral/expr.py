@@ -6,7 +6,7 @@ import functools
 from decimal import Decimal
 from fractions import Fraction
 from collections.abc import Iterable
-from typing import Dict, List, Optional, Set, TypeGuard, Tuple, Union
+from typing import Dict, List, Optional, Set, TypeGuard, Tuple, Union, Callable
 
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL, \
@@ -348,15 +348,15 @@ class Expr:
             loc = Location(loc)
         if loc.is_empty():
             return self
-        elif self.ty == VAR or self.ty == CONST:
+        elif self.is_var() or self.is_const():
             raise AssertionError("get_subexpr: invalid location")
-        elif self.ty == OP or self.ty == FUN:
+        elif self.is_op() or self.is_fun():
             assert loc.head < len(self.args), "get_subexpr: invalid location"
             return self.args[loc.head].get_subexpr(loc.rest)
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             assert loc.head == 0, "get_subexpr: invalid location"
             return self.body.get_subexpr(loc.rest)
-        elif self.ty == INTEGRAL or self.ty == EVAL_AT:
+        elif self.is_integral() or self.is_evalat():
             if loc.head == 0:
                 return self.body.get_subexpr(loc.rest)
             elif loc.head == 1:
@@ -365,7 +365,7 @@ class Expr:
                 return self.upper.get_subexpr(loc.rest)
             else:
                 raise AssertionError("get_subexpr: invalid location")
-        elif self.ty == LIMIT:
+        elif self.is_limit():
             assert loc.head == 0, "get_subexpr: invalid location"
             return self.body.get_subexpr(loc.rest)
 
@@ -378,9 +378,9 @@ class Expr:
             loc = Location(loc)
         if loc.is_empty():
             return new_expr
-        elif self.ty == VAR or self.ty == CONST:
+        elif self.is_var() or self.is_const():
             raise AssertionError("replace_expr: invalid location")
-        elif self.ty == OP:
+        elif self.is_op():
             assert loc.head < len(self.args), "replace_expr: invalid location"
             if len(self.args) == 1:
                 return Op(self.op, self.args[0].replace_expr(loc.rest, new_expr))
@@ -393,11 +393,11 @@ class Expr:
                     raise AssertionError("replace_expr: invalid location")
             else:
                 raise NotImplementedError
-        elif self.ty == FUN:
+        elif self.is_fun():
             assert loc.head < len(self.args), "replace_expr: invalid location"
             arg = self.args[loc.head].replace_expr(loc.rest, new_expr)
             return Fun(self.func_name, arg)
-        elif self.ty == INTEGRAL:
+        elif self.is_integral():
             if loc.head == 0:
                 return Integral(self.var, self.lower, self.upper, self.body.replace_expr(loc.rest, new_expr))
             elif loc.head == 1:
@@ -406,7 +406,7 @@ class Expr:
                 return Integral(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
                 raise AssertionError("replace_expr: invalid location")
-        elif self.ty == EVAL_AT:
+        elif self.is_evalat():
             if loc.head == 0:
                 return EvalAt(self.var, self.lower, self.upper, self.body.replace_expr(loc.rest, new_expr))
             elif loc.head == 1:
@@ -415,10 +415,10 @@ class Expr:
                 return EvalAt(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
                 raise AssertionError("replace_expr: invalid location")
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             assert loc.head == 0, "replace_expr: invalid location"
             return Deriv(self.var, self.body.replace_expr(loc.rest, new_expr))
-        elif self.ty == LIMIT:
+        elif self.is_limit():
             assert loc.head == 0, "replace_expr: invalid location"
             return Limit(self.var, self.limit, self.body.replace_expr(loc.rest, new_expr))
         else:
@@ -468,6 +468,30 @@ class Expr:
 
         find(self, Location(""))
         return locations
+    
+    def find_subexpr_pred(self, pred: Callable[["Expr"], bool]) -> List[Tuple["Expr", Location]]:
+        """Find list of subexpressions satisfying a given predicate."""
+        results = []
+
+        def find(e: Expr, loc: Location):
+            if pred(e):
+                results.append((e, Location(loc)))
+            if e.is_op() or e.is_fun():
+                for i, arg in enumerate(e.args):
+                    find(arg, loc.append(i))
+            elif e.is_integral() or e.is_evalat():
+                find(e.lower, loc.append(1))
+                find(e.upper, loc.append(2))
+                find(e.body, loc.append(0))
+            elif e.is_deriv() or e.is_limit() or e.is_indefinite_integral():
+                find(e.body, loc.append(0))
+            elif e.is_summation():
+                find(e.body, loc.append(0))
+                find(e.lower, loc.append(1))
+                find(e.upper, loc.append(2))
+
+        find(self, Location(""))
+        return results
 
     def subst(self, var: str, e: "Expr") -> "Expr":
         """Substitute occurrence of var for e in self."""
@@ -640,26 +664,8 @@ class Expr:
 
     def separate_integral(self) -> List[Tuple["Expr", Location]]:
         """Collect the list of all integrals appearing in self."""
-        result = []
-
-        def collect(p: Expr, result):
-            if p.is_integral() or p.is_indefinite_integral():
-                p.selected = True
-                loc = self.get_location()
-                del p.selected
-                result.append((p, loc))
-            elif p.is_op():
-                for arg in p.args:
-                    collect(arg, result)
-            elif p.is_limit():
-                collect(p.body, result)
-            elif p.is_deriv():
-                collect(p.body, result)
-            elif p.is_summation():
-                collect(p.body, result)
-
-        collect(self, result)
-        return result
+        return self.find_subexpr_pred(
+            lambda e: e.is_integral() or e.is_indefinite_integral())
 
     @property
     def depth(self):

@@ -2,7 +2,7 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from typing import Optional, Dict, Union, List
+from typing import Optional, Dict, Tuple, Union, List
 import functools
 import operator
 
@@ -416,6 +416,16 @@ class ApplyIdentity(Rule):
                 latex.convert_expr(self.source), latex.convert_expr(self.target))
         }
 
+    @staticmethod
+    def search(e: Expr, ctx: Context) -> List[Expr]:
+        res = []
+        for identity in ctx.get_other_identities():
+            inst = expr.match(e, identity.lhs)
+            if inst is not None:
+                expected_rhs = identity.rhs.inst_pat(inst)
+                res.append(normalize(expected_rhs))
+        return res
+
     def eval(self, e: Expr, ctx: Context) -> Expr:
         # Find source within e
         if self.source != e:
@@ -436,14 +446,6 @@ class ApplyIdentity(Rule):
         
         raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
 
-def search_identity(e: Expr, ctx: Context) -> List[Expr]:
-    res = []
-    for identity in ctx.get_other_identities():
-        inst = expr.match(e, identity.lhs)
-        if inst is not None:
-            expected_rhs = identity.rhs.inst_pat(inst)
-            res.append(normalize(expected_rhs))
-    return res
 
 class DefiniteIntegralIdentity(Rule):
     """Apply definite integral identity in current theory."""
@@ -1751,6 +1753,21 @@ class ExpandDefinition(Rule):
             "str": str(self)
         }
 
+    @staticmethod
+    def search(e: Expr, ctx: Context) -> List[Tuple[Expr, expr.Location]]:
+        subexprs = e.find_subexpr_pred(lambda t: t.is_var() or t.is_fun())
+        res = []
+        for sube, loc in subexprs:
+            if sube.is_fun():
+                for identity in ctx.get_definitions():
+                    if identity.lhs.is_fun() and identity.lhs.func_name == sube.func_name:
+                        res.append((sube, loc))
+            if sube.is_var():
+                for identity in ctx.get_definitions():
+                    if identity.lhs.is_symbol() and identity.lhs.name == sube.func_name:
+                        res.append((sube, loc))
+        return res
+
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_fun() and e.func_name == self.func_name:
             for identity in ctx.get_definitions():
@@ -1783,6 +1800,20 @@ class FoldDefinition(Rule):
             "func_name": self.func_name,
             "str": str(self)
         }
+    
+    @staticmethod
+    def search(e: Expr, ctx: Context) -> List[Tuple[Expr, expr.Location, str]]:
+        subexprs = e.find_subexpr_pred(lambda t: True)
+        res = []
+        for sube, loc in subexprs:
+            for identity in ctx.get_definitions():
+                inst = expr.match(sube, identity.rhs)
+                if inst:
+                    if identity.lhs.is_fun():
+                        res.append((sube, loc, identity.lhs.func_name))
+                    else:
+                        res.append((sube, loc, identity.lhs.name))
+        return res
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
         for identity in ctx.get_definitions():
