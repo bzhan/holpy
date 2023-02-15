@@ -1437,13 +1437,11 @@ class IntegrationByParts(Rule):
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
 
-    def __init__(self, c: Union[Expr,str], is_cpv=False, new_var=None):
+    def __init__(self, c: Union[Expr,str]):
         self.name = "SplitRegion"
         if isinstance(c,str):
             c = parser.parse_expr(c)
         self.c = c
-        self.is_cpv = is_cpv
-        self.new_var = new_var
 
     def __str__(self):
         return "split region at %s" % self.c
@@ -1462,7 +1460,9 @@ class SplitRegion(Rule):
                 return e
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
-        if not self.is_cpv:
+        x = Var("c")
+        is_cpv = limits.is_indeterminate_form(Limit(x.name, POS_INF, e.body.subst(e.var, self.c+1/x)))
+        if not is_cpv:
             return expr.Integral(e.var, e.lower, self.c, e.body) + \
                    expr.Integral(e.var, self.c, e.upper, e.body)
         else:
