@@ -440,7 +440,8 @@ def integral_perform_step():
     label = compstate.Label(data['selected_item'])
     st: compstate.StateItem = file.content[cur_id]
     rule = compstate.parse_rule(data['rule'])
-    if isinstance(rule, integral.rules.ApplyInductHyp):
+    if isinstance(rule, (integral.rules.ApplyInductHyp, integral.rules.DerivIntExchange,
+                         integral.rules.IntSumExchange)):
         rule = integral.rules.OnSubterm(rule)
     subitem = st.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):

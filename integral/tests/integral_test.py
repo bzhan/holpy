@@ -2230,9 +2230,9 @@ class IntegralTest(unittest.TestCase):
                                conds=["a > 0", "m > 0"])
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
         calc = proof_of_goal02.begin
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition("I"), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.DerivEquation("a"))
-        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange(), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.DerivIntExchange()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SolveEquation("(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2))"))
         calc.perform_rule(rules.OnLocation(rules.Equation(None, "(pi / (2 * a ^ 4)) * (1 - ((2 + m * a) / 2) * exp(- a * m))"), "1"))
@@ -2258,7 +2258,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
         calc = proof_of_goal02.begin
         calc.perform_rule(rules.DerivEquation("a"))
-        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange(), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.DerivIntExchange()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("(b * (-x + 1) + a * x) ^ 3", "(a * x + b * (1 - x)) ^ 3"))
         calc.perform_rule(rules.SolveEquation("(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3)"))

@@ -1725,14 +1725,15 @@ class DerivIntExchange(Rule):
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_deriv() and e.body.is_integral():
-            v1, v2 = e.var, e.body.var
-            return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
+            return Integral(e.body.var, e.body.lower, e.body.upper, Deriv(e.var, e.body.body))
         elif e.is_deriv() and e.body.is_indefinite_integral():
-            return IndefiniteIntegral(e.var, Deriv(e.var, e.body.body), e.skolem_args)
+            return IndefiniteIntegral(e.body.var, Deriv(e.var, e.body.body), e.skolem_args)
         elif e.is_indefinite_integral() and e.body.is_deriv():
-            return Deriv(e.var, IndefiniteIntegral(e.var, e.body.body, e.skolem_args))
+            return Deriv(e.body.var, IndefiniteIntegral(e.var, e.body.body, e.skolem_args))
+        elif e.is_integral() and e.body.is_deriv():
+            return Deriv(e.body.var, Integral(e.var, e.upper, e.lower, e.body.body))
         else:
-            raise NotImplementedError
+            return e
 
 
 class ExpandDefinition(Rule):
@@ -1764,7 +1765,7 @@ class ExpandDefinition(Rule):
                         res.append((sube, loc))
             if sube.is_var():
                 for identity in ctx.get_definitions():
-                    if identity.lhs.is_symbol() and identity.lhs.name == sube.func_name:
+                    if identity.lhs.is_symbol() and identity.lhs.name == sube.name:
                         res.append((sube, loc))
         return res
 

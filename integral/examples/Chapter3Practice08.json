@@ -100,9 +100,9 @@
                             "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
                             "rule": {
                                 "func_name": "I",
-                                "loc": "0",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 0"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -120,9 +120,9 @@
                             "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                             "res": "(INT x:[0,oo]. D a. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (D a. pi * (1 - exp(-a * m)) / (2 * a ^ 2))",
                             "rule": {
-                                "loc": "0",
+                                "loc": "subterms",
                                 "name": "DerivIntExchange",
-                                "str": "exchange derivative and integral at 0"
+                                "str": "exchange derivative and integral on subterms"
                             },
                             "type": "CalculationStep"
                         },
