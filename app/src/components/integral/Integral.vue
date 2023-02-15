@@ -11,6 +11,7 @@
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="proofByRewriteGoal">Proof by rewrite goal</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Limits" left>
           <b-dropdown-item href="#" v-on:click="applyRule('LHopital')">L'Hopital Rule</b-dropdown-item>
@@ -203,6 +204,13 @@
         <span class="math-text">Please specify induction variable</span><br/>
         <input v-model="induct_var">
         <button v-on:click="doApplyInduction">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'apply rewrite goal'">
+        <div class="math-text">Select lemma to start from:</div>
+        <div v-for="(item, index) in theorems" :key="index"
+             v-on:click="doApplyRewriteGoal(index)" style="cursor:pointer">
+          <MathEquation v-bind:data="'\\(' + item.latex_eq + '\\)'"/>
+        </div>
       </div>
       <div v-if="r_query_mode === 'integrate by parts'">
         <span class="math-text">Integrate by parts on: </span>
@@ -644,6 +652,37 @@ export default {
       }
     },
 
+    // Perform proof by rewrite goal
+    proofByRewriteGoal: async function() {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-theorems", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.theorems = response.data.theorems
+        this.r_query_mode = 'apply rewrite goal'
+      }
+    },
+
+    doApplyRewriteGoal: async function(index) {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        begin: this.theorems[index].eq
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/proof-by-rewrite-goal", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      }
+    },
+
     // Simple form of applying a rule
     applyRule: async function(rulename) {
       const data = {
@@ -954,8 +993,7 @@ export default {
         book: this.book_name,
         file: this.filename,
         content: this.content,
-        cur_id: this.cur_id,
-        selected_item: this.selected_item,
+        cur_id: this.cur_id
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-theorems", JSON.stringify(data))
       if (response.data.status == 'ok') {

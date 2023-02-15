@@ -290,6 +290,34 @@ def proof_by_induction():
             "msg": "Selected item is not a goal."
         })
 
+@app.route("/api/proof-by-rewrite-goal", methods=["POST"])
+def proof_by_rewrite_goal():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
+    label = compstate.Label(data['selected_item'])
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
+    begin = integral.parser.parse_expr(data['begin'])
+    if isinstance(subitem, compstate.Goal):
+        # Find the goal corresponding to begin
+        begin_goal = None
+        for item in file.content[:cur_id]:
+            if isinstance(item, compstate.Goal) and item.goal == begin:
+                begin_goal = item
+                break
+        assert begin_goal is not None
+        subitem.proof_by_rewrite_goal(begin=begin_goal)
+        return jsonify({
+            "status": "ok",
+            "item": st.export(),
+            "selected_item": str(compstate.Label(label.data + [0]))
+        })
+
 @app.route("/api/expand-definition", methods=["POST"])
 def expand_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
