@@ -2463,10 +2463,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
 
-    def testCharper4Practice05(self):
-        # Reference:
-        # Inside interesting integrals, C4.5
-        file = compstate.CompFile("interesting", "chapter4_practice05")
-        file.add
+
 if __name__ == "__main__":
     unittest.main()
