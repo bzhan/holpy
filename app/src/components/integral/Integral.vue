@@ -326,8 +326,6 @@ export default {
       cur_items: [],             // Current items in state
       r_query_mode: undefined,   // Record query mode
       sep_int: [],               // All separate integrals
-      sep_limit: [],             // All limits
-      sep_exp: [],               // all exponetial expressions
 
       // Selected goal
       selected_item: undefined,
@@ -530,7 +528,10 @@ export default {
     // Perform proof by calculation
     proofByCalculation: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-calculation", JSON.stringify(data))
@@ -540,11 +541,29 @@ export default {
       }
     },
 
-    // Proof by induction
+    // First stage of proof by induction: query for induction variable
     proofByInduction: function() {
       this.r_query_mode = 'apply induction'
     },
 
+    // Second stage of proof by induction
+    doApplyInduction: async function() {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        induct_var: this.induct_var
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      }
+    },
+
+    // Simple form of applying a rule
     applyRule: async function(rulename) {
       const data = {
         book: this.book_name,
@@ -557,20 +576,6 @@ export default {
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    // Perform proof by induction
-    doApplyInduction: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        induct_var: this.induct_var
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
@@ -609,60 +614,7 @@ export default {
       }
     },
 
-    selectExpr: async function() {
-      const start = this.$refs.select_expr1.selectionStart
-      const end = this.$refs.select_expr1.selectionEnd
-      this.selected_expr = this.lastExpr.slice(start, end)   
-      const data = {
-        expr: this.selected_expr
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-latex-expr", JSON.stringify(data))
-      if (response.data.status === 'ok') {
-        this.latex_selected_expr = response.data.latex_expr
-      }
-    },
-
-    selectExprIdentity: async function() {
-      const start = this.$refs.select_expr1.selectionStart
-      const end = this.$refs.select_expr1.selectionEnd
-      this.selected_expr = this.lastExpr.slice(start, end)   
-      const data = {
-        book: this.book_name,
-        file: this.filename,
-        content: this.content,
-        cur_id: this.cur_id,
-        selected_item: this.selected_item,
-        expr: this.selected_expr
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-identities", JSON.stringify(data))
-      console.log(response.data)
-      if (response.data.status === 'ok') {
-        this.latex_selected_expr = response.data.latex_expr
-        this.identity_rewrites = response.data.results
-      }
-    },
-
-    applyIdentity: async function(index) {
-      const data = {
-        book: this.book_name,
-        file: this.filename,
-        content: this.content,
-        cur_id: this.cur_id,
-        selected_item: this.selected_item,
-        rule: {
-          name: "ApplyIdentity",
-          source: this.selected_expr,
-          target: this.identity_rewrites[index].res
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
-      }
-    },
-
+    // First stage of integrate by parts: query for list of integrals
     integrateByParts: async function() {
       const data = {
         book: this.book_name,
@@ -678,6 +630,7 @@ export default {
       }
     },
 
+    // Second stage of integrate by parts
     doIntegrateByParts: async function() {
       const data = {
         book: this.book_name,
@@ -699,6 +652,7 @@ export default {
       }
     },
 
+    // First stage of forward substitution: query for list of integrals
     forwardSubstitution: async function() {
       const data = {
         book: this.book_name,
@@ -714,6 +668,7 @@ export default {
       }
     },
 
+    // Second stage of forward substitution
     doForwardSubstitution: async function() {
       const data = {
         book: this.book_name,
@@ -736,6 +691,7 @@ export default {
       }
     },
 
+    // First stage of backward substitution: query for list of integrals
     backwardSubstitution: async function() {
       const data = {
         book: this.book_name,
@@ -752,6 +708,7 @@ export default {
       }
     },
     
+    // Second stage of backward substitution
     doBackwardSubstitution: async function() {
       const data = {
         book: this.book_name,
@@ -774,6 +731,7 @@ export default {
       }
     },
 
+    // Compute integral by solving equation
     solveEquation: async function() {
       const data = {
         book: this.book_name,
@@ -792,14 +750,26 @@ export default {
       }
     },
 
+    // First stage of rewriting
     rewriteEquation: function() {
       this.r_query_mode = 'rewrite equation'
     },
 
-    rewriteUsingIdentity: function() {
-      this.r_query_mode = 'rewrite using identity'
+    // Select expression during rewriting
+    selectExpr: async function() {
+      const start = this.$refs.select_expr1.selectionStart
+      const end = this.$refs.select_expr1.selectionEnd
+      this.selected_expr = this.lastExpr.slice(start, end)   
+      const data = {
+        expr: this.selected_expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-latex-expr", JSON.stringify(data))
+      if (response.data.status === 'ok') {
+        this.latex_selected_expr = response.data.latex_expr
+      }
     },
 
+    // Perform rewriting
     doRewriteEquation: async function() {
       const data = {
         book: this.book_name,
@@ -821,10 +791,60 @@ export default {
       }
     },
 
+    // First stage of rewriting using identity
+    rewriteUsingIdentity: function() {
+      this.r_query_mode = 'rewrite using identity'
+    },
+
+    // Select expressiong during rewriting using identity
+    selectExprIdentity: async function() {
+      const start = this.$refs.select_expr1.selectionStart
+      const end = this.$refs.select_expr1.selectionEnd
+      this.selected_expr = this.lastExpr.slice(start, end)   
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        expr: this.selected_expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-identities", JSON.stringify(data))
+      console.log(response.data)
+      if (response.data.status === 'ok') {
+        this.latex_selected_expr = response.data.latex_expr
+        this.identity_rewrites = response.data.results
+      }
+    },
+
+    // Perform rewriting using identity
+    applyIdentity: async function(index) {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "ApplyIdentity",
+          source: this.selected_expr,
+          target: this.identity_rewrites[index].res
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of split region: query for splitting point
     splitRegion: function() {
       this.r_query_mode = 'split region'
     },
 
+    // Second stage of split region
     doSplitRegion: async function() {
       const data = {
         book: this.book_name,
@@ -882,6 +902,7 @@ export default {
       }
     },
 
+    // First stage of variable substitution
     variableSubstitution: async function() {
       const data = {
         book: this.book_name,
@@ -897,6 +918,7 @@ export default {
       }
     },
 
+    // Second stage of variable substitution
     doVariableSubstitution: async function() {
       const data = {
         book: this.book_name,

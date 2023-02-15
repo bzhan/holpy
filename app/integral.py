@@ -241,14 +241,20 @@ def add_goal():
 @app.route("/api/proof-by-calculation", methods=["POST"])
 def proof_by_calculation():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
     if isinstance(subitem, compstate.Goal):
         subitem.proof_by_calculation()
         return jsonify({
             "status": "ok",
-            "item": item.export(),
+            "item": st.export(),
             "selected_item": str(compstate.Label(label.data + [0]))
         })
     else:
@@ -260,18 +266,30 @@ def proof_by_calculation():
 @app.route("/api/proof-by-induction", methods=["POST"])
 def proof_by_induction():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
     induct_var = data['induct_var']
-    proof = subitem.proof_by_induction(induct_var)
-    proof.base_case.proof_by_calculation()
-    proof.induct_case.proof_by_calculation()
-    return jsonify({
-        "status": "ok",
-        "item": item.export(),
-        "selected_item": str(compstate.Label(label.data + [0]))
-    })
+    if isinstance(subitem, compstate.Goal):
+        proof = subitem.proof_by_induction(induct_var)
+        proof.base_case.proof_by_calculation()
+        proof.induct_case.proof_by_calculation()
+        return jsonify({
+            "status": "ok",
+            "item": st.export(),
+            "selected_item": str(compstate.Label(label.data + [0]))
+        })
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not a goal."
+        })
 
 @app.route("/api/expand-definition", methods=["POST"])
 def expand_definition():
