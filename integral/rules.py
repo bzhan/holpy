@@ -2034,27 +2034,27 @@ class DerivEquation(Rule):
 
 class SolveEquation(Rule):
     """Solve equation for the given expression."""
-    def __init__(self, be_solved_expr: Union[Expr, str]):
-        if isinstance(be_solved_expr, str):
-            be_solved_expr = parser.parse_expr(be_solved_expr)
-        self.be_solved_expr = be_solved_expr
+    def __init__(self, solve_for: Union[Expr, str]):
+        if isinstance(solve_for, str):
+            solve_for = parser.parse_expr(solve_for)
+        self.solve_for = solve_for
         self.name = "SolveEquation"
 
     def eval(self, e: Expr, ctx: Context):
         assert e.is_equals()
 
-        res = solve_for_term(e, self.be_solved_expr)
+        res = solve_for_term(e, self.solve_for)
         if not res:
             raise AssertionError("SolveEquation: cannot solve")
-        return Op("=", self.be_solved_expr, normalize(res))
+        return Op("=", self.solve_for, normalize(res))
 
     def __str__(self):
-        return "solve equation for %s" % str(self.be_solved_expr)
+        return "solve equation for %s" % str(self.solve_for)
 
     def export(self):
         return {
             "name": self.name,
             "str": str(self),
-            "solve_for": str(self.be_solved_expr),
-            "latex_str": "solve equation for \\(%s\\)" % latex.convert_expr(self.be_solved_expr)
+            "solve_for": str(self.solve_for),
+            "latex_str": "solve equation for \\(%s\\)" % latex.convert_expr(self.solve_for)
         }

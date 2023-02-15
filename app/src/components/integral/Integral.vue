@@ -36,7 +36,9 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Equation" left>
           <b-dropdown-item href="#" v-on:click="variableSubstitution">Variable substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyDerivBothSides">Differentiate both sides</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('IntegrateBothSide')">Integrate both sides</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="solveEquation2">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -283,6 +285,21 @@
         </div>
         <button v-on:click="doVariableSubstitution">OK</button>
       </div>
+      <div v-if="r_query_mode === 'derivate both sides'">
+        <span class="math-text">Please specify variable</span><br/>
+        <input v-model="deriv_var">
+        <button v-on:click="doApplyDerivBothSides">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'solve equation'">
+        <div class="math-text">Select subexpression to solve for:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <button v-on:click="doSolveEquation">Solve</button>
+      </div>
     </div>
     <div id="select">
     </div>
@@ -330,7 +347,7 @@ export default {
       content: [],
       // ID of the selected item
       cur_id: undefined,
-      
+
       // Current query mode
       r_query_mode: undefined,
 
@@ -352,6 +369,9 @@ export default {
 
       // Query for induction variable
       induct_var: undefined,
+
+      // Query for variable to differentiate
+      deriv_var: undefined,
 
       // Selected fact
       selected_facts: {},
@@ -940,6 +960,58 @@ export default {
         rule: {
           name: "VarSubsOfEquation",
           subst: this.query_vars
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of differentiate both sides
+    applyDerivBothSides: function() {
+      this.r_query_mode = 'derivate both sides'
+    },
+
+    // Second stage of differentiate both sides
+    doApplyDerivBothSides: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "DerivEquation",
+          var: this.deriv_var
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of solving equation
+    solveEquation2: function () {
+      this.r_query_mode = 'solve equation'
+    },
+
+    // Second stage of solving equation
+    doSolveEquation: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "SolveEquation",
+          solve_for: this.selected_expr
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
