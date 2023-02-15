@@ -71,12 +71,12 @@
         },
         {
             "finished": true,
-            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
-            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
-                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
                 "lhs_calc": {
                     "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx",
                     "start": "INT x:[0,1]. (x - x ^ 2) ^ n",
@@ -104,55 +104,43 @@
                                 "target": "x ^ n * (1 - x) ^ n"
                             },
                             "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "B(n + 1,n + 1)",
-                    "start": "B(n + 1,n + 1)",
-                    "steps": [
+                        },
                         {
-                            "latex_res": "\\int_{0}^{1} x ^ {n} (-x + 1) ^ {n} \\,dx",
-                            "res": "INT x:[0,1]. x ^ n * (-x + 1) ^ n",
+                            "latex_res": "\\int_{0}^{1} x ^ {n + 1 - 1} (1 - x) ^ {n} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (n + 1 - 1) * (1 - x) ^ n",
                             "rule": {
-                                "func_name": "B",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
+                                "latex_str": "rewriting \\(n\\) to \\(n + 1 - 1\\) at 0.0.1",
+                                "loc": "0.0.1",
+                                "name": "Equation",
+                                "new_expr": "n + 1 - 1",
+                                "old_expr": "n",
+                                "str": "rewriting n to n + 1 - 1 at 0.0.1"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} x ^ {n} (1 - x) ^ {n} \\,dx",
-                            "res": "INT x:[0,1]. x ^ n * (1 - x) ^ n",
+                            "latex_res": "\\int_{0}^{1} x ^ {n + 1 - 1} (1 - x) ^ {n + 1 - 1} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (n + 1 - 1) * (1 - x) ^ (n + 1 - 1)",
                             "rule": {
-                                "latex_str": "rewriting \\(-x + 1\\) to \\(1 - x\\)",
+                                "latex_str": "rewriting \\(n\\) to \\(n + 1 - 1\\) at 0.1.1",
+                                "loc": "0.1.1",
                                 "name": "Equation",
-                                "new_expr": "1 - x",
-                                "old_expr": "-x + 1",
-                                "str": "rewriting -x + 1 to 1 - x"
+                                "new_expr": "n + 1 - 1",
+                                "old_expr": "n",
+                                "str": "rewriting n to n + 1 - 1 at 0.1.1"
                             },
                             "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "finished": true,
-            "goal": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
-            "latex_goal": "B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}",
-            "proof": {
-                "finished": true,
-                "goal": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
-                "latex_goal": "B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}",
-                "lhs_calc": {
-                    "latex_start": "B(n + 1,n + 1)",
-                    "start": "B(n + 1,n + 1)",
-                    "steps": [
+                        },
+                        {
+                            "latex_res": "B(n + 1,n + 1)",
+                            "res": "B(n + 1,n + 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "FoldDefinition",
+                                "str": "fold definition"
+                            },
+                            "type": "CalculationStep"
+                        },
                         {
                             "latex_res": "\\frac{\\Gamma{(n + 1)} \\Gamma{(n + 1)}}{\\Gamma{(2 n + 2)}}",
                             "res": "Gamma(n + 1) * Gamma(n + 1) / Gamma(2 * n + 2)",
@@ -213,25 +201,181 @@
         },
         {
             "finished": true,
-            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
-            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = pi / 8",
+            "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{\\pi}{8}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
-                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
-                "start": {
-                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
-                    "start": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = pi / 8",
+                "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{\\pi}{8}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx",
+                    "start": "INT x:[0,1]. (x - x ^ 2) ^ (1/2)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
-                            "res": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\frac{1}{2} + \\frac{1}{2} \\sin{u} - (\\frac{1}{2} + \\frac{1}{2} \\sin{u}) ^ {2}} (\\frac{1}{2} \\cos{u}) \\,du",
+                            "res": "INT u:[-(pi / 2),pi / 2]. (1/2 + 1/2 * sin(u) - (1/2 + 1/2 * sin(u)) ^ 2) ^ (1/2) * (1/2 * cos(u))",
                             "rule": {
-                                "eq": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
-                                "latex_str": "apply equation \\(B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}\\) at 1",
-                                "loc": "1",
+                                "latex_str": "inverse substitution for \\(\\frac{1}{2} + \\frac{1}{2} \\sin{u}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for 1/2 + 1/2 * sin(u)",
+                                "var_name": "u",
+                                "var_subst": "1/2 + 1/2 * sin(u)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\frac{1}{4} (1 - \\sin^{2}(u))} (\\frac{1}{2} \\cos{u}) \\,du",
+                            "res": "INT u:[-(pi / 2),pi / 2]. (1/4 * (1 - sin(u) ^ 2)) ^ (1/2) * (1/2 * cos(u))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} + \\frac{1}{2} \\sin{u} - (\\frac{1}{2} + \\frac{1}{2} \\sin{u}) ^ {2}\\) to \\(\\frac{1}{4} (1 - \\sin^{2}(u))\\)",
+                                "name": "Equation",
+                                "new_expr": "1/4 * (1 - sin(u) ^ 2)",
+                                "old_expr": "1/2 + 1/2 * sin(u) - (1/2 + 1/2 * sin(u)) ^ 2",
+                                "str": "rewriting 1/2 + 1/2 * sin(u) - (1/2 + 1/2 * sin(u)) ^ 2 to 1/4 * (1 - sin(u) ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\frac{1}{4} \\cos^{2}(u)} (\\frac{1}{2} \\cos{u}) \\,du",
+                            "res": "INT u:[-(pi / 2),pi / 2]. (1/4 * cos(u) ^ 2) ^ (1/2) * (1/2 * cos(u))",
+                            "rule": {
+                                "latex_str": "rewrite \\(1 - \\sin^{2}(u)\\) to \\(\\cos^{2}(u)\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "1 - sin(u) ^ 2",
+                                "str": "rewrite 1 - sin(u) ^ 2 to cos(u) ^ 2 using identity",
+                                "target": "cos(u) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{4} (\\int_{-\\pi/2}^{\\pi/2} \\cos^{2}(u) \\,du)",
+                            "res": "1/4 * (INT u:[-(pi / 2),pi / 2]. cos(u) ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{4} (\\left. \\frac{1}{4} \\sin{(2 u)} + \\frac{1}{2} u \\right\\vert_{u=-\\pi/2}^{\\pi/2})",
+                            "res": "1/4 * ([1/4 * sin(2 * u) + 1/2 * u]_u=-(pi / 2),pi / 2)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi}{8}",
+                            "res": "pi / 8",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{8}",
+                    "start": "pi / 8",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2",
+            "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2",
+                "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx",
+                    "start": "INT x:[0,1]. (x - x ^ 2) ^ (1/2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{((\\frac{1}{2})!)^{2}}{(2\\cdot (\\frac{1}{2}) + 1)!}",
+                            "res": "factorial(1/2) ^ 2 / factorial(2 * (1/2) + 1)",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}\\)",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1) at 1"
+                                "str": "apply equation: (INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{((\\frac{1}{2})!)^{2}}{(2)!}",
+                            "res": "factorial(1/2) ^ 2 / factorial(2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(2\\cdot (\\frac{1}{2}) + 1\\) to \\(2\\)",
+                                "name": "Equation",
+                                "new_expr": "2",
+                                "old_expr": "2 * (1/2) + 1",
+                                "str": "rewriting 2 * (1/2) + 1 to 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{((\\frac{1}{2})!)^{2}}{2}",
+                            "res": "factorial(1/2) ^ 2 / 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{((\\frac{1}{2})!)^{2}}{2}",
+                    "start": "factorial(1/2) ^ 2 / 2",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "factorial(1/2) = sqrt(pi) / 2",
+            "latex_goal": "(\\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2}",
+            "proof": {
+                "finished": true,
+                "goal": "factorial(1/2) = sqrt(pi) / 2",
+                "latex_goal": "(\\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2}",
+                "start": {
+                    "latex_start": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{\\pi}{8}",
+                    "start": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = pi / 8",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{((\\frac{1}{2})!)^{2}}{2} = \\frac{\\pi}{8}",
+                            "res": "factorial(1/2) ^ 2 / 2 = pi / 8",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2 at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2}",
+                            "res": "factorial(1/2) = sqrt(pi) / 2",
+                            "rule": {
+                                "latex_str": "solve equation for \\((\\frac{1}{2})!\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "factorial(1/2)",
+                                "str": "solve equation for factorial(1/2)"
                             },
                             "type": "CalculationStep"
                         }
@@ -239,6 +383,88 @@
                     "type": "Calculation"
                 },
                 "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. exp(-x) * sqrt(x)) = sqrt(pi) / 2",
+            "latex_goal": "\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx = \\frac{\\sqrt{\\pi}}{2}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. exp(-x) * sqrt(x)) = sqrt(pi) / 2",
+                "latex_goal": "\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx = \\frac{\\sqrt{\\pi}}{2}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx",
+                    "start": "INT x:[0,oo]. exp(-x) * sqrt(x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-x) * x ^ (1/2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{x}\\) to \\(\\sqrt{x}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ (1/2)",
+                                "old_expr": "sqrt(x)",
+                                "str": "rewriting sqrt(x) to x ^ (1/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-x} x ^ {3/2 - 1} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-x) * x ^ (3/2 - 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2}\\) to \\(\\frac{3}{2} - 1\\)",
+                                "name": "Equation",
+                                "new_expr": "3/2 - 1",
+                                "old_expr": "1/2",
+                                "str": "rewriting 1/2 to 3/2 - 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\Gamma{(\\frac{3}{2})}",
+                            "res": "Gamma(3/2)",
+                            "rule": {
+                                "func_name": "Gamma",
+                                "name": "FoldDefinition",
+                                "str": "fold definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\frac{1}{2})!",
+                            "res": "factorial(1/2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(\\frac{3}{2})}\\) to \\((\\frac{1}{2})!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(3/2)",
+                                "str": "rewrite Gamma(3/2) to factorial(1/2) using identity",
+                                "target": "factorial(1/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{\\pi}}{2}",
+                            "res": "sqrt(pi) / 2",
+                            "rule": {
+                                "eq": "factorial(1/2) = sqrt(pi) / 2",
+                                "latex_str": "apply equation \\((\\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: factorial(1/2) = sqrt(pi) / 2"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\sqrt{\\pi}}{2}",
+                    "start": "sqrt(pi) / 2",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
             },
             "type": "Goal"
         }
