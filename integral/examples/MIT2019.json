@@ -1,0 +1,75 @@
+{
+    "content": [
+        {
+            "latex_start": "\\int_{0}^{\\pi/100} \\frac{\\sin{(20 x)} + \\sin{(19 x)}}{\\cos{(20 x)} + \\cos{(19 x)}} \\,dx",
+            "start": "INT x:[0,pi / 100]. (sin(20 * x) + sin(19 * x)) / (cos(20 * x) + cos(19 * x))",
+            "steps": [
+                {
+                    "latex_res": "\\int_{0}^{\\pi/100} \\frac{2 \\cos{(\\frac{1}{2} x)} \\sin{(\\frac{39}{2} x)}}{\\cos{(20 x)} + \\cos{(19 x)}} \\,dx",
+                    "res": "INT x:[0,pi / 100]. 2 * cos(1/2 * x) * sin(39/2 * x) / (cos(20 * x) + cos(19 * x))",
+                    "rule": {
+                        "latex_str": "rewrite \\(\\sin{(20 x)} + \\sin{(19 x)}\\) to \\(2 \\cos{(\\frac{1}{2} x)} \\sin{(\\frac{39}{2} x)}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(20 * x) + sin(19 * x)",
+                        "str": "rewrite sin(20 * x) + sin(19 * x) to 2 * cos(1/2 * x) * sin(39/2 * x) using identity",
+                        "target": "2 * cos(1/2 * x) * sin(39/2 * x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{0}^{\\pi/100} \\frac{2 \\cos{(\\frac{1}{2} x)} \\sin{(\\frac{39}{2} x)}}{2 \\cos{(\\frac{1}{2} x)} \\cos{(\\frac{39}{2} x)}} \\,dx",
+                    "res": "INT x:[0,pi / 100]. 2 * cos(1/2 * x) * sin(39/2 * x) / (2 * cos(1/2 * x) * cos(39/2 * x))",
+                    "rule": {
+                        "latex_str": "rewrite \\(\\cos{(20 x)} + \\cos{(19 x)}\\) to \\(2 \\cos{(\\frac{1}{2} x)} \\cos{(\\frac{39}{2} x)}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(20 * x) + cos(19 * x)",
+                        "str": "rewrite cos(20 * x) + cos(19 * x) to 2 * cos(1/2 * x) * cos(39/2 * x) using identity",
+                        "target": "2 * cos(1/2 * x) * cos(39/2 * x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{0}^{\\pi/100} \\frac{\\sin{(\\frac{39}{2} x)}}{\\cos{(\\frac{39}{2} x)}} \\,dx",
+                    "res": "INT x:[0,pi / 100]. sin(39/2 * x) / cos(39/2 * x)",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{\\cos{(39 \\pi/200)}}^{1} \\frac{2}{39} (\\frac{1}{u}) \\,du",
+                    "res": "INT u:[cos(39 * pi / 200),1]. 2/39 * (1 / u)",
+                    "rule": {
+                        "latex_str": "substitute \\(u\\) for \\(\\cos{(\\frac{39}{2} x)}\\)",
+                        "name": "Substitution",
+                        "str": "substitute u for cos(39/2 * x)",
+                        "var_name": "u",
+                        "var_subst": "cos(39/2 * x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{2}{39}\\cdot 1 (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\cos{(39 \\pi/200)}}^{1})",
+                    "res": "2/39 * 1 * ([log(abs(u))]_u=cos(39 * pi / 200),1)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-\\frac{2 \\log{(\\cos{(\\frac{39 \\pi}{200})})}}{39}",
+                    "res": "-(2 * log(cos(39 * pi / 200)) / 39)",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        }
+    ],
+    "name": "MIT2019"
+}

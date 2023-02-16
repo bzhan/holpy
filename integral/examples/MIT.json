@@ -1,0 +1,18 @@
+{
+    "content": [
+        {
+            "type": "header",
+            "name": "2019",
+            "level": 1
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,pi/100]. (sin(20*x)+sin(19*x)) / (cos(20*x)+cos(19*x))",
+            "path": "MIT2019"
+        }
+    ],
+    "imports": [
+        "base"
+    ],
+    "name": "MIT Integration Bee"
+}

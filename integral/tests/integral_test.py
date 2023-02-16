@@ -420,6 +420,20 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
+    def testMIT2019(self):
+        file = compstate.CompFile("MIT", "MIT2019")
+
+        calc = file.add_calculation("INT x:[0,pi/100]. (sin(20*x)+sin(19*x)) / (cos(20*x)+cos(19*x))")
+        calc.perform_rule(rules.ApplyIdentity("sin(20*x)+sin(19*x)", "2*cos(1/2*x)*sin(39/2*x)"))
+        calc.perform_rule(rules.ApplyIdentity("cos(20*x)+cos(19*x)", "2*cos(1/2*x)*cos(39/2*x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("u", "cos(39/2*x)"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "-(2 * log(cos(39 * pi / 200)) / 39)")
+
+        self.checkAndOutput(file)
+
     def testLHopital(self):
         file = compstate.CompFile("UCDavis", "LHopital")
 
