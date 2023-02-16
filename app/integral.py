@@ -126,6 +126,8 @@ def query_integral():
         integrals = subitem.res.separate_integral()
     elif isinstance(subitem, compstate.Calculation):
         integrals = subitem.start.separate_integral()
+    elif isinstance(subitem, compstate.RewriteGoalProof):
+        integrals = subitem.begin.start.separate_integral()
     else:
         return jsonify({
             "status": "error",
