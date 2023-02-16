@@ -667,6 +667,10 @@ class Expr:
         return self.find_subexpr_pred(
             lambda e: e.is_integral() or e.is_indefinite_integral())
 
+    def separate_limits(self) -> List[Tuple["Expr", Location]]:
+        """Collect the list of all integrals appearing in self."""
+        return self.find_subexpr_pred(lambda e: e.is_limit())
+
     @property
     def depth(self):
         """Return the depth of expression as an estimate of problem difficulty."""
@@ -807,7 +811,7 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
 
     def rec(exp: Expr, pattern: Expr, bd_vars: Dict[str, str]):
         if isinstance(pattern, Symbol):
-            if pattern in d:
+            if pattern.name in d:
                 return exp == d[pattern.name]
             # Check exp does not contain bound variables
             for var in exp.get_vars():
@@ -1387,10 +1391,15 @@ class Summation(Expr):
         return "SUM(" + self.index_var + ", " + str(self.lower) + ", " + str(self.upper) + ", " + str(self.body) + ")"
 
     def __eq__(self, other):
-        return isinstance(other, Summation) and self.index_var == other.index_var and \
-               self.lower == other.lower and \
-               self.upper == other.upper and \
-               self.body == other.body
+
+        if isinstance(other, Summation):
+            if self.index_var == other.index_var:
+                return self.lower == other.lower and \
+                self.upper == other.upper and \
+                self.body == other.body
+            else:
+                return other.alpha_convert(self.index_var) == self
+        return False
 
     def __hash__(self):
         return hash((SUMMATION, self.index_var, self.ty, self.lower, self.upper, self.body))

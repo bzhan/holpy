@@ -1601,13 +1601,16 @@ class LHopital(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not isinstance(e, expr.Limit):
-            return e
+        if not e.is_limit():
+            sep_lims = e.separate_limits()
+            if len(sep_lims) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_lims[0][1]).eval(e, ctx)
 
         if not (isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
-        # if not e.is_indeterminate_form():
-        #     return e
+
         numerator, denominator = e.body.args
         rule = DerivativeSimplify()
         return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var, numerator), ctx),
@@ -1945,7 +1948,7 @@ class VarSubsOfEquation(Rule):
         return "substitute " + str_of_substs + " in equation"
 
     def export(self):
-        latex_str_of_substs = ', '.join(item['var'] + " for " + latex.convert_expr(item['expr'])
+        latex_str_of_substs = ', '.join('\\(' + item['var'] + "\\) for \\(" + latex.convert_expr(item['expr']) + '\\)'
                                         for item in self.subst if item['expr'] is not None)
         json_substs = list()
         for item in self.subst:

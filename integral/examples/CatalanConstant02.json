@@ -74,9 +74,8 @@
                             "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\frac{1}{t}}{t ^ {k - 2} (k - 1)}\\,)}{-k + 1} + \\frac{1}{(-k + 1) ^ {2}}",
                             "res": "(LIM {t -> oo}. 1 / t / (t ^ (k - 2) * (k - 1))) / (-k + 1) + 1 / (-k + 1) ^ 2",
                             "rule": {
-                                "loc": "0.0",
                                 "name": "LHopital",
-                                "str": "l'Hopital's rule at 0.0"
+                                "str": "l'Hopital's rule"
                             },
                             "type": "CalculationStep"
                         },
@@ -236,15 +235,6 @@
                                 "func_name": "G",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }

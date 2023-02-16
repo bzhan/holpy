@@ -338,8 +338,12 @@ def expand_definition():
         results = integral.rules.ExpandDefinition.search(e, subitem.ctx)
         if len(results) == 1:
             sube, loc = results[0]
-            assert sube.is_fun()
-            rule = integral.rules.ExpandDefinition(sube.func_name)
+            if sube.is_fun():
+                rule = integral.rules.ExpandDefinition(sube.func_name)
+            elif sube.is_var():
+                rule = integral.rules.ExpandDefinition(sube.name)
+            else:
+                raise TypeError
             if loc.data:
                 rule = integral.rules.OnLocation(rule, loc)
             subitem.perform_rule(rule)

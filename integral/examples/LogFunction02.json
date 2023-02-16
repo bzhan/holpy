@@ -39,15 +39,6 @@
                                 "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{x ^ {k + 1} (-1) ^ {k}}{k + 1}}",
-                            "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k / (k + 1))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
                         }
                     ],
                     "type": "Calculation"
@@ -55,17 +46,7 @@
                 "rhs_calc": {
                     "latex_start": "-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}}",
                     "start": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-                    "steps": [
-                        {
-                            "latex_res": "-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{x ^ {k + 1} (-1) ^ {k}}{k + 1}}",
-                            "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k / (k + 1))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
+                    "steps": [],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -356,17 +337,7 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{\\pi ^ {2}}{24}",
                     "start": "pi ^ 2 / 24",
-                    "steps": [
-                        {
-                            "latex_res": "\\frac{\\pi ^ {2}}{24}",
-                            "res": "pi ^ 2 / 24",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
+                    "steps": [],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
