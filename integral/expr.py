@@ -807,7 +807,7 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
 
     def rec(exp: Expr, pattern: Expr, bd_vars: Dict[str, str]):
         if isinstance(pattern, Symbol):
-            if pattern in d:
+            if pattern.name in d:
                 return exp == d[pattern.name]
             # Check exp does not contain bound variables
             for var in exp.get_vars():
