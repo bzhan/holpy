@@ -45,13 +45,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
             sx = convert_expr(x, mode)
             sy = convert_expr(y, mode)
             if e.op == '^':
-                if y.is_const() and isinstance(y.val, Fraction) and y.val.numerator == 1:
-                    # Square root and other root cases
-                    if y.val.denominator == 2:
-                        return "\\sqrt{%s}" % sx
-                    else:
-                        return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
-                elif x.is_fun() and len(x.args) > 0 and x.func_name == 'log':
+                if x.is_fun() and len(x.args) > 0 and x.func_name == 'log':
                     # Logarithmic function
                     sy = convert_expr(y, mode="short")
                     return "\%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))

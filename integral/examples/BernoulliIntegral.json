@@ -326,10 +326,10 @@
                     "start": "INT x:[0,1]. x ^ sqrt(x)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1} x ^ {1 \\sqrt{x}} \\,dx",
+                            "latex_res": "\\int_{0}^{1} x ^ {1 x ^ {1/2}} \\,dx",
                             "res": "INT x:[0,1]. x ^ (1 * x ^ (1/2))",
                             "rule": {
-                                "latex_str": "rewriting \\(x ^ {\\sqrt{x}}\\) to \\(x ^ {1 \\sqrt{x}}\\)",
+                                "latex_str": "rewriting \\(x ^ {\\sqrt{x}}\\) to \\(x ^ {1 x ^ {1/2}}\\)",
                                 "name": "Equation",
                                 "new_expr": "x ^ (1 * x ^ (1/2))",
                                 "old_expr": "x ^ sqrt(x)",

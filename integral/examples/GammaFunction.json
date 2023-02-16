@@ -15,24 +15,24 @@
         {
             "conds": [
                 {
-                    "cond": "n > 0",
-                    "latex_cond": "n > 0"
+                    "cond": "n > 1",
+                    "latex_cond": "n > 1"
                 }
             ],
             "finished": true,
-            "goal": "Gamma(n + 1) = n * Gamma(n)",
-            "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
+            "goal": "Gamma(n) = (n - 1) * Gamma(n - 1)",
+            "latex_goal": "\\Gamma{(n)} = (n - 1) \\Gamma{(n - 1)}",
             "proof": {
                 "finished": true,
-                "goal": "Gamma(n + 1) = n * Gamma(n)",
-                "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
+                "goal": "Gamma(n) = (n - 1) * Gamma(n - 1)",
+                "latex_goal": "\\Gamma{(n)} = (n - 1) \\Gamma{(n - 1)}",
                 "lhs_calc": {
-                    "latex_start": "\\Gamma{(n + 1)}",
-                    "start": "Gamma(n + 1)",
+                    "latex_start": "\\Gamma{(n)}",
+                    "start": "Gamma(n)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {n} e^{-x} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ n * exp(-x)",
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ (n - 1) * exp(-x)",
                             "rule": {
                                 "func_name": "Gamma",
                                 "name": "ExpandDefinition",
@@ -41,20 +41,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -n x ^ {n - 1} e^{-x} \\,dx)",
-                            "res": "([-(x ^ n * exp(-x))]_x=0,oo) - (INT x:[0,oo]. -(n * x ^ (n - 1) * exp(-x)))",
+                            "latex_res": "(\\left. -x ^ {n - 1} e^{-x} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -x ^ {n - 2} e^{-x} (n - 1) \\,dx)",
+                            "res": "([-(x ^ (n - 1) * exp(-x))]_x=0,oo) - (INT x:[0,oo]. -(x ^ (n - 2) * exp(-x) * (n - 1)))",
                             "rule": {
-                                "latex_str": "integrate by parts \\(u \\to x ^ {n}, v \\to -e^{-x}\\)",
+                                "latex_str": "integrate by parts \\(u \\to x ^ {n - 1}, v \\to -e^{-x}\\)",
                                 "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> x ^ n, v -> -exp(-x)",
-                                "u": "x ^ n",
+                                "str": "integrate by parts u -> x ^ (n - 1), v -> -exp(-x)",
+                                "u": "x ^ (n - 1)",
                                 "v": "-exp(-x)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
-                            "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
+                            "latex_res": "(n - 1) (\\int_{0}^{\\infty} x ^ {n - 2} e^{-x} \\,dx)",
+                            "res": "(n - 1) * (INT x:[0,oo]. x ^ (n - 2) * exp(-x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -65,12 +65,12 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "n \\Gamma{(n)}",
-                    "start": "n * Gamma(n)",
+                    "latex_start": "(n - 1) \\Gamma{(n - 1)}",
+                    "start": "(n - 1) * Gamma(n - 1)",
                     "steps": [
                         {
-                            "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
-                            "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
+                            "latex_res": "(n - 1) (\\int_{0}^{\\infty} x ^ {n - 2} e^{-x} \\,dx)",
+                            "res": "(n - 1) * (INT x:[0,oo]. x ^ (n - 2) * exp(-x))",
                             "rule": {
                                 "func_name": "Gamma",
                                 "loc": "subterms",
@@ -88,8 +88,8 @@
         },
         {
             "finished": true,
-            "goal": "Gamma(n + 1) = factorial(n)",
-            "latex_goal": "\\Gamma{(n + 1)} = n!",
+            "goal": "Gamma(n) = factorial(n - 1)",
+            "latex_goal": "\\Gamma{(n)} = (n - 1)!",
             "proof": {
                 "base_case": {
                     "finished": true,
@@ -145,45 +145,42 @@
                     "type": "Goal"
                 },
                 "finished": true,
-                "goal": "Gamma(n + 1) = factorial(n)",
+                "goal": "Gamma(n) = factorial(n - 1)",
                 "induct_case": {
                     "finished": true,
-                    "goal": "Gamma(n + 2) = factorial(n + 1)",
-                    "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
+                    "goal": "Gamma(n + 1) = factorial(n)",
+                    "latex_goal": "\\Gamma{(n + 1)} = n!",
                     "proof": {
                         "finished": true,
-                        "goal": "Gamma(n + 2) = factorial(n + 1)",
-                        "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
+                        "goal": "Gamma(n + 1) = factorial(n)",
+                        "latex_goal": "\\Gamma{(n + 1)} = n!",
                         "lhs_calc": {
-                            "latex_start": "\\Gamma{(n + 2)}",
-                            "start": "Gamma(n + 2)",
+                            "latex_start": "\\Gamma{(n + 1)}",
+                            "start": "Gamma(n + 1)",
                             "steps": [
                                 {
-                                    "latex_res": "\\Gamma{(n + 1 + 1)}",
-                                    "res": "Gamma(n + 1 + 1)",
+                                    "latex_res": "(n + 1 - 1) \\Gamma{(n + 1 - 1)}",
+                                    "res": "(n + 1 - 1) * Gamma(n + 1 - 1)",
                                     "rule": {
-                                        "latex_str": "rewriting \\(n + 2\\) to \\(n + 1 + 1\\)",
-                                        "name": "Equation",
-                                        "new_expr": "n + 1 + 1",
-                                        "old_expr": "n + 2",
-                                        "str": "rewriting n + 2 to n + 1 + 1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "(n + 1) \\Gamma{(n + 1)}",
-                                    "res": "(n + 1) * Gamma(n + 1)",
-                                    "rule": {
-                                        "eq": "Gamma(n + 1) = n * Gamma(n)",
-                                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n \\Gamma{(n)}\\)",
+                                        "eq": "Gamma(n) = (n - 1) * Gamma(n - 1)",
+                                        "latex_str": "apply equation \\(\\Gamma{(n)} = (n - 1) \\Gamma{(n - 1)}\\)",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n)"
+                                        "str": "apply equation: Gamma(n) = (n - 1) * Gamma(n - 1)"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "(n + 1) n!",
-                                    "res": "(n + 1) * factorial(n)",
+                                    "latex_res": "n \\Gamma{(n)}",
+                                    "res": "n * Gamma(n)",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "n (n - 1)!",
+                                    "res": "n * factorial(n - 1)",
                                     "rule": {
                                         "loc": "subterms",
                                         "name": "ApplyInductHyp",
@@ -192,14 +189,14 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "(n + 1)!",
-                                    "res": "factorial(n + 1)",
+                                    "latex_res": "n!",
+                                    "res": "factorial(n)",
                                     "rule": {
-                                        "latex_str": "rewrite \\((n + 1) n!\\) to \\((n + 1)!\\) using identity",
+                                        "latex_str": "rewrite \\(n (n - 1)!\\) to \\(n!\\) using identity",
                                         "name": "ApplyIdentity",
-                                        "source": "(n + 1) * factorial(n)",
-                                        "str": "rewrite (n + 1) * factorial(n) to factorial(n + 1) using identity",
-                                        "target": "factorial(n + 1)"
+                                        "source": "n * factorial(n - 1)",
+                                        "str": "rewrite n * factorial(n - 1) to factorial(n) using identity",
+                                        "target": "factorial(n)"
                                     },
                                     "type": "CalculationStep"
                                 }
@@ -207,8 +204,8 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "latex_start": "(n + 1)!",
-                            "start": "factorial(n + 1)",
+                            "latex_start": "n!",
+                            "start": "factorial(n)",
                             "steps": [],
                             "type": "Calculation"
                         },
@@ -217,7 +214,7 @@
                     "type": "Goal"
                 },
                 "induct_var": "n",
-                "latex_goal": "\\Gamma{(n + 1)} = n!",
+                "latex_goal": "\\Gamma{(n)} = (n - 1)!",
                 "type": "InductionProof"
             },
             "type": "Goal"
@@ -271,13 +268,28 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\Gamma{(\\frac{1}{3} + 1)}",
-                    "res": "Gamma(1/3 + 1)",
+                    "latex_res": "(\\frac{4}{3} - 1) \\Gamma{(\\frac{1}{3})}",
+                    "res": "(4/3 - 1) * Gamma(1/3)",
                     "rule": {
-                        "eq": "Gamma(n + 1) = n * Gamma(n)",
-                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n \\Gamma{(n)}\\)",
-                        "name": "ApplyEquation",
-                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n)"
+                        "latex_str": "rewriting \\(\\frac{1}{3}\\) to \\(\\frac{4}{3} - 1\\) at 0",
+                        "loc": "0",
+                        "name": "Equation",
+                        "new_expr": "4/3 - 1",
+                        "old_expr": "1/3",
+                        "str": "rewriting 1/3 to 4/3 - 1 at 0"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\frac{4}{3} - 1) \\Gamma{(\\frac{4}{3} - 1)}",
+                    "res": "(4/3 - 1) * Gamma(4/3 - 1)",
+                    "rule": {
+                        "latex_str": "rewriting \\(\\frac{1}{3}\\) to \\(\\frac{4}{3} - 1\\) at 1.0",
+                        "loc": "1.0",
+                        "name": "Equation",
+                        "new_expr": "4/3 - 1",
+                        "old_expr": "1/3",
+                        "str": "rewriting 1/3 to 4/3 - 1 at 1.0"
                     },
                     "type": "CalculationStep"
                 },
@@ -285,8 +297,10 @@
                     "latex_res": "\\Gamma{(\\frac{4}{3})}",
                     "res": "Gamma(4/3)",
                     "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
+                        "eq": "Gamma(n) = (n - 1) * Gamma(n - 1)",
+                        "latex_str": "apply equation \\(\\Gamma{(n)} = (n - 1) \\Gamma{(n - 1)}\\)",
+                        "name": "ApplyEquation",
+                        "str": "apply equation: Gamma(n) = (n - 1) * Gamma(n - 1)"
                     },
                     "type": "CalculationStep"
                 }

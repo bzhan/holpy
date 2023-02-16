@@ -3,17 +3,17 @@
         {
             "finished": true,
             "goal": "(INT x:[-1,1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi",
-            "latex_goal": "\\int_{-1}^{1} \\sqrt{\\frac{1 + x}{1 - x}} \\,dx = \\pi",
+            "latex_goal": "\\int_{-1}^{1} (\\frac{1 + x}{1 - x}) ^ {1/2} \\,dx = \\pi",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[-1,1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi",
-                "latex_goal": "\\int_{-1}^{1} \\sqrt{\\frac{1 + x}{1 - x}} \\,dx = \\pi",
+                "latex_goal": "\\int_{-1}^{1} (\\frac{1 + x}{1 - x}) ^ {1/2} \\,dx = \\pi",
                 "lhs_calc": {
-                    "latex_start": "\\int_{-1}^{1} \\sqrt{\\frac{1 + x}{1 - x}} \\,dx",
+                    "latex_start": "\\int_{-1}^{1} (\\frac{1 + x}{1 - x}) ^ {1/2} \\,dx",
                     "start": "INT x:[-1,1]. ((1 + x) / (1 - x)) ^ (1/2)",
                     "steps": [
                         {
-                            "latex_res": "-(\\int_{\\cos^{-1}{(1)}/2}^{\\cos^{-1}{(-1)}/2} \\sqrt{\\frac{1 + \\cos{(2 u)}}{1 - \\cos{(2 u)}}} (-2 \\sin{(2 u)}) \\,du)",
+                            "latex_res": "-(\\int_{\\cos^{-1}{(1)}/2}^{\\cos^{-1}{(-1)}/2} (\\frac{1 + \\cos{(2 u)}}{1 - \\cos{(2 u)}}) ^ {1/2} (-2 \\sin{(2 u)}) \\,du)",
                             "res": "-(INT u:[acos(1) / 2,acos(-1) / 2]. ((1 + cos(2 * u)) / (1 - cos(2 * u))) ^ (1/2) * (-2 * sin(2 * u)))",
                             "rule": {
                                 "latex_str": "inverse substitution for \\(\\cos{(2 u)}\\)",
@@ -25,7 +25,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{\\cos^{-1}{(1)}/2}^{\\cos^{-1}{(-1)}/2} \\sqrt{\\frac{1 + (2 \\cos^{2}(u) - 1)}{1 - \\cos{(2 u)}}} (-2 \\sin{(2 u)}) \\,du)",
+                            "latex_res": "-(\\int_{\\cos^{-1}{(1)}/2}^{\\cos^{-1}{(-1)}/2} (\\frac{1 + (2 \\cos^{2}(u) - 1)}{1 - \\cos{(2 u)}}) ^ {1/2} (-2 \\sin{(2 u)}) \\,du)",
                             "res": "-(INT u:[acos(1) / 2,acos(-1) / 2]. ((1 + (2 * cos(u) ^ 2 - 1)) / (1 - cos(2 * u))) ^ (1/2) * (-2 * sin(2 * u)))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\cos{(2 u)}\\) to \\(2 \\cos^{2}(u) - 1\\) using identity at 0.0.0.0.0.1",
@@ -38,7 +38,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{\\cos^{-1}{(1)}/2}^{\\cos^{-1}{(-1)}/2} \\sqrt{\\frac{1 + (2 \\cos^{2}(u) - 1)}{1 - (1 - 2 \\sin^{2}(u))}} (-2 \\sin{(2 u)}) \\,du)",
+                            "latex_res": "-(\\int_{\\cos^{-1}{(1)}/2}^{\\cos^{-1}{(-1)}/2} (\\frac{1 + (2 \\cos^{2}(u) - 1)}{1 - (1 - 2 \\sin^{2}(u))}) ^ {1/2} (-2 \\sin{(2 u)}) \\,du)",
                             "res": "-(INT u:[acos(1) / 2,acos(-1) / 2]. ((1 + (2 * cos(u) ^ 2 - 1)) / (1 - (1 - 2 * sin(u) ^ 2))) ^ (1/2) * (-2 * sin(2 * u)))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\cos{(2 u)}\\) to \\(1 - 2 \\sin^{2}(u)\\) using identity at 0.0.0.0.1.1",

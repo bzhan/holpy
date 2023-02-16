@@ -237,11 +237,11 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{4}^{9} \\sqrt[3]{x} (\\sqrt{x} + 1) \\,dx",
+            "latex_start": "\\int_{4}^{9} x ^ {1/3} (x ^ {1/2} + 1) \\,dx",
             "start": "INT x:[4,9]. x ^ (1/3) * (x ^ (1/2) + 1)",
             "steps": [
                 {
-                    "latex_res": "\\int_{4}^{9} \\sqrt[3]{x} + x ^ {5/6} \\,dx",
+                    "latex_res": "\\int_{4}^{9} x ^ {1/3} + x ^ {5/6} \\,dx",
                     "res": "INT x:[4,9]. x ^ (1/3) + x ^ (5/6)",
                     "rule": {
                         "name": "ExpandPolynomial",
@@ -507,11 +507,11 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{1} \\sqrt{1 - x ^ {2}} \\,dx",
+            "latex_start": "\\int_{0}^{1} (1 - x ^ {2}) ^ {1/2} \\,dx",
             "start": "INT x:[0,1]. (1 - x ^ 2) ^ (1/2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{1 - \\sin^{2}(u)} \\cos{u} \\,du",
+                    "latex_res": "\\int_{0}^{\\pi/2} (1 - \\sin^{2}(u)) ^ {1/2} \\cos{u} \\,du",
                     "res": "INT u:[0,pi / 2]. (1 - sin(u) ^ 2) ^ (1/2) * cos(u)",
                     "rule": {
                         "latex_str": "inverse substitution for \\(\\sin{u}\\)",
@@ -523,7 +523,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{\\cos^{2}(u)} \\cos{u} \\,du",
+                    "latex_res": "\\int_{0}^{\\pi/2} (\\cos^{2}(u)) ^ {1/2} \\cos{u} \\,du",
                     "res": "INT u:[0,pi / 2]. cos(u) ^ 2 ^ (1/2) * cos(u)",
                     "rule": {
                         "latex_str": "rewrite \\(1 - \\sin^{2}(u)\\) to \\(\\cos^{2}(u)\\) using identity",

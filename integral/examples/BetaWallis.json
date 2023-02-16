@@ -218,17 +218,17 @@
         {
             "finished": true,
             "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = pi / 8",
-            "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{\\pi}{8}",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx = \\frac{\\pi}{8}",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = pi / 8",
-                "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{\\pi}{8}",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx = \\frac{\\pi}{8}",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx",
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx",
                     "start": "INT x:[0,1]. (x - x ^ 2) ^ (1/2)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\frac{1}{2} + \\frac{1}{2} \\sin{u} - (\\frac{1}{2} + \\frac{1}{2} \\sin{u}) ^ {2}} (\\frac{1}{2} \\cos{u}) \\,du",
+                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{1}{2} + \\frac{1}{2} \\sin{u} - (\\frac{1}{2} + \\frac{1}{2} \\sin{u}) ^ {2}) ^ {1/2} (\\frac{1}{2} \\cos{u}) \\,du",
                             "res": "INT u:[-(pi / 2),pi / 2]. (1/2 + 1/2 * sin(u) - (1/2 + 1/2 * sin(u)) ^ 2) ^ (1/2) * (1/2 * cos(u))",
                             "rule": {
                                 "latex_str": "inverse substitution for \\(\\frac{1}{2} + \\frac{1}{2} \\sin{u}\\)",
@@ -240,7 +240,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\frac{1}{4} (1 - \\sin^{2}(u))} (\\frac{1}{2} \\cos{u}) \\,du",
+                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{1}{4} (1 - \\sin^{2}(u))) ^ {1/2} (\\frac{1}{2} \\cos{u}) \\,du",
                             "res": "INT u:[-(pi / 2),pi / 2]. (1/4 * (1 - sin(u) ^ 2)) ^ (1/2) * (1/2 * cos(u))",
                             "rule": {
                                 "latex_str": "rewriting \\(\\frac{1}{2} + \\frac{1}{2} \\sin{u} - (\\frac{1}{2} + \\frac{1}{2} \\sin{u}) ^ {2}\\) to \\(\\frac{1}{4} (1 - \\sin^{2}(u))\\)",
@@ -252,7 +252,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\frac{1}{4} \\cos^{2}(u)} (\\frac{1}{2} \\cos{u}) \\,du",
+                            "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{1}{4} \\cos^{2}(u)) ^ {1/2} (\\frac{1}{2} \\cos{u}) \\,du",
                             "res": "INT u:[-(pi / 2),pi / 2]. (1/4 * cos(u) ^ 2) ^ (1/2) * (1/2 * cos(u))",
                             "rule": {
                                 "latex_str": "rewrite \\(1 - \\sin^{2}(u)\\) to \\(\\cos^{2}(u)\\) using identity",
@@ -306,13 +306,13 @@
         {
             "finished": true,
             "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2",
-            "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2",
-                "latex_goal": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx",
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx",
                     "start": "INT x:[0,1]. (x - x ^ 2) ^ (1/2)",
                     "steps": [
                         {
@@ -369,7 +369,7 @@
                 "goal": "factorial(1/2) = sqrt(pi) / 2",
                 "latex_goal": "(\\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2}",
                 "start": {
-                    "latex_start": "\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{\\pi}{8}",
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx = \\frac{\\pi}{8}",
                     "start": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = pi / 8",
                     "steps": [
                         {
@@ -377,7 +377,7 @@
                             "res": "factorial(1/2) ^ 2 / 2 = pi / 8",
                             "rule": {
                                 "eq": "(INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2",
-                                "latex_str": "apply equation \\(\\int_{0}^{1} \\sqrt{x - x ^ {2}} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}\\) at 0",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} (x - x ^ {2}) ^ {1/2} \\,dx = \\frac{((\\frac{1}{2})!)^{2}}{2}\\) at 0",
                                 "loc": "0",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: (INT x:[0,1]. (x - x ^ 2) ^ (1/2)) = factorial(1/2) ^ 2 / 2 at 0"
@@ -415,10 +415,10 @@
                     "start": "INT x:[0,oo]. exp(-x) * sqrt(x)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx",
+                            "latex_res": "\\int_{0}^{\\infty} e^{-x} x ^ {1/2} \\,dx",
                             "res": "INT x:[0,oo]. exp(-x) * x ^ (1/2)",
                             "rule": {
-                                "latex_str": "rewriting \\(\\sqrt{x}\\) to \\(\\sqrt{x}\\)",
+                                "latex_str": "rewriting \\(\\sqrt{x}\\) to \\(x ^ {1/2}\\)",
                                 "name": "Equation",
                                 "new_expr": "x ^ (1/2)",
                                 "old_expr": "sqrt(x)",
@@ -766,7 +766,7 @@
                     "start": "INT x:[0,pi / 2]. sqrt(sin(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\lim\\limits_{x\\to \\infty} (\\,\\sin^{2}(\\frac{\\pi}{2} - \\frac{1}{x})\\,)} \\frac{1}{2} (\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}) \\,du",
+                            "latex_res": "\\int_{0}^{\\lim\\limits_{x\\to \\infty} (\\,\\sin^{2}(\\frac{\\pi}{2} - \\frac{1}{x})\\,)} \\frac{1}{2} (\\frac{1}{u ^ {1/4} \\sqrt{-u + 1}}) \\,du",
                             "res": "INT u:[0,LIM {x -> oo}. sin(pi / 2 - 1 / x) ^ 2]. 1/2 * (1 / (u ^ (1/4) * sqrt(-u + 1)))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\sin^{2}(x)\\)",
@@ -778,7 +778,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}} \\,du)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\frac{1}{u ^ {1/4} \\sqrt{-u + 1}} \\,du)",
                             "res": "1/2 * (INT u:[0,1]. 1 / (u ^ (1/4) * sqrt(-u + 1)))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -790,7 +790,7 @@
                             "latex_res": "\\frac{1}{2} (\\int_{0}^{1} u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1} \\,du)",
                             "res": "1/2 * (INT u:[0,1]. u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}\\) to \\(u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1}\\)",
+                                "latex_str": "rewriting \\(\\frac{1}{u ^ {1/4} \\sqrt{-u + 1}}\\) to \\(u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1}\\)",
                                 "name": "Equation",
                                 "new_expr": "u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)",
                                 "old_expr": "1 / (u ^ (1/4) * sqrt(-u + 1))",
@@ -859,7 +859,7 @@
                     "start": "INT x:[0,pi / 2]. sqrt(cos(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{\\cos^{2}(\\frac{\\pi}{2})}^{\\cos^{2}(0)} \\frac{1}{2} (\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}) \\,du",
+                            "latex_res": "\\int_{\\cos^{2}(\\frac{\\pi}{2})}^{\\cos^{2}(0)} \\frac{1}{2} (\\frac{1}{u ^ {1/4} \\sqrt{-u + 1}}) \\,du",
                             "res": "INT u:[cos(pi / 2) ^ 2,cos(0) ^ 2]. 1/2 * (1 / (u ^ (1/4) * sqrt(-u + 1)))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\cos^{2}(x)\\)",
@@ -871,7 +871,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}} \\,du)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\frac{1}{u ^ {1/4} \\sqrt{-u + 1}} \\,du)",
                             "res": "1/2 * (INT u:[0,1]. 1 / (u ^ (1/4) * sqrt(-u + 1)))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -883,7 +883,7 @@
                             "latex_res": "\\frac{1}{2} (\\int_{0}^{1} u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1} \\,du)",
                             "res": "1/2 * (INT u:[0,1]. u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}\\) to \\(u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1}\\)",
+                                "latex_str": "rewriting \\(\\frac{1}{u ^ {1/4} \\sqrt{-u + 1}}\\) to \\(u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1}\\)",
                                 "name": "Equation",
                                 "new_expr": "u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)",
                                 "old_expr": "1 / (u ^ (1/4) * sqrt(-u + 1))",

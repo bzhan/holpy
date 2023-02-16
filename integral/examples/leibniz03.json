@@ -413,10 +413,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(t)} = \\frac{(\\sqrt{2}) ^ {-1} \\sqrt{\\pi}}{e^{1/2\\cdot t ^ {2}}}",
+                            "latex_res": "I{(t)} = \\frac{(2 ^ {1/2}) ^ {-1} \\pi ^ {1/2}}{e^{1/2\\cdot t ^ {2}}}",
                             "res": "I(t) = 2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)",
                             "rule": {
-                                "latex_str": "rewriting \\(e^{-\\log{(2)}/2 + \\log{(\\pi)}/2 - 1/2\\cdot t ^ {2}}\\) to \\(\\frac{(\\sqrt{2}) ^ {-1} \\sqrt{\\pi}}{e^{1/2\\cdot t ^ {2}}}\\)",
+                                "latex_str": "rewriting \\(e^{-\\log{(2)}/2 + \\log{(\\pi)}/2 - 1/2\\cdot t ^ {2}}\\) to \\(\\frac{(2 ^ {1/2}) ^ {-1} \\pi ^ {1/2}}{e^{1/2\\cdot t ^ {2}}}\\)",
                                 "name": "Equation",
                                 "new_expr": "2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)",
                                 "old_expr": "exp(-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2)",

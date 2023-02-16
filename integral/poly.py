@@ -764,7 +764,7 @@ def to_const_poly(e: expr.Expr) -> ConstantPolynomial:
 
     elif e.is_fun() and e.func_name == 'factorial':
         norm_a = normalize_constant(e.args[0])
-        if norm_a.is_const() and int(norm_a.val) == float(norm_a.val):
+        if norm_a.is_const() and int(norm_a.val) == float(norm_a.val) and norm_a.val >= 0:
             return to_const_poly(expr.Const(math.factorial(norm_a.val)))
         else:
             return const_singleton(expr.factorial(norm_a))

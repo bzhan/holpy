@@ -301,17 +301,17 @@
         {
             "finished": true,
             "goal": "(INT x. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)) = 1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,dx = \\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
+            "latex_goal": "\\int (27 e^{9 x} + e^{12 x}) ^ {1/3} \\,dx = \\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)) = 1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,dx = \\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
+                "latex_goal": "\\int (27 e^{9 x} + e^{12 x}) ^ {1/3} \\,dx = \\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
                 "lhs_calc": {
-                    "latex_start": "\\int \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,dx",
+                    "latex_start": "\\int (27 e^{9 x} + e^{12 x}) ^ {1/3} \\,dx",
                     "start": "INT x. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)",
                     "steps": [
                         {
-                            "latex_res": "\\int \\sqrt[3]{e^{9 x} (27 + e^{3 x})} \\,dx",
+                            "latex_res": "\\int (e^{9 x} (27 + e^{3 x})) ^ {1/3} \\,dx",
                             "res": "INT x. (exp(9 * x) * (27 + exp(3 * x))) ^ (1/3)",
                             "rule": {
                                 "latex_str": "rewriting \\(27 e^{9 x} + e^{12 x}\\) to \\(e^{9 x} (27 + e^{3 x})\\)",
@@ -323,10 +323,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int \\sqrt[3]{e^{9 x}} \\sqrt[3]{27 + e^{3 x}} \\,dx",
+                            "latex_res": "\\int (e^{9 x}) ^ {1/3} (27 + e^{3 x}) ^ {1/3} \\,dx",
                             "res": "INT x. exp(9 * x) ^ (1/3) * (27 + exp(3 * x)) ^ (1/3)",
                             "rule": {
-                                "latex_str": "rewrite \\(\\sqrt[3]{e^{9 x} (27 + e^{3 x})}\\) to \\(\\sqrt[3]{e^{9 x}} \\sqrt[3]{27 + e^{3 x}}\\) using identity",
+                                "latex_str": "rewrite \\((e^{9 x} (27 + e^{3 x})) ^ {1/3}\\) to \\((e^{9 x}) ^ {1/3} (27 + e^{3 x}) ^ {1/3}\\) using identity",
                                 "name": "ApplyIdentity",
                                 "source": "(exp(9 * x) * (27 + exp(3 * x))) ^ (1/3)",
                                 "str": "rewrite (exp(9 * x) * (27 + exp(3 * x))) ^ (1/3) to exp(9 * x) ^ (1/3) * (27 + exp(3 * x)) ^ (1/3) using identity",
@@ -335,10 +335,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int e^{3 x} \\sqrt[3]{27 + e^{3 x}} \\,dx",
+                            "latex_res": "\\int e^{3 x} (27 + e^{3 x}) ^ {1/3} \\,dx",
                             "res": "INT x. exp(3 * x) * (27 + exp(3 * x)) ^ (1/3)",
                             "rule": {
-                                "latex_str": "rewriting \\(\\sqrt[3]{e^{9 x}}\\) to \\(e^{3 x}\\)",
+                                "latex_str": "rewriting \\((e^{9 x}) ^ {1/3}\\) to \\(e^{3 x}\\)",
                                 "name": "Equation",
                                 "new_expr": "exp(3 * x)",
                                 "old_expr": "exp(9 * x) ^ (1/3)",
@@ -347,7 +347,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int \\frac{1}{3} (\\frac{e^{\\log{(u - 27)}} \\sqrt[3]{e^{\\log{(u - 27)}} + 27}}{u - 27}) \\,du",
+                            "latex_res": "\\int \\frac{1}{3} (\\frac{e^{\\log{(u - 27)}} (e^{\\log{(u - 27)}} + 27) ^ {1/3}}{u - 27}) \\,du",
                             "res": "INT u. 1/3 * (exp(log(u - 27)) * (exp(log(u - 27)) + 27) ^ (1/3) / (u - 27))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(27 + e^{3 x}\\)",
@@ -359,7 +359,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{3} (\\int \\sqrt[3]{u} \\,du)",
+                            "latex_res": "\\frac{1}{3} (\\int u ^ {1/3} \\,du)",
                             "res": "1/3 * (INT u. u ^ (1/3))",
                             "rule": {
                                 "name": "FullSimplify",
