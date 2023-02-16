@@ -1100,17 +1100,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\sqrt{2}}{2} (\\int_{0}^{\\pi} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
-                            "res": "sqrt(2) / 2 * (INT x:[0,pi]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
-                            "rule": {
-                                "eq": "(INT x:[0,pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\pi/2} \\sqrt{\\sin{x}} \\,dx = \\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}\\)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\frac{\\sqrt{2}}{2} ((\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) + (\\int_{\\pi/2}^{\\pi} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx)) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
                             "res": "sqrt(2) / 2 * ((INT x:[0,pi / 2]. 1 / sqrt(sin(x))) + (INT x:[pi / 2,pi]. 1 / sqrt(sin(x)))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
                             "rule": {
