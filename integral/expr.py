@@ -667,6 +667,10 @@ class Expr:
         return self.find_subexpr_pred(
             lambda e: e.is_integral() or e.is_indefinite_integral())
 
+    def separate_limits(self) -> List[Tuple["Expr", Location]]:
+        """Collect the list of all integrals appearing in self."""
+        return self.find_subexpr_pred(lambda e: e.is_limit())
+
     @property
     def depth(self):
         """Return the depth of expression as an estimate of problem difficulty."""

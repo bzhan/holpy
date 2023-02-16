@@ -1617,7 +1617,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("t ^ (-k + 1) * log(t)", "log(t) / t^(k-1)"))
-        calc.perform_rule(rules.OnLocation(rules.LHopital(), '0.0'))
+        calc.perform_rule(rules.LHopital())
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal1.rhs_calc
         calc.perform_rule(rules.FullSimplify())

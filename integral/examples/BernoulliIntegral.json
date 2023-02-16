@@ -370,12 +370,15 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {-1 (-k - 1)}}",
-                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (-1 * (-k - 1)))",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
                             "rule": {
-                                "loc": "subterms",
-                                "name": "SimplifyPower",
-                                "str": "simplify powers on subterms"
+                                "latex_str": "rewrite \\(((\\frac{2}{k + 2}) ^ {-1}) ^ {-k - 1}\\) to \\((\\frac{2}{k + 2}) ^ {k + 1}\\) using identity at 0.1",
+                                "loc": "0.1",
+                                "name": "ApplyIdentity",
+                                "source": "(2 / (k + 2)) ^ (-1) ^ (-k - 1)",
+                                "str": "rewrite (2 / (k + 2)) ^ (-1) ^ (-k - 1) to (2 / (k + 2)) ^ (k + 1) using identity at 0.1",
+                                "target": "(2 / (k + 2)) ^ (k + 1)"
                             },
                             "type": "CalculationStep"
                         },
