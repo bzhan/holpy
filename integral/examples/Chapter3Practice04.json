@@ -355,8 +355,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du) + -\\frac{1}{2} \\sin{(a b)} ((\\int_{-\\infty}^{0} \\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du))",
-                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * (INT u:[-oo,oo]. sin(a * u) / u) + -1/2 * sin(a * b) * ((INT u:[-oo,0]. cos(a * u) / u) + (INT u:[0,oo]. cos(a * u) / u))",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du) + -\\frac{1}{2} \\sin{(a b)} (\\lim\\limits_{c\\to \\infty} (\\,(\\int_{-\\infty}^{-1/c} \\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{1/c}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du)\\,))",
+                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * (INT u:[-oo,oo]. sin(a * u) / u) + -1/2 * sin(a * b) * (LIM {c -> oo}. (INT u:[-oo,-(1 / c)]. cos(a * u) / u) + (INT u:[1 / c,oo]. cos(a * u) / u))",
                             "rule": {
                                 "c": "0",
                                 "loc": "1.1.1",
@@ -366,8 +366,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du) + -\\frac{1}{2} \\sin{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du))",
-                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * (INT u:[-oo,oo]. sin(a * u) / u) + -1/2 * sin(a * b) * ((INT u:[0,oo]. -(cos(a * u) / u)) + (INT u:[0,oo]. cos(a * u) / u))",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} (\\int_{-\\infty}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du) + -\\frac{1}{2} \\sin{(a b)} (\\lim\\limits_{c\\to \\infty} (\\,(\\int_{\\infty}^{1/c} \\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{1/c}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du)\\,))",
+                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * (INT u:[-oo,oo]. sin(a * u) / u) + -1/2 * sin(a * b) * (LIM {c -> oo}. (INT u:[oo,1 / c]. cos(a * u) / u) + (INT u:[1 / c,oo]. cos(a * u) / u))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(-u\\) at 1.1.1.0",
                                 "loc": "1.1.1.0",
@@ -379,8 +379,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} ((\\int_{-\\infty}^{0} \\frac{\\sin{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)) + -\\frac{1}{2} \\sin{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du))",
-                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * ((INT u:[-oo,0]. sin(a * u) / u) + (INT u:[0,oo]. sin(a * u) / u)) + -1/2 * sin(a * b) * ((INT u:[0,oo]. -(cos(a * u) / u)) + (INT u:[0,oo]. cos(a * u) / u))",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} ((\\int_{-\\infty}^{0} \\frac{\\sin{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)) + -\\frac{1}{2} \\sin{(a b)} (\\lim\\limits_{c\\to \\infty} (\\,(\\int_{\\infty}^{1/c} \\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{1/c}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du)\\,))",
+                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * ((INT u:[-oo,0]. sin(a * u) / u) + (INT u:[0,oo]. sin(a * u) / u)) + -1/2 * sin(a * b) * (LIM {c -> oo}. (INT u:[oo,1 / c]. cos(a * u) / u) + (INT u:[1 / c,oo]. cos(a * u) / u))",
                             "rule": {
                                 "c": "0",
                                 "loc": "1.0.1",
@@ -390,8 +390,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\sin{(-a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)) + -\\frac{1}{2} \\sin{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du))",
-                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * ((INT u:[0,oo]. -(sin(-(a * u)) / u)) + (INT u:[0,oo]. sin(a * u) / u)) + -1/2 * sin(a * b) * ((INT u:[0,oo]. -(cos(a * u) / u)) + (INT u:[0,oo]. cos(a * u) / u))",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\sin{(-a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)) + -\\frac{1}{2} \\sin{(a b)} (\\lim\\limits_{c\\to \\infty} (\\,(\\int_{\\infty}^{1/c} \\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{1/c}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du)\\,))",
+                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * ((INT u:[0,oo]. -(sin(-(a * u)) / u)) + (INT u:[0,oo]. sin(a * u) / u)) + -1/2 * sin(a * b) * (LIM {c -> oo}. (INT u:[oo,1 / c]. cos(a * u) / u) + (INT u:[1 / c,oo]. cos(a * u) / u))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(-u\\) at 1.0.1.0",
                                 "loc": "1.0.1.0",
@@ -403,8 +403,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} ((\\int_{0}^{\\infty} -\\frac{-\\sin{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)) + -\\frac{1}{2} \\sin{(a b)} ((\\int_{0}^{\\infty} -\\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du))",
-                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * ((INT u:[0,oo]. -(-sin(a * u) / u)) + (INT u:[0,oo]. sin(a * u) / u)) + -1/2 * sin(a * b) * ((INT u:[0,oo]. -(cos(a * u) / u)) + (INT u:[0,oo]. cos(a * u) / u))",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{-b ^ {2} + x ^ {2}} \\,dx = \\frac{1}{2} \\cos{(a b)} ((\\int_{0}^{\\infty} -\\frac{-\\sin{(a u)}}{u} \\,du) + (\\int_{0}^{\\infty} \\frac{\\sin{(a u)}}{u} \\,du)) + -\\frac{1}{2} \\sin{(a b)} (\\lim\\limits_{c\\to \\infty} (\\,(\\int_{\\infty}^{1/c} \\frac{\\cos{(a u)}}{u} \\,du) + (\\int_{1/c}^{\\infty} \\frac{\\cos{(a u)}}{u} \\,du)\\,))",
+                            "res": "(INT x:[0,oo]. x * sin(a * x) / (-(b ^ 2) + x ^ 2)) = 1/2 * cos(a * b) * ((INT u:[0,oo]. -(-sin(a * u) / u)) + (INT u:[0,oo]. sin(a * u) / u)) + -1/2 * sin(a * b) * (LIM {c -> oo}. (INT u:[oo,1 / c]. cos(a * u) / u) + (INT u:[1 / c,oo]. cos(a * u) / u))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\sin{(-a u)}\\) to \\(-\\sin{(a u)}\\) using identity",
                                 "name": "ApplyIdentity",
