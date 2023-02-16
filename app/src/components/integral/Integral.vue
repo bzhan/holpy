@@ -912,6 +912,8 @@ export default {
 
     // First stage of rewriting
     rewriteEquation: function() {
+      this.selected_expr = undefined
+      this.latex_selected_expr = undefined
       this.r_query_mode = 'rewrite equation'
     },
 
@@ -955,6 +957,9 @@ export default {
 
     // First stage of rewriting using identity
     rewriteUsingIdentity: function() {
+      this.selected_expr = undefined
+      this.latex_selected_expr = undefined
+      this.identity_rewrites = []
       this.r_query_mode = 'rewrite using identity'
     },
 
@@ -1038,6 +1043,8 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/query-theorems", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.theorems = response.data.theorems
+        this.selected_expr = undefined
+        this.latex_selected_expr = undefined
         this.r_query_mode = 'select theorem'
       }
     },
@@ -1129,6 +1136,8 @@ export default {
 
     // First stage of solving equation
     solveEquation2: function () {
+      this.selected_expr = undefined
+      this.latex_selected_expr = undefined
       this.r_query_mode = 'solve equation'
     },
 
@@ -1182,6 +1191,8 @@ export default {
 
     // First stage of series expansion
     applySeriesExpansion: function () {
+      this.selected_expr = undefined
+      this.latex_selected_expr = undefined
       this.r_query_mode = 'series expansion'
     },
 
