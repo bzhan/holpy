@@ -577,7 +577,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("Gamma"))
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x ^ (n - 1)"), parser.parse_expr("-exp(-x)")))
-        calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
@@ -610,7 +609,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.Equation("1/3", "4/3 - 1"), "0"))
         calc.perform_rule(rules.OnLocation(rules.Equation("1/3", "4/3 - 1"), "1.0"))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
-        calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "Gamma(4/3)")
 
         self.checkAndOutput(file)
@@ -2242,7 +2240,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 4.2
         file = compstate.CompFile("interesting", "BetaWallis")
 
-        # Definition of Gamma function
+        # Definition of Beta function
         file.add_definition("B(m, n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)", conds=["m > 0", "n > 0"])
 
         goal01 = file.add_goal("B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))")
