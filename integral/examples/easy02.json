@@ -19,16 +19,6 @@
                     "start": "INT x:[0,oo]. log(a ^ 2 / x ^ 2 + 1)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\,dx",
-                            "res": "INT x:[0,oo]. log(a ^ 2 / x ^ 2 + 1)",
-                            "rule": {
-                                "func_name": "I",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "(\\left. x \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -2 (\\frac{a ^ {2}}{x ^ {2} (\\frac{a ^ {2}}{x ^ {2}} + 1)}) \\,dx)",
                             "res": "([x * log(a ^ 2 / x ^ 2 + 1)]_x=0,oo) - (INT x:[0,oo]. -2 * (a ^ 2 / (x ^ 2 * (a ^ 2 / x ^ 2 + 1))))",
                             "rule": {
