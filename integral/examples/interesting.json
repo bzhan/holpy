@@ -372,7 +372,17 @@
         },
         {
             "type": "problem",
-            "expr": "Gamma(n+1) = factorial(n)",
+            "expr": "Gamma(n) = factorial(n - 1)",
+            "conds": [
+                "n > 1"
+            ],
+            "category": "gamma-beta",
+            "path": "GammaFunction"
+        },
+        {
+            "type": "problem",
+            "expr": "Gamma(n) = (n - 1) * Gamma(n - 1)",
+            "category": "gamma-beta",
             "path": "GammaFunction"
         },
         {

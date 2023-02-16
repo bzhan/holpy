@@ -650,7 +650,7 @@
             "type": "axiom",
             "expr": "m * factorial(m - 1) = factorial(m)",
             "category": "factorial",
-                        "attributes": [
+            "attributes": [
                 "bidirectional"
             ]
         },
@@ -751,16 +751,6 @@
         {
             "type": "axiom",
             "expr": "B(m,n) = Gamma(m) * Gamma(n) / Gamma(m+n)",
-            "category": "gamma-beta"
-        },
-        {
-            "type": "axiom",
-            "expr": "Gamma(n) = (n - 1) * Gamma(n - 1)",
-            "category": "gamma-beta"
-        },
-        {
-            "type": "axiom",
-            "expr": "Gamma(n) = factorial(n-1)",
             "category": "gamma-beta"
         }
     ],

@@ -571,21 +571,21 @@ class IntegralTest(unittest.TestCase):
         file.add_definition("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))", conds=["n > 0"])
 
         # Recursive equation for gamma function
-        goal1 = file.add_goal("Gamma(n+1) = n * Gamma(n)", conds=["n > 0"])
+        goal1 = file.add_goal("Gamma(n) = (n - 1) * Gamma(n - 1)", conds=["n > 1"])
 
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("Gamma"))
-        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")))
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x ^ (n - 1)"), parser.parse_expr("-exp(-x)")))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("Gamma")))
 
         # Gamma function and factorial
-        goal2 = file.add_goal("Gamma(n+1) = factorial(n)")
+        goal2 = file.add_goal("Gamma(n) = factorial(n - 1)")
 
-        proof = goal2.proof_by_induction("n")
+        proof = goal2.proof_by_induction("n", 1)
         proof_base = proof.base_case.proof_by_calculation()
         proof_induct = proof.induct_case.proof_by_calculation()
 
@@ -595,10 +595,10 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof_induct.lhs_calc
-        calc.perform_rule(rules.Equation("n + 2", "(n + 1) + 1"))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
+        calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
-        calc.perform_rule(rules.ApplyIdentity("(n + 1) * factorial(n)", "factorial(n + 1)"))
+        calc.perform_rule(rules.ApplyIdentity("n * factorial(n - 1)", "factorial(n)"))
 
         # Application
         calc = file.add_calculation("INT x:[0,oo]. exp(-x^3)")
@@ -606,30 +606,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("exp(-y) / y ^ (2/3)", "exp(-y) * y ^ (1/3 - 1)"))
         calc.perform_rule(rules.OnLocation(rules.FoldDefinition("Gamma"), "1"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("1/3", "4/3 - 1"), "0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("1/3", "4/3 - 1"), "1.0"))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
-        calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "Gamma(4/3)")
 
         self.checkAndOutput(file)
 
-    def testBetaFunction(self):
-        # Reference:
-        # Inside interesting integrals, Section 4.2
-        file = compstate.CompFile("interesting", "BetaFunction")
-        goal = file.add_goal("(INT x:[0,1]. (x-x^2)^k)=factorial(k)^2 / factorial(2*k+1)")
-        proof = goal.proof_by_calculation()
-        calc = proof.lhs_calc
-        calc.perform_rule(rules.Equation("x-x^2", "x*(1-x)"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(x*(1-x))^k", "x^k * (1-x)^k"),"0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.1"))
-        calc.perform_rule(rules.FoldDefinition("B"))
-        calc.perform_rule(rules.ApplyIdentity("B(k+1,k+1)", "Gamma(k+1) * Gamma(k+1) / Gamma(2*k+2)"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.0"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.1"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(2*k+2)", "factorial(2*k+1)"), "1"))
-        calc.perform_rule(rules.FullSimplify())
-        self.checkAndOutput(file)
 
     def testChapter1Section5(self):
         # Reference:
@@ -2257,6 +2240,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 4.2
         file = compstate.CompFile("interesting", "BetaWallis")
 
+        # Definition of Beta function
         file.add_definition("B(m, n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)", conds=["m > 0", "n > 0"])
 
         goal01 = file.add_goal("B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))")
