@@ -1775,7 +1775,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal.goal))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("(1/2 * k + 1)", "(2/(k+2)) ^ (-1)"))
-        calc.perform_rule(rules.OnSubterm(rules.SimplifyPower()))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(2 / (k + 2)) ^ (-1) ^ (-k - 1)", "(2/(k+2))^(k+1)"),"0.1"))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof_of_goal4.rhs_calc

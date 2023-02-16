@@ -181,6 +181,14 @@
         },
         {
             "type": "axiom",
+            "expr": "a ^ x ^ y = a ^ (x*y)",
+            "category": "power",
+            "attributes": [
+                "bidirectional"
+            ]
+        },
+        {
+            "type": "axiom",
             "expr": "x^a * x^b = x^(a+b)",
             "category": "power",
             "attributes": [
