@@ -1,6 +1,22 @@
 {
     "content": [
         {
+            "conds": [
+                {
+                    "cond": "m > 0",
+                    "latex_cond": "m > 0"
+                },
+                {
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0"
+                }
+            ],
+            "eq": "B(m,n) = (INT x:[0,1]. x ^ (m - 1) * (1 - x) ^ (n - 1))",
+            "latex_eq": "B(m,n) = \\int_{0}^{1} x ^ {m - 1} (1 - x) ^ {n - 1} \\,dx",
+            "latex_lhs": "B(m,n)",
+            "type": "FuncDef"
+        },
+        {
             "finished": true,
             "goal": "B(m,n) = 2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
             "latex_goal": "B(m,n) = 2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)",
@@ -727,6 +743,467 @@
                                 "source": "Gamma(1/2)",
                                 "str": "rewrite Gamma(1/2) to factorial(-1/2) using identity",
                                 "target": "factorial(-1/2)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+            "latex_goal": "\\int_{0}^{\\pi/2} \\sqrt{\\sin{x}} \\,dx = \\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                "latex_goal": "\\int_{0}^{\\pi/2} \\sqrt{\\sin{x}} \\,dx = \\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\pi/2} \\sqrt{\\sin{x}} \\,dx",
+                    "start": "INT x:[0,pi / 2]. sqrt(sin(x))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\lim\\limits_{x\\to \\infty} (\\,\\sin^{2}(\\frac{\\pi}{2} - \\frac{1}{x})\\,)} \\frac{1}{2} (\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}) \\,du",
+                            "res": "INT u:[0,LIM {x -> oo}. sin(pi / 2 - 1 / x) ^ 2]. 1/2 * (1 / (u ^ (1/4) * sqrt(-u + 1)))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(\\sin^{2}(x)\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for sin(x) ^ 2",
+                                "var_name": "u",
+                                "var_subst": "sin(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}} \\,du)",
+                            "res": "1/2 * (INT u:[0,1]. 1 / (u ^ (1/4) * sqrt(-u + 1)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1} \\,du)",
+                            "res": "1/2 * (INT u:[0,1]. u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}\\) to \\(u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1}\\)",
+                                "name": "Equation",
+                                "new_expr": "u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)",
+                                "old_expr": "1 / (u ^ (1/4) * sqrt(-u + 1))",
+                                "str": "rewriting 1 / (u ^ (1/4) * sqrt(-u + 1)) to u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} B(\\frac{3}{4},\\frac{1}{2})",
+                            "res": "1/2 * B(3/4,1/2)",
+                            "rule": {
+                                "func_name": "B",
+                                "loc": "1",
+                                "name": "FoldDefinition",
+                                "str": "fold definition at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{\\Gamma{(\\frac{5}{4})}})",
+                            "res": "1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4))",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(\\frac{3}{4},\\frac{1}{2})\\) to \\(\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{\\Gamma{(\\frac{5}{4})}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(3/4,1/2)",
+                                "str": "rewrite B(3/4,1/2) to Gamma(3/4) * Gamma(1/2) / Gamma(5/4) using identity",
+                                "target": "Gamma(3/4) * Gamma(1/2) / Gamma(5/4)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+                            "res": "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} (\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{\\Gamma{(\\frac{5}{4})}})\\) to \\(\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}\\)",
+                                "name": "Equation",
+                                "new_expr": "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                                "old_expr": "1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4))",
+                                "str": "rewriting 1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4)) to Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+                    "start": "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,pi / 2]. sqrt(cos(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+            "latex_goal": "\\int_{0}^{\\pi/2} \\sqrt{\\cos{x}} \\,dx = \\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,pi / 2]. sqrt(cos(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                "latex_goal": "\\int_{0}^{\\pi/2} \\sqrt{\\cos{x}} \\,dx = \\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\pi/2} \\sqrt{\\cos{x}} \\,dx",
+                    "start": "INT x:[0,pi / 2]. sqrt(cos(x))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{\\cos^{2}(\\frac{\\pi}{2})}^{\\cos^{2}(0)} \\frac{1}{2} (\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}) \\,du",
+                            "res": "INT u:[cos(pi / 2) ^ 2,cos(0) ^ 2]. 1/2 * (1 / (u ^ (1/4) * sqrt(-u + 1)))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(\\cos^{2}(x)\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for cos(x) ^ 2",
+                                "var_name": "u",
+                                "var_subst": "cos(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}} \\,du)",
+                            "res": "1/2 * (INT u:[0,1]. 1 / (u ^ (1/4) * sqrt(-u + 1)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1} \\,du)",
+                            "res": "1/2 * (INT u:[0,1]. u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{\\sqrt[4]{u} \\sqrt{-u + 1}}\\) to \\(u ^ {3/4 - 1} (1 - u) ^ {1/2 - 1}\\)",
+                                "name": "Equation",
+                                "new_expr": "u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)",
+                                "old_expr": "1 / (u ^ (1/4) * sqrt(-u + 1))",
+                                "str": "rewriting 1 / (u ^ (1/4) * sqrt(-u + 1)) to u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} B(\\frac{3}{4},\\frac{1}{2})",
+                            "res": "1/2 * B(3/4,1/2)",
+                            "rule": {
+                                "func_name": "B",
+                                "loc": "1",
+                                "name": "FoldDefinition",
+                                "str": "fold definition at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{\\Gamma{(\\frac{5}{4})}})",
+                            "res": "1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4))",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(\\frac{3}{4},\\frac{1}{2})\\) to \\(\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{\\Gamma{(\\frac{5}{4})}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(3/4,1/2)",
+                                "str": "rewrite B(3/4,1/2) to Gamma(3/4) * Gamma(1/2) / Gamma(5/4) using identity",
+                                "target": "Gamma(3/4) * Gamma(1/2) / Gamma(5/4)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+                            "res": "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} (\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{\\Gamma{(\\frac{5}{4})}})\\) to \\(\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}\\)",
+                                "name": "Equation",
+                                "new_expr": "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                                "old_expr": "1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4))",
+                                "str": "rewriting 1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4)) to Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}",
+                    "start": "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = 1/2 * B(1/4,1/4)",
+            "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{1}{2} B(\\frac{1}{4},\\frac{1}{4})",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = 1/2 * B(1/4,1/4)",
+                "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{1}{2} B(\\frac{1}{4},\\frac{1}{4})",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx",
+                    "start": "INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{2} B(\\frac{1}{4},\\frac{1}{4})",
+                    "start": "1/2 * B(1/4,1/4)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{2} (2 (\\int_{0}^{\\pi/2} \\cos^{2\\cdot (1/4) - 1}(x) \\sin^{2\\cdot (1/4) - 1}(x) \\,dx))",
+                            "res": "1/2 * (2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * (1/4) - 1) * sin(x) ^ (2 * (1/4) - 1)))",
+                            "rule": {
+                                "eq": "B(m,n) = 2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+                                "latex_str": "apply equation \\(B(m,n) = 2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(m,n) = 2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1)) at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\cos{x}} \\sqrt{\\sin{x}}} \\,dx",
+                            "res": "INT x:[0,pi / 2]. 1 / (sqrt(cos(x)) * sqrt(sin(x)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx",
+                            "res": "INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{\\cos{x}} \\sqrt{\\sin{x}}\\) to \\(\\sqrt{\\sin{x} \\cos{x}}\\)",
+                                "name": "Equation",
+                                "new_expr": "sqrt(sin(x) * cos(x))",
+                                "old_expr": "sqrt(cos(x)) * sqrt(sin(x))",
+                                "str": "rewriting sqrt(cos(x)) * sqrt(sin(x)) to sqrt(sin(x) * cos(x))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+            "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                "start": {
+                    "latex_start": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{1}{2} B(\\frac{1}{4},\\frac{1}{4})",
+                    "start": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = 1/2 * B(1/4,1/4)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{1}{2} (\\frac{\\Gamma{(\\frac{1}{4})} \\Gamma{(\\frac{1}{4})}}{\\Gamma{(\\frac{1}{2})}})",
+                            "res": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = 1/2 * (Gamma(1/4) * Gamma(1/4) / Gamma(1/2))",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(\\frac{1}{4},\\frac{1}{4})\\) to \\(\\frac{\\Gamma{(\\frac{1}{4})} \\Gamma{(\\frac{1}{4})}}{\\Gamma{(\\frac{1}{2})}}\\) using identity at 1",
+                                "loc": "1",
+                                "name": "ApplyIdentity",
+                                "source": "B(1/4,1/4)",
+                                "str": "rewrite B(1/4,1/4) to Gamma(1/4) * Gamma(1/4) / Gamma(1/2) using identity at 1",
+                                "target": "Gamma(1/4) * Gamma(1/4) / Gamma(1/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{1}{2} (\\frac{\\Gamma{(\\frac{1}{4})} \\Gamma{(\\frac{1}{4})}}{\\sqrt{\\pi}})",
+                            "res": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = 1/2 * (Gamma(1/4) * Gamma(1/4) / sqrt(pi))",
+                            "rule": {
+                                "eq": "Gamma(1/2) = sqrt(pi)",
+                                "latex_str": "apply equation \\(\\Gamma{(\\frac{1}{2})} = \\sqrt{\\pi}\\) at 1.1.1",
+                                "loc": "1.1.1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: Gamma(1/2) = sqrt(pi) at 1.1.1"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+            "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+                "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
+                "start": {
+                    "latex_start": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                    "start": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\pi} \\frac{1}{2} (\\frac{1}{\\sqrt{\\cos{(\\frac{1}{2} x)}} \\sqrt{\\sin{(\\frac{1}{2} x)}}}) \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "(INT x:[0,pi]. 1/2 * (1 / (sqrt(cos(1/2 * x)) * sqrt(sin(1/2 * x))))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(2 x\\) at 0",
+                                "loc": "0",
+                                "name": "Substitution",
+                                "str": "substitute x for 2 * x at 0",
+                                "var_name": "x",
+                                "var_subst": "2 * x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi} \\frac{1}{2} (\\frac{1}{\\sqrt{\\sin{(\\frac{1}{2} x)} \\cos{(\\frac{1}{2} x)}}}) \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "(INT x:[0,pi]. 1/2 * (1 / sqrt(sin(1/2 * x) * cos(1/2 * x)))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{\\cos{(\\frac{1}{2} x)}} \\sqrt{\\sin{(\\frac{1}{2} x)}}\\) to \\(\\sqrt{\\sin{(\\frac{1}{2} x)} \\cos{(\\frac{1}{2} x)}}\\)",
+                                "name": "Equation",
+                                "new_expr": "sqrt(sin(1/2 * x) * cos(1/2 * x))",
+                                "old_expr": "sqrt(cos(1/2 * x)) * sqrt(sin(1/2 * x))",
+                                "str": "rewriting sqrt(cos(1/2 * x)) * sqrt(sin(1/2 * x)) to sqrt(sin(1/2 * x) * cos(1/2 * x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi} \\frac{1}{2} (\\frac{1}{\\sqrt{\\frac{1}{2} (\\sin{(\\frac{1}{2} x + \\frac{1}{2} x)} + \\sin{(\\frac{1}{2} x - \\frac{1}{2} x)})}}) \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "(INT x:[0,pi]. 1/2 * (1 / sqrt(1/2 * (sin(1/2 * x + 1/2 * x) + sin(1/2 * x - 1/2 * x))))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sin{(\\frac{1}{2} x)} \\cos{(\\frac{1}{2} x)}\\) to \\(\\frac{1}{2} (\\sin{(\\frac{1}{2} x + \\frac{1}{2} x)} + \\sin{(\\frac{1}{2} x - \\frac{1}{2} x)})\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "sin(1/2 * x) * cos(1/2 * x)",
+                                "str": "rewrite sin(1/2 * x) * cos(1/2 * x) to 1/2 * (sin(1/2 * x + 1/2 * x) + sin(1/2 * x - 1/2 * x)) using identity",
+                                "target": "1/2 * (sin(1/2 * x + 1/2 * x) + sin(1/2 * x - 1/2 * x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{2}}{2} (\\int_{0}^{\\pi} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "sqrt(2) / 2 * (INT x:[0,pi]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{2}}{2} (\\int_{0}^{\\pi} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "sqrt(2) / 2 * (INT x:[0,pi]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "eq": "(INT x:[0,pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+                                "latex_str": "apply equation \\(\\int_{0}^{\\pi/2} \\sqrt{\\sin{x}} \\,dx = \\frac{\\Gamma{(\\frac{3}{4})} \\Gamma{(\\frac{1}{2})}}{2 \\Gamma{(\\frac{5}{4})}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{2}}{2} ((\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) + (\\int_{\\pi/2}^{\\pi} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx)) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "sqrt(2) / 2 * ((INT x:[0,pi / 2]. 1 / sqrt(sin(x))) + (INT x:[pi / 2,pi]. 1 / sqrt(sin(x)))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "c": "pi / 2",
+                                "loc": "0.1",
+                                "name": "SplitRegion",
+                                "str": "split region at pi / 2 at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{2}}{2} ((\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) + (\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{(\\pi - x)}}} \\,dx)) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "sqrt(2) / 2 * ((INT x:[0,pi / 2]. 1 / sqrt(sin(x))) + (INT x:[0,pi / 2]. 1 / sqrt(sin(pi - x)))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(\\pi - x\\) at 0.1.1",
+                                "loc": "0.1.1",
+                                "name": "Substitution",
+                                "str": "substitute x for pi - x at 0.1.1",
+                                "var_name": "x",
+                                "var_subst": "pi - x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{2}}{2} ((\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) + (\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx)) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "sqrt(2) / 2 * ((INT x:[0,pi / 2]. 1 / sqrt(sin(x))) + (INT x:[0,pi / 2]. 1 / sqrt(sin(x)))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sin{(\\pi - x)}\\) to \\(\\sin{x}\\) using identity at 0.1.1",
+                                "loc": "0.1.1",
+                                "name": "ApplyIdentity",
+                                "source": "sin(pi - x)",
+                                "str": "rewrite sin(pi - x) to sin(x) using identity at 0.1.1",
+                                "target": "sin(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sqrt{2} (\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx) = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
+                            "res": "sqrt(2) * (INT x:[0,pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx = \\frac{\\sqrt{2} \\Gamma{(\\frac{1}{4})} ^ {2}}{4 \\sqrt{\\pi}}",
+                            "res": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x))) = sqrt(2) * Gamma(1/4) ^ 2 / (4 * sqrt(pi))",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,pi / 2]. 1 / sqrt(sin(x))",
+                                "str": "solve equation for INT x:[0,pi / 2]. 1 / sqrt(sin(x))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,pi / 2]. 1 / sqrt(cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+            "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,pi / 2]. 1 / sqrt(cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+                "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
+                "start": {
+                    "latex_start": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
+                    "start": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{(\\frac{\\pi}{2} - x)}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
+                            "res": "(INT x:[0,pi / 2]. 1 / sqrt(sin(pi / 2 - x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(\\frac{\\pi}{2} - x\\)",
+                                "name": "Substitution",
+                                "str": "substitute x for pi / 2 - x",
+                                "var_name": "x",
+                                "var_subst": "pi / 2 - x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\cos{x}}} \\,dx = \\frac{\\sqrt{2} \\Gamma{(\\frac{1}{4})} ^ {2}}{4 \\sqrt{\\pi}}",
+                            "res": "(INT x:[0,pi / 2]. 1 / sqrt(cos(x))) = sqrt(2) * Gamma(1/4) ^ 2 / (4 * sqrt(pi))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }

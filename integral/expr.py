@@ -1387,10 +1387,15 @@ class Summation(Expr):
         return "SUM(" + self.index_var + ", " + str(self.lower) + ", " + str(self.upper) + ", " + str(self.body) + ")"
 
     def __eq__(self, other):
-        return isinstance(other, Summation) and self.index_var == other.index_var and \
-               self.lower == other.lower and \
-               self.upper == other.upper and \
-               self.body == other.body
+
+        if isinstance(other, Summation):
+            if self.index_var == other.index_var:
+                return self.lower == other.lower and \
+                self.upper == other.upper and \
+                self.body == other.body
+            else:
+                return other.alpha_convert(self.index_var) == self
+        return False
 
     def __hash__(self):
         return hash((SUMMATION, self.index_var, self.ty, self.lower, self.upper, self.body))

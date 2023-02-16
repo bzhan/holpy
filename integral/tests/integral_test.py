@@ -2257,6 +2257,8 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 4.2
         file = compstate.CompFile("interesting", "BetaWallis")
 
+        file.add_definition("B(m, n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)", conds=["m > 0", "n > 0"])
+
         goal01 = file.add_goal("B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))")
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
@@ -2345,6 +2347,62 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal11 = goal11.proof_by_rewrite_goal(begin=goal10)
         calc = proof_of_goal11.begin
         calc.perform_rule(rules.ApplyIdentity("Gamma(1/2)", "factorial(-1/2)"))
+
+        goal12 = file.add_goal("(INT x:[0, pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))")
+        proof_of_goal12 = goal12.proof_by_calculation()
+        calc = proof_of_goal12.lhs_calc
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="sin(x) ^ 2"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("1 / (u ^ (1/4) * sqrt(-u + 1))", "u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)"))
+        calc.perform_rule(rules.OnLocation(rules.FoldDefinition("B"), "1"))
+        calc.perform_rule(rules.ApplyIdentity("B(3/4, 1/2)", "Gamma(3/4) * Gamma(1/2) / Gamma(5/4)"))
+        calc.perform_rule(rules.Equation("1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4))",
+                                         "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))"))
+
+        goal13 = file.add_goal("(INT x:[0, pi / 2]. sqrt(cos(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))")
+        proof_of_goal13 = goal13.proof_by_calculation()
+        calc = proof_of_goal13.lhs_calc
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="cos(x) ^ 2"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("1 / (u ^ (1/4) * sqrt(-u + 1))", "u ^ (3/4 - 1) * (1 - u) ^ (1/2 - 1)"))
+        calc.perform_rule(rules.OnLocation(rules.FoldDefinition("B"), "1"))
+        calc.perform_rule(rules.ApplyIdentity("B(3/4, 1/2)", "Gamma(3/4) * Gamma(1/2) / Gamma(5/4)"))
+        calc.perform_rule(rules.Equation("1/2 * (Gamma(3/4) * Gamma(1/2) / Gamma(5/4))",
+                                         "Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))"))
+
+        goal14 = file.add_goal("(INT x:[0, pi / 2]. 1 / sqrt(sin(x) * cos(x))) = 1/2 * B(1/4, 1/4)")
+        proof_of_goal14 = goal14.proof_by_calculation()
+        calc = proof_of_goal14.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("sqrt(cos(x)) * sqrt(sin(x))", "sqrt(sin(x) * cos(x))"))
+
+        goal15 = file.add_goal("(INT x:[0, pi / 2]. 1 / sqrt(sin(x) * cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))")
+        proof_of_goal15 = goal15.proof_by_rewrite_goal(begin=goal14)
+        calc = proof_of_goal15.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("B(1/4, 1/4)", "Gamma(1/4) * Gamma(1/4) / Gamma(1/2)"), "1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal10.goal), "1.1.1"))
+
+        goal16 = file.add_goal("(INT x:[0, pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))")
+        proof_of_goal16 = goal16.proof_by_rewrite_goal(begin=goal15)
+        calc = proof_of_goal16.begin
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="2 * x"), "0"))
+        calc.perform_rule(rules.Equation("sqrt(cos(1/2 * x)) * sqrt(sin(1/2 * x))", "sqrt(sin(1/2 * x) * cos(1/2 * x))"))
+        calc.perform_rule(rules.ApplyIdentity("sin(1/2 * x) * cos(1/2 * x)", "(1 / 2) * (sin(1 / 2 * x + 1 / 2 * x) + sin(1 / 2 * x - 1 / 2 * x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ApplyEquation(goal12.goal))
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion("pi / 2"), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="pi - x"), "0.1.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("sin(pi - x)", "sin(x)"), "0.1.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation("(INT x:[0, pi / 2]. 1 / sqrt(sin(x)))"))
+
+        goal17 = file.add_goal("(INT x:[0, pi / 2]. 1 / sqrt(cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))")
+        proof_of_goal17 = goal17.proof_by_rewrite_goal(begin=goal16)
+        calc = proof_of_goal17.begin
+        calc.perform_rule(rules.Substitution(var_name="x", var_subst="pi / 2 - x"))
+        calc.perform_rule(rules.FullSimplify())
+
         self.checkAndOutput(file)
 
 
@@ -2407,7 +2465,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Substitution("y", "x/4"))
         calc.perform_rule(rules.Equation("log(4*y)", "log(4)+log(y)"))
         calc.perform_rule(rules.Equation("sqrt(-16 * y ^ 2 + 16 * y)","4*sqrt(-y^2+y)"))
-        calc.perform_rule(rules.Equation("sqrt(-y^2+y)","sqrt(y) * sqrt(1-y)"))
+        calc.perform_rule(rules.Equation("sqrt(-y^2+y)", "sqrt(y) * sqrt(1-y)"))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("-y+1", "1-y"))
