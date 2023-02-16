@@ -386,6 +386,15 @@
             "level": 2
         },
         {
+            "type": "definition",
+            "expr": "B(m, n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)",
+            "conds":[
+                "m > 0",
+                "n > 0"
+            ],
+            "path": "BetaWallis"
+        },
+        {
             "type": "problem",
             "expr": "B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
             "path": "BetaWallis"
@@ -423,6 +432,26 @@
         {
             "type": "problem",
             "expr": "factorial(-1/2) = sqrt(pi)",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, pi / 2]. sqrt(sin(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, pi / 2]. sqrt(cos(x))) = Gamma(3/4) * Gamma(1/2) / (2 * Gamma(5/4))",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, pi / 2]. 1 / sqrt(cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
             "path": "BetaWallis"
         },
         {
