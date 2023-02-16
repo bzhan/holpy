@@ -232,7 +232,8 @@ class LimitsTest(unittest.TestCase):
             ("(-(u/x) + 1)^x", None),
             ("sin(a) - x", "-oo"),
             ("sqrt(x) / (x + 1)", "0"),
-            ("sin(pi / 4 + 1 / x)", "sin(pi/4)")
+            ("sin(pi / 4 + 1 / x)", "sin(pi/4)"),
+            ("sin(1/x)^2", "0")
         ]
 
         conds = Conditions()
