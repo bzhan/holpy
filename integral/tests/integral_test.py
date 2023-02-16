@@ -577,7 +577,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("Gamma"))
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")))
-        calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc

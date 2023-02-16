@@ -53,15 +53,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{\\infty}) - -n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
-                            "res": "([-(x ^ n * exp(-x))]_x=0,oo) - -(n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x)))",
-                            "rule": {
-                                "name": "DefiniteIntegralIdentity",
-                                "str": "apply definite integral"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
                             "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
                             "rule": {

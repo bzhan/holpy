@@ -277,7 +277,7 @@
         <div v-for="(item, index) in identity_rewrites" :key="index">
           <MathEquation
             v-on:click.native="applyIdentity(index)"
-            v-bind:data="'\\(' + item.latex_res + '\\)'"
+            v-bind:data="'\\(=' + item.latex_res + '\\)'"
             style="cursor:pointer"/>
         </div>
       </div>
@@ -1218,7 +1218,7 @@ export default {
         selected_item: this.selected_item,
         rule: {
           name: "ExpandPolynomial",
-          loc: this.loc
+          loc: this.selected_loc
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
