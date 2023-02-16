@@ -626,7 +626,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.1"))
         calc.perform_rule(rules.FoldDefinition("B"))
         calc.perform_rule(rules.ApplyIdentity("B(k+1,k+1)", "Gamma(k+1) * Gamma(k+1) / Gamma(2*k+2)"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("Gamma(k+1)", "factorial(k)"), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.0"))
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.1"))
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(2*k+2)", "factorial(2*k+1)"), "1"))
         calc.perform_rule(rules.FullSimplify())
