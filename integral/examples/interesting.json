@@ -387,7 +387,7 @@
         },
         {
             "type": "definition",
-            "expr": "B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+            "expr": "B(m, n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)",
             "conds":[
                 "m > 0",
                 "n > 0"

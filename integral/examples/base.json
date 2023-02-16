@@ -741,14 +741,6 @@
             "level": 1
         },
         {
-            "type": "definition",
-            "expr": "B(m,n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)",
-            "conds": [
-                "m > 0",
-                "n > 0"
-            ]
-        },
-        {
             "type": "axiom",
             "expr": "B(m,n) = Gamma(m) * Gamma(n) / Gamma(m+n)",
             "category": "gamma-beta"
