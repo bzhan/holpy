@@ -79,15 +79,6 @@
                                 "str": "apply series evaluation"
                             },
                             "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{\\pi ^ {2}}{12}",
-                            "res": "pi ^ 2 / 12",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
                         }
                     ],
                     "type": "Calculation"
@@ -95,17 +86,7 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{\\pi ^ {2}}{12}",
                     "start": "pi ^ 2 / 12",
-                    "steps": [
-                        {
-                            "latex_res": "\\frac{\\pi ^ {2}}{12}",
-                            "res": "pi ^ 2 / 12",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
+                    "steps": [],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"

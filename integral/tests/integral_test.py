@@ -1503,8 +1503,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal1.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
 
         goal3 = file.add_goal("I(a) = log(a+1) + SKOLEM_CONST(C)", conds=["a >= 0"])
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
@@ -1545,7 +1543,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("a^2 * x^2", "(a*x) ^ 2"))
         calc.perform_rule(rules.Substitution('u' , parser.parse_expr("a*x")))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
@@ -1559,7 +1556,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), '1'))
         calc.perform_rule(rules.FullSimplify())
 
         # Obtain value of Skolem function
@@ -1577,7 +1573,9 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal6.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal3.goal))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), "1"))
-        calc.perform_rule(rules.Equation(None, "1/2 * pi * log(a) - 1/2 * pi * log(b)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal6.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file)
 
@@ -1601,7 +1599,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal.rhs_calc
         calc.perform_rule(rules.ExpandDefinition("G"))
-        calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file)
 
@@ -1642,7 +1639,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal5.rhs_calc
         calc.perform_rule(rules.ExpandDefinition("G"))
-        calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file)
 
@@ -1664,9 +1660,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SeriesEvaluationIdentity())
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file)
 
@@ -1681,9 +1674,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal01.lhs_calc
         calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="log(1-x)", index_var='k'))
         calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="log(1+x)", index_var='k'))
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
 
         goal02 = file.add_goal("x / (-(x ^ 2) + 1) = \
                 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
@@ -1720,8 +1710,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnSubterm(rules.SeriesEvaluationIdentity()))
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file)

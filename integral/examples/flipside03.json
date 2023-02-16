@@ -83,17 +83,7 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{1}{a + 1}",
                     "start": "1 / (a + 1)",
-                    "steps": [
-                        {
-                            "latex_res": "\\frac{1}{a + 1}",
-                            "res": "1 / (a + 1)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
+                    "steps": [],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -181,7 +171,7 @@
                             "latex_res": "I{(0)} = \\log{(0 + 1)} + C",
                             "res": "I(0) = log(0 + 1) + SKOLEM_CONST(C)",
                             "rule": {
-                                "latex_str": "substitute a for 0 in equation",
+                                "latex_str": "substitute \\(a\\) for \\(0\\) in equation",
                                 "name": "VarSubsOfEquation",
                                 "str": "substitute a for 0 in equation",
                                 "subst": [

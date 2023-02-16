@@ -64,18 +64,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a x) ^ {2} + 1} \\,dx",
-                            "res": "INT x:[0,oo]. 1 / ((a * x) ^ 2 + 1)",
-                            "rule": {
-                                "latex_str": "rewriting \\(a ^ {2} x ^ {2}\\) to \\((a x) ^ {2}\\)",
-                                "name": "Equation",
-                                "new_expr": "(a * x) ^ 2",
-                                "old_expr": "a ^ 2 * x ^ 2",
-                                "str": "rewriting a ^ 2 * x ^ 2 to (a * x) ^ 2"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\int_{0}^{\\infty} \\frac{1}{a (u ^ {2} + 1)} \\,du",
                             "res": "INT u:[0,oo]. 1 / (a * (u ^ 2 + 1))",
                             "rule": {
@@ -182,16 +170,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I(a,b) = \\frac{\\pi}{2} \\log{(\\left| a \\right|)} + C(b)",
-                            "res": "I(a,b) = pi / 2 * log(abs(a)) + SKOLEM_FUNC(C(b))",
-                            "rule": {
-                                "loc": "1",
-                                "name": "ExpandPolynomial",
-                                "str": "expand polynomial at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "I(a,b) = \\frac{\\pi}{2} \\log{a} + C(b)",
                             "res": "I(a,b) = pi / 2 * log(a) + SKOLEM_FUNC(C(b))",
                             "rule": {
@@ -235,7 +213,7 @@
                             "latex_res": "I(a,a) = \\frac{1}{2} \\pi \\log{a} + C(a)",
                             "res": "I(a,a) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(a))",
                             "rule": {
-                                "latex_str": "substitute b for a in equation",
+                                "latex_str": "substitute \\(b\\) for \\(a\\) in equation",
                                 "name": "VarSubsOfEquation",
                                 "str": "substitute b for a in equation",
                                 "subst": [
@@ -331,13 +309,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}",
-                            "res": "1/2 * pi * log(a) - 1/2 * pi * log(b)",
+                            "latex_res": "(-\\frac{\\pi}{2}) \\log{b} + \\frac{\\pi}{2} \\log{a}",
+                            "res": "-(pi / 2) * log(b) + pi / 2 * log(a)",
                             "rule": {
-                                "latex_str": "rewriting to \\(\\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}\\)",
-                                "name": "Equation",
-                                "new_expr": "1/2 * pi * log(a) - 1/2 * pi * log(b)",
-                                "str": "rewriting to 1/2 * pi * log(a) - 1/2 * pi * log(b)"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -347,7 +323,17 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}",
                     "start": "1/2 * pi * log(a) - 1/2 * pi * log(b)",
-                    "steps": [],
+                    "steps": [
+                        {
+                            "latex_res": "(-\\frac{\\pi}{2}) \\log{b} + \\frac{\\pi}{2} \\log{a}",
+                            "res": "-(pi / 2) * log(b) + pi / 2 * log(a)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"

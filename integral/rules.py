@@ -1945,7 +1945,7 @@ class VarSubsOfEquation(Rule):
         return "substitute " + str_of_substs + " in equation"
 
     def export(self):
-        latex_str_of_substs = ', '.join(item['var'] + " for " + latex.convert_expr(item['expr'])
+        latex_str_of_substs = ', '.join('\\(' + item['var'] + "\\) for \\(" + latex.convert_expr(item['expr']) + '\\)'
                                         for item in self.subst if item['expr'] is not None)
         json_substs = list()
         for item in self.subst:
