@@ -594,6 +594,9 @@ class IndefiniteIntegralIdentity(Rule):
         if e.is_integral() or e.is_indefinite_integral():
             e = Linearity().eval(e, ctx)
 
+        if e.is_equals():
+            return OnLocation(self, "1").eval(e, ctx)
+
         integrals = e.separate_integral()
         skolem_args = set()
         for sub_e, loc in integrals:

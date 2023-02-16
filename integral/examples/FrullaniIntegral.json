@@ -153,9 +153,8 @@
                             "latex_res": "I(a,b) = \\frac{\\pi}{2} (\\int \\frac{1}{a} \\,da)",
                             "res": "I(a,b) = pi / 2 * (INT a [b]. 1 / a)",
                             "rule": {
-                                "loc": "1",
                                 "name": "FullSimplify",
-                                "str": "full simplify at 1"
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         },
@@ -163,9 +162,8 @@
                             "latex_res": "I(a,b) = \\frac{\\pi}{2} \\log{(\\left| a \\right|)} + C(b)",
                             "res": "I(a,b) = pi / 2 * log(abs(a)) + SKOLEM_FUNC(C(b))",
                             "rule": {
-                                "loc": "1",
                                 "name": "IndefiniteIntegralIdentity",
-                                "str": "apply indefinite integral at 1"
+                                "str": "apply indefinite integral"
                             },
                             "type": "CalculationStep"
                         },

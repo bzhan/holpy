@@ -1125,7 +1125,7 @@ class IntegralTest(unittest.TestCase):
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         Eq5 = file.add_goal("pi/2 = SKOLEM_CONST(C)")
@@ -1226,7 +1226,7 @@ class IntegralTest(unittest.TestCase):
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
 
         Eq4 = file.add_goal("log(sqrt(pi / 2)) = SKOLEM_CONST(C)")
         Eq4_proof = Eq4.proof_by_rewrite_goal(begin=Eq3)
@@ -1416,7 +1416,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof.begin
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         # Evaluate the case y = oo
@@ -1503,7 +1503,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
         calc = proof_of_goal3.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         goal4 = file.add_goal("SKOLEM_CONST(C) = 0")
@@ -1549,8 +1549,8 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof_of_goal3.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         # Obtain value of Skolem function
@@ -1914,7 +1914,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.Substitution(var_name="u", var_subst="1 + a * b"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
         calc.perform_rule(rules.Equation("abs(1 + a * b)", "(1 + a * b)"))
 

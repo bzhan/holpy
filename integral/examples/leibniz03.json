@@ -257,9 +257,8 @@
                             "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0 t + C",
                             "res": "log(I(t)) + t ^ 2 / 2 = 0 * t + SKOLEM_CONST(C)",
                             "rule": {
-                                "loc": "1",
                                 "name": "IndefiniteIntegralIdentity",
-                                "str": "apply indefinite integral at 1"
+                                "str": "apply indefinite integral"
                             },
                             "type": "CalculationStep"
                         }

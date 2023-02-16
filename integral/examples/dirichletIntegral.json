@@ -150,9 +150,8 @@
                             "latex_res": "g(y,a) = -a (\\frac{1}{a} \\tan^{-1}{(\\frac{y}{a})}) + C(a)",
                             "res": "g(y,a) = -(a * (1 / a * atan(y / a))) + SKOLEM_FUNC(C(a))",
                             "rule": {
-                                "loc": "1",
                                 "name": "IndefiniteIntegralIdentity",
-                                "str": "apply indefinite integral at 1"
+                                "str": "apply indefinite integral"
                             },
                             "type": "CalculationStep"
                         },

@@ -217,9 +217,8 @@
                             "latex_res": "I(a,b) = \\pi (\\frac{\\log{(\\left| u \\right|)}}{b}) + C(b)",
                             "res": "I(a,b) = pi * (log(abs(u)) / b) + SKOLEM_FUNC(C(b))",
                             "rule": {
-                                "loc": "1",
                                 "name": "IndefiniteIntegralIdentity",
-                                "str": "apply indefinite integral at 1"
+                                "str": "apply indefinite integral"
                             },
                             "type": "CalculationStep"
                         },

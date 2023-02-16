@@ -232,9 +232,8 @@
                             "latex_res": "g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{(-(1 + y ^ {2})) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = 0 t + C",
                             "res": "g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2)) = 0 * t + SKOLEM_CONST(C)",
                             "rule": {
-                                "loc": "1",
                                 "name": "IndefiniteIntegralIdentity",
-                                "str": "apply indefinite integral at 1"
+                                "str": "apply indefinite integral"
                             },
                             "type": "CalculationStep"
                         },
