@@ -426,7 +426,7 @@ class ApplyIdentity(Rule):
             inst = expr.match(e, identity.lhs)
             if inst is not None:
                 expected_rhs = identity.rhs.inst_pat(inst)
-                if normalize(expected_rhs) == normalize(self.target):
+                if full_normalize(expected_rhs, ctx) == full_normalize(self.target, ctx):
                     return self.target
         
         raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
