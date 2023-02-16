@@ -597,7 +597,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("Gamma")))
 
         # Gamma function and factorial
-        goal2 = file.add_goal("Gamma(n) = factorial(n - 1)")
+        goal2 = file.add_goal("Gamma(n) = factorial(n - 1)", conds=["n >= 1"])
 
         proof = goal2.proof_by_induction("n", 1)
         proof_base = proof.base_case.proof_by_calculation()
@@ -620,8 +620,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("exp(-y) / y ^ (2/3)", "exp(-y) * y ^ (1/3 - 1)"))
         calc.perform_rule(rules.OnLocation(rules.FoldDefinition("Gamma"), "1"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("1/3", "4/3 - 1"), "0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("1/3", "4/3 - 1"), "1.0"))
+        calc.perform_rule(rules.Equation(None, "(4/3 - 1) * Gamma(4/3 - 1)"))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
         self.assertEqual(str(calc.last_expr), "Gamma(4/3)")
 

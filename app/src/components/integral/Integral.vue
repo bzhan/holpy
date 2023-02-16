@@ -203,7 +203,9 @@
       </div>
       <div v-if="r_query_mode === 'apply induction'">
         <span class="math-text">Please specify induction variable</span><br/>
-        <input v-model="induct_var">
+        <input v-model="induct_var"><br/>
+        <span class="math-text">starting from</span><br/>
+        <ExprQuery v-model="expr_query1"/>
         <button v-on:click="doApplyInduction">OK</button>
       </div>
       <div v-if="r_query_mode === 'apply rewrite goal'">
@@ -643,6 +645,7 @@ export default {
 
     // First stage of proof by induction: query for induction variable
     proofByInduction: function() {
+      this.expr_query1 = "0"
       this.r_query_mode = 'apply induction'
     },
 
@@ -654,7 +657,8 @@ export default {
         content: this.content,
         cur_id: this.cur_id,
         selected_item: this.selected_item,
-        induct_var: this.induct_var
+        induct_var: this.induct_var,
+        start: this.expr_query1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
       if (response.data.status == 'ok') {

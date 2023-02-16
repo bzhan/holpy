@@ -277,8 +277,9 @@ def proof_by_induction():
     st: compstate.StateItem = file.content[cur_id]
     subitem = st.get_by_label(label)
     induct_var = data['induct_var']
+    start = integral.parser.parse_expr(data['start'])
     if isinstance(subitem, compstate.Goal):
-        proof = subitem.proof_by_induction(induct_var)
+        proof = subitem.proof_by_induction(induct_var, start=start)
         proof.base_case.proof_by_calculation()
         proof.induct_case.proof_by_calculation()
         return jsonify({

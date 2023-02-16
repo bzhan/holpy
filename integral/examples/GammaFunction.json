@@ -87,6 +87,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "n >= 1",
+                    "latex_cond": "n \\ge 1"
+                }
+            ],
             "finished": true,
             "goal": "Gamma(n) = factorial(n - 1)",
             "latex_goal": "\\Gamma{(n)} = (n - 1)!",
@@ -268,28 +274,13 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\frac{4}{3} - 1) \\Gamma{(\\frac{1}{3})}",
-                    "res": "(4/3 - 1) * Gamma(1/3)",
-                    "rule": {
-                        "latex_str": "rewriting \\(\\frac{1}{3}\\) to \\(\\frac{4}{3} - 1\\) at 0",
-                        "loc": "0",
-                        "name": "Equation",
-                        "new_expr": "4/3 - 1",
-                        "old_expr": "1/3",
-                        "str": "rewriting 1/3 to 4/3 - 1 at 0"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
                     "latex_res": "(\\frac{4}{3} - 1) \\Gamma{(\\frac{4}{3} - 1)}",
                     "res": "(4/3 - 1) * Gamma(4/3 - 1)",
                     "rule": {
-                        "latex_str": "rewriting \\(\\frac{1}{3}\\) to \\(\\frac{4}{3} - 1\\) at 1.0",
-                        "loc": "1.0",
+                        "latex_str": "rewriting to \\((\\frac{4}{3} - 1) \\Gamma{(\\frac{4}{3} - 1)}\\)",
                         "name": "Equation",
-                        "new_expr": "4/3 - 1",
-                        "old_expr": "1/3",
-                        "str": "rewriting 1/3 to 4/3 - 1 at 1.0"
+                        "new_expr": "(4/3 - 1) * Gamma(4/3 - 1)",
+                        "str": "rewriting to (4/3 - 1) * Gamma(4/3 - 1)"
                     },
                     "type": "CalculationStep"
                 },

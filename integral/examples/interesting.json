@@ -374,7 +374,7 @@
             "type": "problem",
             "expr": "Gamma(n) = factorial(n - 1)",
             "conds": [
-                "n > 1"
+                "n >= 1"
             ],
             "category": "gamma-beta",
             "path": "GammaFunction"

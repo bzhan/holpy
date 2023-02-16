@@ -696,7 +696,7 @@ def parse_rule(item) -> Rule:
         else:
             loc = item['loc']
             del item['loc']
-            if loc == '':
+            if loc == '' or loc == '.':
                 return parse_rule(item)
             else:
                 return rules.OnLocation(parse_rule(item), loc)
