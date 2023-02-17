@@ -186,6 +186,33 @@ class Interval:
                     return Interval(normalize_constant(self.start ** expr.Const(2)),
                                     normalize_constant(self.end ** expr.Const(2)) \
                         if not self.end.is_inf() else expr.POS_INF, self.left_open, self.right_open)
+                else:
+                    es, ee = eval_expr(self.start), eval_expr(self.end)
+                    if es == float('-inf'):
+                        if ee <= 0:
+                            return Interval(normalize_constant(self.end ** expr.Const(2)), \
+                                            expr.POS_INF, self.right_open, True)
+                        elif ee > 0:
+                            return Interval(expr.Const(0), expr.POS_INF, False, True)
+                    elif es < 0:
+                        if ee <= 0:
+                            return Interval(normalize_constant(self.end ** expr.Const(2)), \
+                                            normalize_constant(self.start ** expr.Const(2)), \
+                                            self.right_open, self.left_open)
+                        elif ee > 0:
+                            if ee == float('inf'):
+                                return Interval.ropen(expr.Const(0), expr.POS_INF)
+                            else:
+                                aee, aes = abs(ee), abs(es)
+                                if aes > aee:
+                                    return Interval(expr.Const(0), normalize_constant(self.start ** expr.Const(2)), \
+                                                    False, self.left_open)
+                                elif aes == aee:
+                                    return Interval(expr.Const(0), normalize_constant(self.start ** expr.Const(2)), \
+                                                    False, self.left_open and self.right_open)
+                                else:
+                                    return Interval(expr.Const(0), normalize_constant(self.end ** expr.Const(2)), \
+                                                    False, self.right_open)
                 return Interval.ropen(expr.Const(0), expr.POS_INF)
             elif eval_expr(other.start) > 0:
                 # TODO: distinguish by parity of denominator        

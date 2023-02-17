@@ -54,6 +54,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "abs(x) < 1",
+                    "latex_cond": "\\left| x \\right| < 1"
+                }
+            ],
             "finished": true,
             "goal": "x / (-(x ^ 2) + 1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
             "latex_goal": "\\frac{x}{-x ^ {2} + 1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
@@ -140,8 +146,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,

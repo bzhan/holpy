@@ -1,7 +1,7 @@
 """Unit tests for the interval package."""
-
 import unittest
 
+from integral import conditions
 from integral.expr import Var
 from integral.parser import parse_interval, parse_expr
 from integral.interval import Interval, get_bounds_for_expr
@@ -49,5 +49,11 @@ class IntervalTest(unittest.TestCase):
             ib = Interval(*b)
             print(ia ** ib)
 
+    def testGetBoundForExpression(self):
+        test_data = (("abs(x) < 1", "-x^2 + 1", "(0, 1]"),)
+        for c, e, res in test_data:
+            conds = conditions.Conditions()
+            conds.add_condition(parse_expr(c))
+            self.assertEqual(res,str(conds.get_bounds_for_expr(parse_expr(e))))
 if __name__ == "__main__":
     unittest.main()
