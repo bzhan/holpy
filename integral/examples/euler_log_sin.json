@@ -125,6 +125,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
             "goal": "J(a) = pi / 2 * log(2 / a) + 2 * I(a)",
             "latex_goal": "J{(a)} = \\frac{\\pi}{2} \\log{(\\frac{2}{a})} + 2 I{(a)}",
@@ -277,8 +283,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,

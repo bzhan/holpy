@@ -1282,7 +1282,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition("I"))
 
         # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
-        goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)")
+        goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)", conds=["a>0"])
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("J"))

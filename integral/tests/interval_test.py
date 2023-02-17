@@ -50,10 +50,14 @@ class IntervalTest(unittest.TestCase):
             print(ia ** ib)
 
     def testGetBoundForExpression(self):
-        test_data = (("abs(x) < 1", "-x^2 + 1", "(0, 1]"),)
+        test_data = [
+                     (["abs(x) < 1"], "-x^2 + 1", "(0, 1]"),
+                     (["k>1","x>1","x < oo"], "x^k", "(1, oo)")
+                    ]
         for c, e, res in test_data:
             conds = conditions.Conditions()
-            conds.add_condition(parse_expr(c))
+            for i in c:
+                conds.add_condition(parse_expr(i))
             self.assertEqual(res,str(conds.get_bounds_for_expr(parse_expr(e))))
 if __name__ == "__main__":
     unittest.main()

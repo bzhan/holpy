@@ -590,8 +590,7 @@
                 "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
                 "type": "InductionProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "conds": [
