@@ -15,6 +15,10 @@
             <MathEquation v-bind:data="'\\(' + cond.latex_cond + '\\)'"/>
           </span>
         </span>
+        <span v-if="'wellformed' in item && item.wellformed == false"
+              title="Unable to show wellformed">
+          ⚠
+        </span>
       </div>
       <div v-if="'proof' in item">
         <div v-if="item.proof.type === 'CalculationProof'">

@@ -368,6 +368,16 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
             "finished": true,
             "goal": "I(a,b) = pi / b * log(1 + a * b)",
             "latex_goal": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)}",

@@ -106,7 +106,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "easy06"

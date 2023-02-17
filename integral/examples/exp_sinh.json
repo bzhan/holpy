@@ -1,0 +1,135 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "p > 3",
+                    "latex_cond": "p > 3"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT t:[0,oo]. exp(-p * t) * sinh(t) ^ 3) = 6 / (9 - 10 * p ^ 2 + p ^ 4)",
+            "latex_goal": "\\int_{0}^{\\infty} e^{(-p) t} \\sinh{t} ^ {3} \\,dt = \\frac{6}{9 - 10 p ^ {2} + p ^ {4}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT t:[0,oo]. exp(-p * t) * sinh(t) ^ 3) = 6 / (9 - 10 * p ^ 2 + p ^ 4)",
+                "latex_goal": "\\int_{0}^{\\infty} e^{(-p) t} \\sinh{t} ^ {3} \\,dt = \\frac{6}{9 - 10 p ^ {2} + p ^ {4}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} e^{(-p) t} \\sinh{t} ^ {3} \\,dt",
+                    "start": "INT t:[0,oo]. exp(-p * t) * sinh(t) ^ 3",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{(-p) t} (\\frac{1}{2} (-e^{-t} + e^{t})) ^ {3} \\,dt",
+                            "res": "INT t:[0,oo]. exp(-p * t) * (1/2 * (-exp(-t) + exp(t))) ^ 3",
+                            "rule": {
+                                "func_name": "sinh",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} -\\frac{1}{8} e^{-p t - 3 t} + \\frac{1}{8} e^{-p t + 3 t} + \\frac{3}{8} e^{-p t - t} - \\frac{3}{8} e^{-p t + t} \\,dt",
+                            "res": "INT t:[0,oo]. -1/8 * exp(-(p * t) - 3 * t) + 1/8 * exp(-(p * t) + 3 * t) + 3/8 * exp(-(p * t) - t) - 3/8 * exp(-(p * t) + t)",
+                            "rule": {
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} -\\frac{1}{8} e^{(-p - 3) t} + \\frac{1}{8} e^{-p t + 3 t} + \\frac{3}{8} e^{-p t - t} - \\frac{3}{8} e^{-p t + t} \\,dt",
+                            "res": "INT t:[0,oo]. -1/8 * exp((-p - 3) * t) + 1/8 * exp(-(p * t) + 3 * t) + 3/8 * exp(-(p * t) - t) - 3/8 * exp(-(p * t) + t)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-p t - 3 t\\) to \\((-p - 3) t\\)",
+                                "name": "Equation",
+                                "new_expr": "(-p - 3) * t",
+                                "old_expr": "-(p * t) - 3 * t",
+                                "str": "rewriting -(p * t) - 3 * t to (-p - 3) * t"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} -\\frac{1}{8} e^{(-p - 3) t} + \\frac{1}{8} e^{(3 - p) t} + \\frac{3}{8} e^{-p t - t} - \\frac{3}{8} e^{-p t + t} \\,dt",
+                            "res": "INT t:[0,oo]. -1/8 * exp((-p - 3) * t) + 1/8 * exp((3 - p) * t) + 3/8 * exp(-(p * t) - t) - 3/8 * exp(-(p * t) + t)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-p t + 3 t\\) to \\((3 - p) t\\)",
+                                "name": "Equation",
+                                "new_expr": "(3 - p) * t",
+                                "old_expr": "-(p * t) + 3 * t",
+                                "str": "rewriting -(p * t) + 3 * t to (3 - p) * t"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} -\\frac{1}{8} e^{(-p - 3) t} + \\frac{1}{8} e^{(3 - p) t} + \\frac{3}{8} e^{(-p - 1) t} - \\frac{3}{8} e^{-p t + t} \\,dt",
+                            "res": "INT t:[0,oo]. -1/8 * exp((-p - 3) * t) + 1/8 * exp((3 - p) * t) + 3/8 * exp((-p - 1) * t) - 3/8 * exp(-(p * t) + t)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-p t - t\\) to \\((-p - 1) t\\)",
+                                "name": "Equation",
+                                "new_expr": "(-p - 1) * t",
+                                "old_expr": "-(p * t) - t",
+                                "str": "rewriting -(p * t) - t to (-p - 1) * t"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} -\\frac{1}{8} e^{(-p - 3) t} + \\frac{1}{8} e^{(3 - p) t} + \\frac{3}{8} e^{(-p - 1) t} - \\frac{3}{8} e^{(1 - p) t} \\,dt",
+                            "res": "INT t:[0,oo]. -1/8 * exp((-p - 3) * t) + 1/8 * exp((3 - p) * t) + 3/8 * exp((-p - 1) * t) - 3/8 * exp((1 - p) * t)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-p t + t\\) to \\((1 - p) t\\)",
+                                "name": "Equation",
+                                "new_expr": "(1 - p) * t",
+                                "old_expr": "-(p * t) + t",
+                                "str": "rewriting -(p * t) + t to (1 - p) * t"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{8} (\\left. \\frac{e^{t (-p - 3)}}{-p - 3} \\right\\vert_{t=0}^{\\infty}) + \\frac{1}{8} (\\left. \\frac{e^{t (-p + 3)}}{-p + 3} \\right\\vert_{t=0}^{\\infty}) + \\frac{3}{8} (\\left. \\frac{e^{t (-p - 1)}}{-p - 1} \\right\\vert_{t=0}^{\\infty}) - \\frac{3}{8} (\\left. \\frac{e^{t (-p + 1)}}{-p + 1} \\right\\vert_{t=0}^{\\infty})",
+                            "res": "-1/8 * ([exp(t * (-p - 3)) / (-p - 3)]_t=0,oo) + 1/8 * ([exp(t * (-p + 3)) / (-p + 3)]_t=0,oo) + 3/8 * ([exp(t * (-p - 1)) / (-p - 1)]_t=0,oo) - 3/8 * ([exp(t * (-p + 1)) / (-p + 1)]_t=0,oo)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{3}{8} (\\frac{1}{-p + 1}) - \\frac{1}{8} (\\frac{1}{-p + 3}) - \\frac{3}{8} (\\frac{1}{-p - 1}) + \\frac{1}{8} (\\frac{1}{-p - 3})",
+                            "res": "3/8 * (1 / (-p + 1)) - 1/8 * (1 / (-p + 3)) - 3/8 * (1 / (-p - 1)) + 1/8 * (1 / (-p - 3))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{6}{9 - 10 p ^ {2} + p ^ {4}}",
+                            "res": "6 / (9 - 10 * p ^ 2 + p ^ 4)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{3}{8} (\\frac{1}{-p + 1}) - \\frac{1}{8} (\\frac{1}{-p + 3}) - \\frac{3}{8} (\\frac{1}{-p - 1}) + \\frac{1}{8} (\\frac{1}{-p - 3})\\) to \\(\\frac{6}{9 - 10 p ^ {2} + p ^ {4}}\\)",
+                                "name": "Equation",
+                                "new_expr": "6 / (9 - 10 * p ^ 2 + p ^ 4)",
+                                "old_expr": "3/8 * (1 / (-p + 1)) - 1/8 * (1 / (-p + 3)) - 3/8 * (1 / (-p - 1)) + 1/8 * (1 / (-p - 3))",
+                                "str": "rewriting 3/8 * (1 / (-p + 1)) - 1/8 * (1 / (-p + 3)) - 3/8 * (1 / (-p - 1)) + 1/8 * (1 / (-p - 3)) to 6 / (9 - 10 * p ^ 2 + p ^ 4)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{6}{9 - 10 p ^ {2} + p ^ {4}}",
+                    "start": "6 / (9 - 10 * p ^ 2 + p ^ 4)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal",
+            "wellformed": false
+        }
+    ],
+    "name": "exp_sinh"
+}

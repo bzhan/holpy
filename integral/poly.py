@@ -67,7 +67,7 @@ def collect_pairs_power(ps, conds: Conditions):
             assert isinstance(c, Polynomial)
             if is_non_negative(c) and is_non_negative(res[v]):
                 res[v] += c
-            elif conds.is_positive(v) or conds.is_negative(v):
+            elif conds.is_nonzero(v):
                 res[v] += c
             else:
                 res_list.append((v, c))

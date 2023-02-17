@@ -148,7 +148,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -184,7 +185,8 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "euler_log_sin05"

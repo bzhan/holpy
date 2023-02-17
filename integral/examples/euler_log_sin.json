@@ -277,7 +277,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,

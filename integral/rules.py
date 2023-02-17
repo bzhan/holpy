@@ -149,6 +149,34 @@ def deriv(var: str, e: Expr, ctx: Context) -> Expr:
 
     return rec(e)
 
+def check_wellformed(e: Expr, conds: Conditions) -> bool:
+    if e.is_var() or e.is_const():
+        return True
+    elif e.is_op():
+        for arg in e.args:
+            if not check_wellformed(arg, conds):
+                return False
+        if e.is_divides():
+            if conds.is_nonzero(e.args[1]):
+                return True
+            return False
+        else:
+            # TODO: add checks for power
+            return True
+    elif e.is_fun():
+        for arg in e.args:
+            if not check_wellformed(arg, conds):
+                return False
+        return True
+    elif e.is_integral():
+        conds2 = Conditions(conds)
+        conds2.add_condition(expr.Op(">", Var(e.var), e.lower))
+        conds2.add_condition(expr.Op("<", Var(e.var), e.upper))
+        return check_wellformed(e.lower, conds) and check_wellformed(e.upper, conds) and \
+               check_wellformed(e.body, conds2)
+    else:
+        return True
+
 class Rule:
     """
     Represents a rule for integration. It takes an integral

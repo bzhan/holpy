@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 
 from integral.expr import Expr, Var, Const
 from integral import rules, expr
-from integral.rules import Rule
+from integral.rules import Rule, check_wellformed
 from integral.conditions import Conditions
 from integral.context import Context
 from integral import latex
@@ -152,6 +152,7 @@ class Goal(StateItem):
 
         self.ctx = Context(ctx)
         self.ctx.extend_condition(self.conds)
+        self.wellformed = check_wellformed(goal, self.conds)
 
     def __str__(self):
         if self.is_finished():
@@ -177,12 +178,14 @@ class Goal(StateItem):
             "type": "Goal",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
-            "finished": self.is_finished()
+            "finished": self.is_finished(),
         }
         if self.proof:
             res['proof'] = self.proof.export()
         if self.conds.data:
             res['conds'] = self.conds.export()
+        if not self.wellformed:
+            res['wellformed'] = False
         return res
 
     def export_book(self):
@@ -668,13 +671,13 @@ class CompFile:
         else:
             conds = []
 
-        ctx = self.get_context()
         if isinstance(goal, str):
-            self.content.append(Goal(self, ctx, parser.parse_expr(goal), Conditions(conds)))
-        elif isinstance(goal, Expr):
-            self.content.append(Goal(self, ctx, goal, Conditions(conds)))
-        else:
-            raise NotImplementedError
+            goal = parser.parse_expr(goal)
+        assert isinstance(goal, Expr)
+
+        conds = Conditions(conds)
+        ctx = self.get_context()
+        self.content.append(Goal(self, ctx, goal, conds))
         return self.content[-1]
 
     def add_item(self, item: StateItem):

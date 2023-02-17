@@ -82,7 +82,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -185,7 +186,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -241,7 +243,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -297,7 +300,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -486,7 +490,8 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "conds": [

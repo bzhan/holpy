@@ -63,7 +63,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "chapter1_practice01_01"

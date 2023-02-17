@@ -77,7 +77,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "conds": [
@@ -437,7 +438,8 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "Chapter3Practice04"

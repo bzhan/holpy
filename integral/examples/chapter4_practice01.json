@@ -221,7 +221,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "chapter4_practice01"

@@ -306,7 +306,8 @@
                 "latex_goal": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
                 "type": "InductionProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "wallis"

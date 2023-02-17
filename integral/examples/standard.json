@@ -56,6 +56,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a != 0",
+                    "latex_cond": "a \\neq 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x. exp(a * x)) = exp(a * x) / a + SKOLEM_CONST(C)",
             "latex_goal": "\\int e^{a x} \\,dx = \\frac{e^{a x}}{a} + C",
@@ -120,6 +126,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a != 0",
+                    "latex_cond": "a \\neq 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x. sin(a * x)) = -(cos(a * x) / a) + SKOLEM_CONST(C)",
             "latex_goal": "\\int \\sin{(a x)} \\,dx = -\\frac{\\cos{(a x)}}{a} + C",
@@ -193,6 +205,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a != 0",
+                    "latex_cond": "a \\neq 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x. cos(a * x)) = sin(a * x) / a + SKOLEM_CONST(C)",
             "latex_goal": "\\int \\cos{(a x)} \\,dx = \\frac{\\sin{(a x)}}{a} + C",
@@ -259,8 +277,8 @@
         {
             "conds": [
                 {
-                    "cond": "a > 0",
-                    "latex_cond": "a > 0"
+                    "cond": "a != 0",
+                    "latex_cond": "a \\neq 0"
                 }
             ],
             "finished": true,
@@ -416,7 +434,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "conds": [
@@ -474,7 +493,8 @@
                         },
                         "type": "CalculationProof"
                     },
-                    "type": "Goal"
+                    "type": "Goal",
+                    "wellformed": false
                 },
                 "finished": true,
                 "goal": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
@@ -570,7 +590,8 @@
                 "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
                 "type": "InductionProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "conds": [
@@ -719,7 +740,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,

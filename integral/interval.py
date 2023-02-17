@@ -110,22 +110,27 @@ class Interval:
     def __mul__(self, other: "Interval") -> "Interval":
         """Product in interval arithmetic."""
         from integral.poly import normalize_constant
-        def lim_mul(a, b):
+        def lim_mul(a: Expr, b: Expr):
             if a == expr.POS_INF and eval_expr(b) > 0:
                 return expr.POS_INF
             if a == expr.POS_INF and eval_expr(b) < 0:
                 return expr.NEG_INF
+            if a == expr.NEG_INF and eval_expr(b) < 0:
+                return expr.POS_INF
             if a == expr.NEG_INF and eval_expr(b) > 0:
                 return expr.NEG_INF
             if a == expr.POS_INF and b == expr.POS_INF:
                 return expr.POS_INF
-            if a == expr.POS_INF and eval_expr(b) == 0:
-                return expr.POS_INF * expr.Const(0)
-            if a == expr.NEG_INF and eval_expr(b) < 0:
+            if a == expr.POS_INF and b == expr.NEG_INF:
+                return expr.NEG_INF
+            if a == expr.NEG_INF and b == expr.POS_INF:
+                return expr.NEG_INF
+            if a == expr.NEG_INF and b == expr.NEG_INF:
                 return expr.POS_INF
-            if b == expr.POS_INF or b == expr.NEG_INF:
+            if a.is_inf() and b == expr.Const(0):
+                return None
+            if b.is_inf():
                 return lim_mul(b, a)
-
             return normalize_constant(a * b)
 
         bounds = [
@@ -134,9 +139,8 @@ class Interval:
             (lim_mul(self.end, other.start), self.right_open or other.left_open),
             (lim_mul(self.end, other.end), self.right_open or other.right_open)
         ]
-        for item in bounds:
-            if item[0] == expr.POS_INF * expr.Const(0):
-                bounds.remove(item)
+        bounds = [bd for bd in bounds if bd[0] is not None]
+
         start, left_open = min(bounds, key=lambda p: (eval_expr(p[0]), p[1]))
         end, right_open = max(bounds, key=lambda p: (eval_expr(p[0]), p[1]))
         return Interval(start, end, left_open, right_open)
@@ -379,6 +383,12 @@ def get_bounds_for_expr(e: Expr, bounds: Dict[Expr, Interval]) -> Interval:
                 return rec(e.args[0]).cos()
             elif e.func_name == 'factorial':
                 return Interval.ropen(expr.Const(1), expr.POS_INF)
+            elif e.func_name == 'Gamma':
+                a = rec(e.args[0])
+                if a.contained_in(Interval.open(expr.Const(0), expr.POS_INF)):
+                    return Interval.open(expr.Const(0), expr.POS_INF)
+                else:
+                    return Interval.open(expr.NEG_INF, expr.POS_INF)
 
         elif e.is_integral():
             if get_bounds_for_expr(e.body, bounds).contained_in(Interval.open(expr.Const(0), expr.POS_INF)) and \

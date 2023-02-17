@@ -1,6 +1,6 @@
 """Conditions"""
 
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from integral import expr
 from integral.expr import Expr
@@ -12,7 +12,7 @@ from integral.interval import Interval
 class Conditions:
     """A condition is represented by a list of boolean expressions."""
     def __init__(self, conds=None):
-        self.data = list()
+        self.data: List[Expr] = list()
         if isinstance(conds, Conditions):
             self.data.extend(conds.data)
         elif conds is not None:
@@ -94,3 +94,14 @@ class Conditions:
             return False
         else:
             return interval.contained_in(Interval.lopen(expr.NEG_INF, expr.Const(0)))
+
+    def is_nonzero(self, e: Expr) -> bool:
+        """Return whether conditions imply e is nonzero."""
+        for cond in self.data:
+            if cond.is_not_equals() and cond.args[0] == e and cond.args[1] == expr.Const(0):
+                return True
+        if self.is_positive(e):
+            return True
+        if self.is_negative(e):
+            return True
+        return False
