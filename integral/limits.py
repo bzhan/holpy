@@ -138,7 +138,7 @@ def asymp_add_inv(a: Asymptote, b: Asymptote) -> Asymptote:
     else:
         return Unknown()    
 
-def asymp_mult(a: Asymptote, b: Asymptote) -> Asymptote:
+def asymp_mult(a: Asymptote, b: Asymptote, conds: Conditions) -> Asymptote:
     """Return the product of two asymptotes."""
     if isinstance(a, Unknown) or isinstance(b, Unknown):
         return Unknown()
@@ -157,12 +157,12 @@ def asymp_mult(a: Asymptote, b: Asymptote) -> Asymptote:
         s_order = []
         for i in range(l):
             ai, bi = a.get_order(i), b.get_order(i)
-            s_order.append(normalize(ai + bi))
+            s_order.append(normalize(ai + bi, conds))
         return PolyLog(*s_order)
     else:
         raise NotImplementedError
 
-def asymp_div(a: Asymptote, b: Asymptote) -> Asymptote:
+def asymp_div(a: Asymptote, b: Asymptote, conds: Conditions) -> Asymptote:
     """Return the quotient of two asymptotes.
     
     Assume a > b according to asymp_compare. Otherwise throw Exception.
@@ -180,12 +180,12 @@ def asymp_div(a: Asymptote, b: Asymptote) -> Asymptote:
         s_order = []
         for i in range(l):
             ai, bi = a.get_order(i), b.get_order(i)
-            s_order.append(normalize(ai - bi))
+            s_order.append(normalize(ai - bi, conds))
         return PolyLog(*s_order)
     else:
         raise NotImplementedError
 
-def asymp_power(a: Asymptote, b: Expr) -> Asymptote:
+def asymp_power(a: Asymptote, b: Expr, conds: Conditions) -> Asymptote:
     """Raise an asymptotic limit to a constant power."""
     if isinstance(a, Unknown):
         return Unknown()
@@ -195,7 +195,7 @@ def asymp_power(a: Asymptote, b: Expr) -> Asymptote:
         return a
     elif isinstance(a, PolyLog):
         # Multiplies all orders in a by the given constant.
-        return PolyLog(*(normalize(e * b) for e in a.order))
+        return PolyLog(*(normalize(e * b, conds) for e in a.order))
     else:
         raise NotImplementedError
 
@@ -261,7 +261,7 @@ class Limit:
             self.side == other.side
 
 
-def limit_add(a: Limit, b: Limit) -> Limit:
+def limit_add(a: Limit, b: Limit, conds: Conditions) -> Limit:
     """Addition between two limits."""
     if a.e is None or b.e is None:
         if a.is_bounded:
@@ -283,7 +283,7 @@ def limit_add(a: Limit, b: Limit) -> Limit:
         else:  # EQUAL case, oo - oo = unknown
             return Limit(None)
     elif a.e == NEG_INF and b.e == POS_INF:
-        return limit_add(b, a)
+        return limit_add(b, a, conds)
     elif a.e == NEG_INF and b.e == NEG_INF:
         return Limit(NEG_INF, asymp=asymp_add(a.asymp, b.asymp))
     elif a.e == POS_INF:
@@ -295,7 +295,7 @@ def limit_add(a: Limit, b: Limit) -> Limit:
     elif b.e == NEG_INF:
         return Limit(NEG_INF, asymp=b.asymp)
     else:
-        res_e = normalize(a.e + b.e)
+        res_e = normalize(a.e + b.e, conds)
         if a.side == TWO_SIDED or b.side == TWO_SIDED:
             return Limit(res_e, asymp=asymp_add_inv(a.asymp, b.asymp))
         elif a.side == AT_CONST:
@@ -317,13 +317,13 @@ def limit_add(a: Limit, b: Limit) -> Limit:
             else:  # EQUAL case
                 return Limit(res_e, side=TWO_SIDED)
         elif a.side == FROM_BELOW and b.side == FROM_ABOVE:
-            return limit_add(b, a)
+            return limit_add(b, a, conds)
         elif a.side == FROM_BELOW and b.side == FROM_BELOW:
             return Limit(res_e, asymp=asymp_add_inv(a.asymp, b.asymp), side=FROM_BELOW)
         else:
             raise NotImplementedError
 
-def limit_uminus(a: Limit) -> Limit:
+def limit_uminus(a: Limit, conds: Conditions) -> Limit:
     """Negation of a limit."""
     if a.e is None:
         return Limit(None)
@@ -332,7 +332,7 @@ def limit_uminus(a: Limit) -> Limit:
     elif a.e == NEG_INF:
         return Limit(POS_INF, asymp=a.asymp)
     else:
-        res_e = normalize(-(a.e))
+        res_e = normalize(-(a.e), conds)
         if a.side == TWO_SIDED:
             return Limit(res_e, asymp=a.asymp, side=TWO_SIDED)
         elif a.side == FROM_ABOVE:
@@ -352,13 +352,13 @@ def limit_mult(a: Limit, b: Limit, conds: Conditions) -> Limit:
     if a.e is None and a.is_bounded is None or b.e is None and b.is_bounded is None:
         return Limit(None)
     elif a.e == POS_INF and b.e == POS_INF:
-        return Limit(POS_INF, asymp=asymp_mult(a.asymp, b.asymp))
+        return Limit(POS_INF, asymp=asymp_mult(a.asymp, b.asymp, conds))
     elif a.e == POS_INF and b.e == NEG_INF:
-        return Limit(NEG_INF, asymp=asymp_mult(a.asymp, b.asymp))
+        return Limit(NEG_INF, asymp=asymp_mult(a.asymp, b.asymp, conds))
     elif a.e == NEG_INF and b.e == POS_INF:
-        return Limit(NEG_INF, asymp=asymp_mult(a.asymp, b.asymp))
+        return Limit(NEG_INF, asymp=asymp_mult(a.asymp, b.asymp, conds))
     elif a.e == NEG_INF and b.e == NEG_INF:
-        return Limit(POS_INF, asymp=asymp_mult(a.asymp, b.asymp))
+        return Limit(POS_INF, asymp=asymp_mult(a.asymp, b.asymp, conds))
     elif a.e == POS_INF:
         if conds.is_positive(b.e):
             return Limit(POS_INF, asymp=a.asymp)
@@ -371,9 +371,9 @@ def limit_mult(a: Limit, b: Limit, conds: Conditions) -> Limit:
             if cmp == UNKNOWN:
                 return Limit(None)
             elif cmp == LESS:
-                return Limit(Const(0), asymp=asymp_div(b.asymp, a.asymp), side=b.side)
+                return Limit(Const(0), asymp=asymp_div(b.asymp, a.asymp, conds), side=b.side)
             elif cmp == GREATER:
-                return Limit(POS_INF, asymp=asymp_div(a.asymp, b.asymp))
+                return Limit(POS_INF, asymp=asymp_div(a.asymp, b.asymp, conds))
             else:  # EQUAL case
                 return Limit(None)
         else:
@@ -381,27 +381,27 @@ def limit_mult(a: Limit, b: Limit, conds: Conditions) -> Limit:
     elif b.e == POS_INF:
         return limit_mult(b, a, conds=conds)
     elif a.e == NEG_INF:
-        return limit_uminus(limit_mult(limit_uminus(a), b, conds=conds))
+        return limit_uminus(limit_mult(limit_uminus(a, conds), b, conds=conds), conds)
     elif b.e == NEG_INF:
         return limit_mult(b, a, conds=conds)
     elif a.e == Const(0) and b.is_bounded:
         return Limit(0)
     else:
-        res_e = normalize(a.e * b.e)
+        res_e = normalize(a.e * b.e, conds)
         if a.side == TWO_SIDED or b.side == TWO_SIDED:
-            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp), side=TWO_SIDED)
+            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp, conds), side=TWO_SIDED)
         elif a.side == AT_CONST:
             return Limit(res_e, asymp=b.asymp, side=b.side)
         elif b.side == AT_CONST:
             return Limit(res_e, asymp=a.asymp, side=a.side)
         elif a.side == FROM_ABOVE and b.side == FROM_ABOVE:
-            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp), side=FROM_ABOVE)
+            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp, conds), side=FROM_ABOVE)
         elif a.side == FROM_ABOVE and b.side == FROM_BELOW:
-            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp), side=FROM_BELOW)
+            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp, conds), side=FROM_BELOW)
         elif a.side == FROM_BELOW and b.side == FROM_ABOVE:
-            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp), side=FROM_BELOW)
+            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp, conds), side=FROM_BELOW)
         elif a.side == FROM_BELOW and b.side == FROM_BELOW:
-            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp), side=FROM_ABOVE)
+            return Limit(res_e, asymp=asymp_mult(a.asymp, b.asymp, conds), side=FROM_ABOVE)
         else:
             raise NotImplementedError
 
@@ -423,7 +423,7 @@ def limit_inverse(a: Limit, conds: Conditions) -> Limit:
         else:
             raise NotImplementedError
     else:
-        res_e = normalize(Const(1) / a.e)
+        res_e = normalize(Const(1) / a.e, conds)
         if a.side == TWO_SIDED:
             return Limit(res_e, asymp=a.asymp, side=TWO_SIDED)
         elif a.side == AT_CONST:
@@ -451,7 +451,7 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
     if a.e is None or b.e is None:
         return Limit(None)
     elif a.side == AT_CONST and b.side == AT_CONST:
-        return Limit(normalize(expr.Op("^", a.e, b.e)), side=AT_CONST)
+        return Limit(normalize(expr.Op("^", a.e, b.e), conds), side=AT_CONST)
     elif a.e == POS_INF:
         if b.e == POS_INF:
             # TODO: try to figure out asymp in more cases
@@ -460,26 +460,26 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
             return Limit(None)
         elif conds.is_positive(b.e):
             # Raise to a constant positive power
-            return Limit(POS_INF, asymp=asymp_power(a.asymp, b.e))
+            return Limit(POS_INF, asymp=asymp_power(a.asymp, b.e, conds))
         elif conds.is_negative(b.e):
             # Raise to a constant negative power
-            neg_e = normalize(-(b.e))
-            return Limit(Const(0), asymp=asymp_power(a.asymp, neg_e), side=FROM_ABOVE)
+            neg_e = normalize(-(b.e), conds)
+            return Limit(Const(0), asymp=asymp_power(a.asymp, neg_e, conds), side=FROM_ABOVE)
         else:
             return Limit(None)
     elif a.e == NEG_INF:
         if b.e.is_const() and b.e.val > 0:
             # Positive power, test for parity of numerator
             if Fraction(b.e.val).numerator % 2 == 0:
-                return Limit(POS_INF, asymp=asymp_power(a.asymp, b.e))
+                return Limit(POS_INF, asymp=asymp_power(a.asymp, b.e, conds))
             else:
-                return Limit(NEG_INF, asymp=asymp_power(a.asymp, b.e))
+                return Limit(NEG_INF, asymp=asymp_power(a.asymp, b.e, conds))
         elif b.e.is_const() and b.e.val < 0:
             # Negative power, test for parity of numerator
             if Fraction(b.e.val).numerator % 2 == 0:
-                return Limit(Const(0), asymp=asymp_power(a.asymp, -(b.e)), side=FROM_ABOVE)
+                return Limit(Const(0), asymp=asymp_power(a.asymp, -(b.e), conds), side=FROM_ABOVE)
             else:
-                return Limit(Const(0), asymp=asymp_power(a.asymp, -(b.e)), side=FROM_BELOW)
+                return Limit(Const(0), asymp=asymp_power(a.asymp, -(b.e), conds), side=FROM_BELOW)
         else:
             return Limit(None)
     elif conds.is_positive(a.e):
@@ -490,11 +490,11 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
             return Limit(Const(0), asymp=exp_asymp(b.asymp), side=FROM_ABOVE)
         else:
             # TODO: try to figure out asymp and side in more cases
-            return Limit(normalize(a.e ^ b.e))
+            return Limit(normalize(a.e ^ b.e, conds))
     elif conds.is_negative(a.e):
         # Base is negative
         if b.e.is_const() and b.e.val > 0 and b.side == AT_CONST:
-            return Limit(normalize(a.e ^ b.e))
+            return Limit(normalize(a.e ^ b.e, conds))
         else:
             return Limit(None)
     elif a.e == Const(0):
@@ -504,9 +504,9 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
             if b.e == POS_INF or b.e == NEG_INF:
                 return Limit(None)
             elif conds.is_positive(b.e):
-                return Limit(Const(0), asymp=asymp_power(a.asymp, b.e), side=FROM_ABOVE)
+                return Limit(Const(0), asymp=asymp_power(a.asymp, b.e, conds), side=FROM_ABOVE)
             elif conds.is_negative(b.e):
-                return Limit(POS_INF, asymp=asymp_power(a.asymp, -(b.e)))
+                return Limit(POS_INF, asymp=asymp_power(a.asymp, -(b.e), conds))
             else:
                 return Limit(None)
         elif a.side == FROM_BELOW:
@@ -514,16 +514,16 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
                 return Limit(None)
             elif b.e.is_const() and b.e.val > 0 and b.side == AT_CONST:
                 if Fraction(b.e.val).numerator % 2 == 0:
-                    return Limit(Const(0), asymp=asymp_power(a.asymp, b.e), side=FROM_ABOVE)
+                    return Limit(Const(0), asymp=asymp_power(a.asymp, b.e, conds), side=FROM_ABOVE)
                 else:
-                    return Limit(Const(0), asymp=asymp_power(a.asymp, b.e), side=FROM_BELOW)
+                    return Limit(Const(0), asymp=asymp_power(a.asymp, b.e, conds), side=FROM_BELOW)
             else:
                 return Limit(None)
         elif a.side == TWO_SIDED:
             if b.e == POS_INF or b.e == NEG_INF:
                 return Limit(None)
             elif b.e.is_const() and b.e.val > 0 and b.side == AT_CONST:
-                return Limit(Const(0), asymp=asymp_power(a.asymp, b.e))
+                return Limit(Const(0), asymp=asymp_power(a.asymp, b.e, conds))
             else:
                 return Limit(None)
         else:
@@ -554,14 +554,14 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
     elif e.is_plus():
         l1 = limit_of_expr(e.args[0], var_name, conds)
         l2 = limit_of_expr(e.args[1], var_name, conds)
-        return limit_add(l1, l2)
+        return limit_add(l1, l2, conds)
     elif e.is_uminus():
         l = limit_of_expr(e.args[0], var_name, conds)
-        return limit_uminus(l)
+        return limit_uminus(l, conds)
     elif e.is_minus():
         l1 = limit_of_expr(e.args[0], var_name, conds)
         l2 = limit_of_expr(e.args[1], var_name, conds)
-        return limit_add(l1, limit_uminus(l2))
+        return limit_add(l1, limit_uminus(l2, conds), conds)
     elif e.is_times():
         l1 = limit_of_expr(e.args[0], var_name, conds)
         l2 = limit_of_expr(e.args[1], var_name, conds)
@@ -686,21 +686,21 @@ def reduce_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
         l1 = reduce_inf_limit(e.args[0], var_name, conds)
         l2 = reduce_inf_limit(e.args[1], var_name, conds)
         if l1 not in (POS_INF, NEG_INF) and l2 not in (POS_INF, NEG_INF):
-            return normalize(l1 + l2)
+            return normalize(l1 + l2, conds)
         else:
             return expr.Limit(var_name, POS_INF, e)
     elif e.is_minus():
         l1 = reduce_inf_limit(e.args[0], var_name, conds)
         l2 = reduce_inf_limit(e.args[1], var_name, conds)
         if l1 not in (POS_INF, NEG_INF) and l2 not in (POS_INF, NEG_INF):
-            return normalize(l1 - l2)
+            return normalize(l1 - l2, conds)
         else:
             return expr.Limit(var_name, POS_INF, e)
     elif e.is_times():
         if not e.args[0].contains_var(var_name):
-            return normalize(e.args[0] * reduce_inf_limit(e.args[1], var_name, conds))
+            return normalize(e.args[0] * reduce_inf_limit(e.args[1], var_name, conds), conds)
         elif not e.args[1].contains_var(var_name):
-            return normalize(e.args[1] * reduce_inf_limit(e.args[0], var_name, conds))
+            return normalize(e.args[1] * reduce_inf_limit(e.args[0], var_name, conds), conds)
         else:
             return expr.Limit(var_name, POS_INF, e)
     else:
@@ -709,7 +709,7 @@ def reduce_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
 def reduce_neg_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
     return reduce_inf_limit(e.subst(var_name, -expr.Var(var_name)), var_name, conds)
 
-def is_INF(e: Expr) -> bool:
+def is_INF(e: Expr, conds: Conditions) -> bool:
     """Determine whether e approaches infinity."""
     if e.is_power():
         a, b = e.args
@@ -721,21 +721,21 @@ def is_INF(e: Expr) -> bool:
             return a.val != 0 and b.val == 0
     elif e.is_fun():
         if e.func_name == 'tan':
-            a = normalize(e.args[0] / expr.Fun('pi'))
+            a = normalize(e.args[0] / expr.Fun('pi'), conds)
             # the coefficient of pi
-            coef = normalize(a * 2)
+            coef = normalize(a * 2, conds)
             if coef.is_const() and coef.val % 2 == 1:
                 return True
     return False
 
-def is_indeterminate_form(e: Expr) -> bool:
+def is_indeterminate_form(e: Expr, conds: Conditions) -> bool:
     """Determine whether e is a indeterminate form."""
-    var, body, lim, drt = e.var, normalize(e.body), e.lim, e.drt
+    var, body, lim, drt = e.var, normalize(e.body, conds), e.lim, e.drt
     if e.drt == None:
         if body.is_constant():
             return False
         elif body.is_times():
-            l = [normalize(a.subst(var, lim)) for a in body.args]
+            l = [normalize(a.subst(var, lim), conds) for a in body.args]
             # 0 * INF or INF * 0
             if l[0].is_zero() and is_INF(l[1]) or l[1].is_zero() and is_INF(l[0]):
                 return True
@@ -749,12 +749,12 @@ def is_indeterminate_form(e: Expr) -> bool:
     else:
         raise NotImplementedError
 
-def reduce_finite_limit(e: Expr) -> Expr:
+def reduce_finite_limit(e: Expr, conds: Conditions) -> Expr:
     try:
-        if is_indeterminate_form(e):
+        if is_indeterminate_form(e, conds):
             return e
         body = e.body.subst(e.var, e.lim)
-        return normalize(body)
+        return normalize(body, conds)
     except ZeroDivisionError:
         return e
 

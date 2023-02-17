@@ -96,8 +96,8 @@
                     "latex_cond": "a \\neq 0"
                 },
                 {
-                    "cond": "b != 0",
-                    "latex_cond": "b \\neq 0"
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,

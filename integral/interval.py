@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Optional
 
 from integral import expr
 from integral.expr import eval_expr, Expr
-from integral.poly import normalize_constant, normalize
+
 
 # Tolerance for floating-point rounding errors
 tol = 1e-16
@@ -87,6 +87,7 @@ class Interval:
 
     def __add__(self, other: "Interval") -> "Interval":
         """Addition in interval arithmetic."""
+        from integral.poly import normalize_constant
         if self.start == expr.NEG_INF or other.start == expr.NEG_INF:
             start = expr.NEG_INF
         else:
@@ -108,6 +109,7 @@ class Interval:
 
     def __mul__(self, other: "Interval") -> "Interval":
         """Product in interval arithmetic."""
+        from integral.poly import normalize_constant
         def lim_mul(a, b):
             if a == expr.POS_INF and eval_expr(b) > 0:
                 return expr.POS_INF
@@ -141,6 +143,7 @@ class Interval:
 
     def inverse(self) -> "Interval":
         """Inverse of an interval."""
+        from integral.poly import normalize_constant
         if self.end == expr.POS_INF:
             start = expr.Const(0)
             left_open = True
@@ -167,6 +170,8 @@ class Interval:
 
     def __pow__(self, other: "Interval") -> "Interval":
         """Power in interval arithmetic."""
+        from integral.poly import normalize_constant
+
         if eval_expr(other.start) == eval_expr(other.end):
             # Exponent has single value
             if eval_expr(other.start) == 0:
@@ -174,7 +179,8 @@ class Interval:
             elif eval_expr(other.start) == 2:
                 # Simple case
                 if eval_expr(self.start) >= 0:
-                    return Interval(normalize(self.start**expr.Const(2)), normalize(self.end**expr.Const(2))\
+                    return Interval(normalize_constant(self.start ** expr.Const(2)),
+                                    normalize_constant(self.end ** expr.Const(2)) \
                         if not self.end.is_inf() else expr.POS_INF, self.left_open, self.right_open)
                 return Interval.ropen(expr.Const(0), expr.POS_INF)
             elif eval_expr(other.start) > 0:
@@ -258,6 +264,7 @@ class Interval:
 
     def sqrt(self) -> "Interval":
         """Square root of interval."""
+        from integral.poly import normalize_constant
         if eval_expr(self.start) <= 0:
             start = expr.Const(0)
         else:
@@ -270,6 +277,7 @@ class Interval:
 
     def exp(self) -> "Interval":
         """Exp function of an interval."""
+        from integral.poly import normalize_constant
         if self.start == expr.NEG_INF:
             start = expr.Const(0)
         else:
@@ -282,6 +290,7 @@ class Interval:
 
     def log(self) -> "Interval":
         """Log function of an interval."""
+        from integral.poly import normalize_constant
         if eval_expr(self.start) <= 0:
             start = expr.NEG_INF
         else:
@@ -297,6 +306,8 @@ class Interval:
         if self.contained_in(Interval.closed(-(expr.pi / 2), expr.pi / 2)):
             return Interval(expr.Fun('sin', self.start), expr.Fun('sin', self.end),
                             self.left_open, self.right_open)
+        elif self.contained_in(Interval.open(expr.Const(0), expr.pi)):
+            return Interval.lopen(expr.Const(0), expr.Const(1))
         elif self.contained_in(Interval.closed(expr.Const(0), expr.pi)):
             return Interval.closed(expr.Const(0), expr.Const(1))
         else:
@@ -366,6 +377,8 @@ def get_bounds_for_expr(e: Expr, bounds: Dict[Expr, Interval]) -> Interval:
                 return rec(e.args[0]).sin()
             elif e.func_name == 'cos':
                 return rec(e.args[0]).cos()
+            elif e.func_name == 'factorial':
+                return Interval.ropen(expr.Const(1), expr.POS_INF)
 
         elif e.is_integral():
             if get_bounds_for_expr(e.body, bounds).contained_in(Interval.open(expr.Const(0), expr.POS_INF)) and \

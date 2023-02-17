@@ -757,8 +757,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\frac{1}{\\sin^{2}(u)} - 1 \\,du",
-                    "res": "INT u:[pi / 4,pi / 2]. 1 / sin(u) ^ 2 - 1",
+                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} -\\frac{\\sin^{2}(u)}{\\sin^{2}(u)} + \\frac{1}{\\sin^{2}(u)} \\,du",
+                    "res": "INT u:[pi / 4,pi / 2]. -(sin(u) ^ 2 / sin(u) ^ 2) + 1 / sin(u) ^ 2",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -824,8 +824,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{1}^{9} \\frac{5}{16} (\\frac{1}{\\sqrt{u}}) - \\frac{1}{16} \\sqrt{u} \\,du",
-                    "res": "INT u:[1,9]. 5/16 * (1 / sqrt(u)) - 1/16 * sqrt(u)",
+                    "latex_res": "\\int_{1}^{9} \\frac{5}{16} (\\frac{1}{\\sqrt{u}}) - \\frac{1}{16} (\\frac{u}{\\sqrt{u}}) \\,du",
+                    "res": "INT u:[1,9]. 5/16 * (1 / sqrt(u)) - 1/16 * (u / sqrt(u))",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -833,8 +833,17 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{5}{16}\\cdot 1 (\\left. 2 \\sqrt{u} \\right\\vert_{u=1}^{9}) - \\frac{1}{16} (\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=1}^{9})",
-                    "res": "5/16 * 1 * ([2 * sqrt(u)]_u=1,9) - 1/16 * ([2/3 * u ^ (3/2)]_u=1,9)",
+                    "latex_res": "\\frac{5}{16} (\\int_{1}^{9} \\frac{1}{\\sqrt{u}} \\,du) - \\frac{1}{16} (\\int_{1}^{9} \\sqrt{u} \\,du)",
+                    "res": "5/16 * (INT u:[1,9]. 1 / sqrt(u)) - 1/16 * (INT u:[1,9]. sqrt(u))",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{5}{16} (\\left. 2 \\sqrt{u} \\right\\vert_{u=1}^{9}) - \\frac{1}{16} (\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=1}^{9})",
+                    "res": "5/16 * ([2 * sqrt(u)]_u=1,9) - 1/16 * ([2/3 * u ^ (3/2)]_u=1,9)",
                     "rule": {
                         "name": "DefiniteIntegralIdentity",
                         "str": "apply definite integral"
@@ -882,8 +891,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{2}^{3} -2 (\\frac{1}{v}) + 2 \\,dv",
-                    "res": "INT v:[2,3]. -2 * (1 / v) + 2",
+                    "latex_res": "\\int_{2}^{3} -2 (\\frac{1}{v}) + 2 (\\frac{v}{v}) \\,dv",
+                    "res": "INT v:[2,3]. -2 * (1 / v) + 2 * (v / v)",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -891,8 +900,17 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-2\\cdot 1 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=2}^{3}) + 2 (\\left. v \\right\\vert_{v=2}^{3})",
-                    "res": "-2 * 1 * ([log(abs(v))]_v=2,3) + 2 * ([v]_v=2,3)",
+                    "latex_res": "-2 (\\int_{2}^{3} \\frac{1}{v} \\,dv) + 2 (\\int_{2}^{3} 1 \\,dv)",
+                    "res": "-2 * (INT v:[2,3]. 1 / v) + 2 * (INT v:[2,3]. 1)",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-2 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=2}^{3}) + 2 (\\left. v \\right\\vert_{v=2}^{3})",
+                    "res": "-2 * ([log(abs(v))]_v=2,3) + 2 * ([v]_v=2,3)",
                     "rule": {
                         "name": "DefiniteIntegralIdentity",
                         "str": "apply definite integral"
@@ -1735,7 +1753,7 @@
                     "latex_res": "\\frac{e^{\\pi}}{5} - \\frac{2}{5}",
                     "res": "exp(pi) / 5 - 2/5",
                     "rule": {
-                        "lhs": "INT x:[0,pi / 2]. cos(x) * exp(2 * x)",
+                        "lhs": "INT x:[0,pi / 2]. exp(2 * x) * cos(x)",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },

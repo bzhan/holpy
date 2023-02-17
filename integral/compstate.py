@@ -419,11 +419,11 @@ class InductionProof(StateItem):
             raise NotImplementedError
 
         # Base case: n = 0
-        eq0 = normalize(goal.subst(induct_var, self.start))
+        eq0 = normalize(goal.subst(induct_var, self.start), self.ctx.get_conds())
         self.base_case = Goal(self, self.ctx, eq0)
 
         # Inductive case:
-        eqI = normalize(goal.subst(induct_var, Var(induct_var) + 1))
+        eqI = normalize(goal.subst(induct_var, Var(induct_var) + 1), self.ctx.get_conds())
         ctx = Context(self.ctx)
         ctx.add_induct_hyp(self.goal)
         self.induct_case = Goal(self, ctx, eqI)
@@ -545,8 +545,9 @@ class RewriteGoalProof(StateItem):
         self.begin = Calculation(parent, self.ctx, begin.goal, conds=begin.conds, connection_symbol = '==>')
 
     def is_finished(self):
-        f1 = normalize(self.begin.last_expr.lhs) == normalize(self.goal.lhs)
-        f2 = normalize(self.begin.last_expr.rhs) == normalize(self.goal.rhs)
+        conds = self.ctx.get_conds()
+        f1 = normalize(self.begin.last_expr.lhs, conds) == normalize(self.goal.lhs, conds)
+        f2 = normalize(self.begin.last_expr.rhs, conds) == normalize(self.goal.rhs, conds)
         return f1 and f2
 
     def export(self):

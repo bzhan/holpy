@@ -259,8 +259,8 @@
         {
             "conds": [
                 {
-                    "cond": "a != 0",
-                    "latex_cond": "a \\neq 0"
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -349,6 +349,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "x > 0",
+                    "latex_cond": "x > 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)",
             "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = \\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{x ^ {k + 1}}{(k + 1) ^ {2}} + C",
@@ -413,6 +419,16 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "m >= 0",
+                    "latex_cond": "m \\ge 0"
+                },
+                {
+                    "cond": "n >= 0",
+                    "latex_cond": "n \\ge 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
             "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",

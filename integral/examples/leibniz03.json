@@ -178,6 +178,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "I(t) > 0",
+                    "latex_cond": "I{(t)} > 0"
+                }
+            ],
             "finished": true,
             "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
             "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
@@ -241,6 +247,12 @@
                 "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
                 "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
                 "start": {
+                    "conds": [
+                        {
+                            "cond": "I(t) > 0",
+                            "latex_cond": "I{(t)} > 0"
+                        }
+                    ],
                     "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                     "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                     "steps": [

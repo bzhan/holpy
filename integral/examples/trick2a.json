@@ -50,7 +50,7 @@
                     "latex_res": "\\frac{\\pi}{4}",
                     "res": "pi / 4",
                     "rule": {
-                        "lhs": "INT x:[0,pi / 2]. sqrt(sin(x)) / (sqrt(cos(x)) + sqrt(sin(x)))",
+                        "lhs": "INT x:[0,pi / 2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },

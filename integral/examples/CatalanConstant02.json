@@ -41,8 +41,17 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. \\frac{x ^ {-k + 1} \\log{x}}{-k + 1} \\right\\vert_{x=1}^{t}) - \\frac{1}{-k + 1} (\\left. \\frac{x ^ {-k + 1}}{-k + 1} \\right\\vert_{x=1}^{t})\\,)",
-                            "res": "LIM {t -> oo}. ([x ^ (-k + 1) * log(x) / (-k + 1)]_x=1,t) - 1 / (-k + 1) * ([x ^ (-k + 1) / (-k + 1)]_x=1,t)",
+                            "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,t ^ {-k + 1} \\log{t}\\,)}{-k + 1} - \\frac{\\int_{1}^{\\infty} x ^ {-k} \\,dx}{-k + 1}",
+                            "res": "(LIM {t -> oo}. t ^ (-k + 1) * log(t)) / (-k + 1) - (INT x:[1,oo]. x ^ -k) / (-k + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,t ^ {-k + 1} \\log{t}\\,)}{-k + 1} - \\frac{\\left. \\frac{x ^ {-k + 1}}{-k + 1} \\right\\vert_{x=1}^{\\infty}}{-k + 1}",
+                            "res": "(LIM {t -> oo}. t ^ (-k + 1) * log(t)) / (-k + 1) - ([x ^ (-k + 1) / (-k + 1)]_x=1,oo) / (-k + 1)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"

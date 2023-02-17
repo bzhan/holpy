@@ -36,6 +36,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "b >= 0",
+                    "latex_cond": "b \\ge 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. x ^ a * (INT y:[0,1 - x]. y ^ b)) = factorial(a) * factorial(b) / factorial(a + b + 2)",
             "latex_goal": "\\int_{0}^{1} x ^ {a} (\\int_{0}^{1 - x} y ^ {b} \\,dy) \\,dx = \\frac{a! b!}{(a + b + 2)!}",

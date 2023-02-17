@@ -13,7 +13,9 @@ class Conditions:
     """A condition is represented by a list of boolean expressions."""
     def __init__(self, conds=None):
         self.data = list()
-        if conds is not None:
+        if isinstance(conds, Conditions):
+            self.data.extend(conds.data)
+        elif conds is not None:
             self.data.extend(conds)
 
     def __str__(self):

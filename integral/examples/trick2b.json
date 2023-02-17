@@ -38,7 +38,7 @@
                     "latex_res": "\\frac{\\pi}{2} (\\int_{0}^{\\pi} \\frac{\\sin{y}}{\\cos^{2}(y) + 1} \\,dy)",
                     "res": "pi / 2 * (INT y:[0,pi]. sin(y) / (cos(y) ^ 2 + 1))",
                     "rule": {
-                        "lhs": "INT x:[0,pi]. x * sin(x) / (cos(x) ^ 2 + 1)",
+                        "lhs": "INT x:[0,pi]. x * sin(x) / (1 + cos(x) ^ 2)",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },

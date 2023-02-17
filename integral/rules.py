@@ -18,129 +18,136 @@ from integral import norm
 from integral.context import Context
 from integral import poly
 from integral.poly import from_poly, to_poly, normalize
+from integral.conditions import Conditions
 
 
-def deriv(var: str, e: Expr) -> Expr:
+def deriv(var: str, e: Expr, ctx: Context) -> Expr:
     """Compute the derivative of e with respect to variable
     name var.
 
     """
-    if e.is_var():
-        if e.name == var:
-            # dx. x = 1
-            return Const(1)
-        else:
-            # dx. y = 0
+    conds = ctx.get_conds()
+    def normal(x):
+        return normalize(x, conds)
+    
+    def rec(e):
+        if e.is_var():
+            if e.name == var:
+                # dx. x = 1
+                return Const(1)
+            else:
+                # dx. y = 0
+                return Const(0)
+        elif e.is_const():
+            # dx. c = 0
             return Const(0)
-    elif e.is_const():
-        # dx. c = 0
-        return Const(0)
-    elif e.is_op():
-        if e.op == "+":
-            x, y = e.args
-            return normalize(deriv(var, x) + deriv(var, y))
-        elif e.op == "-" and len(e.args) == 2:
-            x, y = e.args
-            return normalize(deriv(var, x) - deriv(var, y))
-        elif e.op == "-" and len(e.args) == 1:
-            x, = e.args
-            return normalize(-(deriv(var, x)))
-        elif e.op == "*":
-            x, y = e.args
-            if not x.contains_var(var):
-                return normalize(x * deriv(var, y))
-            elif not y.contains_var(var):
-                return normalize(deriv(var, x) * y)
+        elif e.is_op():
+            if e.op == "+":
+                x, y = e.args
+                return normal(rec(x) + rec(y))
+            elif e.op == "-" and len(e.args) == 2:
+                x, y = e.args
+                return normal(rec(x) - rec(y))
+            elif e.op == "-" and len(e.args) == 1:
+                x, = e.args
+                return normal(-(rec(x)))
+            elif e.op == "*":
+                x, y = e.args
+                if not x.contains_var(var):
+                    return normal(x * rec(y))
+                elif not y.contains_var(var):
+                    return normal(rec(x) * y)
+                else:
+                    return normal(x * rec(y) + rec(x) * y)
+            elif e.op == "/":
+                x, y = e.args
+                if not y.contains_var(var):
+                    # x / c case:
+                    return normal(rec(x) / y)
+                elif not x.contains_var(var) and y.ty == OP and y.op == "^":
+                    # c / (y0 ^ y1): rewrite to c * y0 ^ (-y1)
+                    return rec(x * (y.args[0] ^ (-y.args[1])))
+                else:
+                    # general case
+                    return normal((rec(x) * y - x * rec(y)) / (y ^ Const(2)))
+            elif e.op == "^":
+                x, y = e.args
+                if y.ty == CONST:
+                    return normal(y * (x ^ Const(y.val - 1)) * rec(x))
+                elif var not in y.get_vars():
+                    return normal(y * (x ^ (y - 1)) * rec(x))
+                else:
+                    return normal(rec(expr.exp(y * expr.log(x))))
             else:
-                return normalize(x * deriv(var, y) + deriv(var, x) * y)
-        elif e.op == "/":
-            x, y = e.args
-            if not y.contains_var(var):
-                # x / c case:
-                return normalize(deriv(var, x) / y)
-            elif not x.contains_var(var) and y.ty == OP and y.op == "^":
-                # c / (y0 ^ y1): rewrite to c * y0 ^ (-y1)
-                return deriv(var, x * (y.args[0] ^ (-y.args[1])))
-            else:
-                # general case
-                return normalize((deriv(var, x) * y - x * deriv(var, y)) / (y ^ Const(2)))
-        elif e.op == "^":
-            x, y = e.args
-            if y.ty == CONST:
-                return normalize(y * (x ^ Const(y.val - 1)) * deriv(var, x))
-            elif var not in y.get_vars():
-                return normalize(y * (x ^ (y - 1)) * deriv(var, x))
-            else:
-                return normalize(deriv(var, expr.exp(y * expr.log(x))))
-        else:
-            raise NotImplementedError
-    elif e.ty == FUN:
-        if e.func_name == "sin":
-            x, = e.args
-            return normalize(cos(x) * deriv(var, x))
-        elif e.func_name == "cos":
-            x, = e.args
-            return normalize(-(sin(x) * deriv(var, x)))
-        elif e.func_name == "tan":
-            x, = e.args
-            return normalize((expr.sec(x) ^ Const(2)) * deriv(var, x))
-        elif e.func_name == "sec":
-            x, = e.args
-            return normalize(expr.sec(x) * expr.tan(x) * deriv(var, x))
-        elif e.func_name == "csc":
-            x, = e.args
-            return normalize(-expr.csc(x) * expr.cot(x) * deriv(var, x))
-        elif e.func_name == "cot":
-            x, = e.args
-            return normalize(-(expr.csc(x) ^ Const(2)))
-        elif e.func_name == "cot":
-            x, = e.args
-            return normalize(-(sin(x) ^ Const(-2)) * deriv(var, x))
-        elif e.func_name == "log":
-            x, = e.args
-            return normalize(deriv(var, x) / x)
-        elif e.func_name == "exp":
-            x, = e.args
-            return normalize(expr.exp(x) * deriv(var, x))
-        elif e.func_name == "pi":
-            return Const(0)
-        elif e.func_name == "sqrt":
-            if e.args[0].ty == CONST:
+                raise NotImplementedError
+        elif e.ty == FUN:
+            if e.func_name == "sin":
+                x, = e.args
+                return normal(cos(x) * rec(x))
+            elif e.func_name == "cos":
+                x, = e.args
+                return normal(-(sin(x) * rec(x)))
+            elif e.func_name == "tan":
+                x, = e.args
+                return normal((expr.sec(x) ^ Const(2)) * rec(x))
+            elif e.func_name == "sec":
+                x, = e.args
+                return normal(expr.sec(x) * expr.tan(x) * rec(x))
+            elif e.func_name == "csc":
+                x, = e.args
+                return normal(-expr.csc(x) * expr.cot(x) * rec(x))
+            elif e.func_name == "cot":
+                x, = e.args
+                return normal(-(expr.csc(x) ^ Const(2)))
+            elif e.func_name == "cot":
+                x, = e.args
+                return normal(-(sin(x) ^ Const(-2)) * rec(x))
+            elif e.func_name == "log":
+                x, = e.args
+                return normal(rec(x) / x)
+            elif e.func_name == "exp":
+                x, = e.args
+                return normal(expr.exp(x) * rec(x))
+            elif e.func_name == "pi":
+                return Const(0)
+            elif e.func_name == "sqrt":
+                if e.args[0].ty == CONST:
+                    return Const(0)
+                else:
+                    return normal(rec(e.args[0] ^ Const(Fraction(1 / 2))))
+            elif e.func_name == "atan":
+                x, = e.args
+                return normal(rec(x) / (Const(1) + (x ^ Const(2))))
+            elif e.func_name == "asin":
+                x, = e.args
+                return normal(rec(x) / expr.sqrt(Const(1) - (x ^ Const(2))))
+            elif e.func_name == "acos":
+                x, = e.args
+                return normal(-(rec(x) / expr.sqrt(Const(1) - (x ^ Const(2)))))
+            elif e.func_name == "acot":
+                x, = e.args
+                return normal(-rec(x)) / (Const(1) + x ^ Const(2))
+            elif e.func_name == "binom":
+                # Arguments should be integers
+                assert not e.contains_var(var), "deriv: binom applied to real variables"
                 return Const(0)
             else:
-                return normalize(deriv(var, e.args[0] ^ Const(Fraction(1 / 2))))
-        elif e.func_name == "atan":
-            x, = e.args
-            return normalize(deriv(var, x) / (Const(1) + (x ^ Const(2))))
-        elif e.func_name == "asin":
-            x, = e.args
-            return normalize(deriv(var, x) / expr.sqrt(Const(1) - (x ^ Const(2))))
-        elif e.func_name == "acos":
-            x, = e.args
-            return normalize(-(deriv(var, x) / expr.sqrt(Const(1) - (x ^ Const(2)))))
-        elif e.func_name == "acot":
-            x, = e.args
-            return normalize(-deriv(var, x)) / (Const(1) + x ^ Const(2))
-        elif e.func_name == "binom":
-            # Arguments should be integers
-            assert not e.contains_var(var), "deriv: binom applied to real variables"
+                return Deriv(var, e)
+        elif e.is_integral():
+            return normal(Integral(e.var, e.lower, e.upper, rec(e.body))
+                        + e.body.subst(e.var, e.upper) * rec(e.upper)
+                        - e.body.subst(e.var, e.lower) * rec(e.lower))
+        elif e.is_limit():
+            return Limit(e.var, e.lim, rec(e.body))
+        elif e.is_summation():
+            return Summation(e.index_var, e.lower, e.upper, rec(e.body))
+        elif e.is_inf():
             return Const(0)
         else:
-            return Deriv(var, e)
-    elif e.is_integral():
-        return normalize(Integral(e.var, e.lower, e.upper, deriv(var, e.body))
-                         + e.body.subst(e.var, e.upper) * deriv(var, e.upper)
-                         - e.body.subst(e.var, e.lower) * deriv(var, e.lower))
-    elif e.is_limit():
-        return Limit(e.var, e.lim, deriv(var, e.body))
-    elif e.is_summation():
-        return Summation(e.index_var, e.lower, e.upper, deriv(var, e.body))
-    elif e.is_inf():
-        return Const(0)
-    else:
-        print(e)
-        raise NotImplementedError
+            print(e)
+            raise NotImplementedError
 
+    return rec(e)
 
 class Rule:
     """
@@ -185,7 +192,7 @@ class Simplify(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        res = normalize(e)
+        res = normalize(e, ctx.get_conds())
         return res
 
 
@@ -309,9 +316,10 @@ class Linearity(Rule):
                             c = c / f
                         else:
                             b = b / f
-                    c = normalize(c)
-                    b = normalize(b)
-                    return normalize(c * Summation(e.index_var, e.lower, e.upper, b))
+                    conds = ctx.get_conds()
+                    c = normalize(c, conds)
+                    b = normalize(b, conds)
+                    return normalize(c * Summation(e.index_var, e.lower, e.upper, b), conds)
                 else:
                     return e
             else:
@@ -408,7 +416,7 @@ class ApplyIdentity(Rule):
             inst = expr.match(e, identity.lhs)
             if inst is not None:
                 expected_rhs = identity.rhs.inst_pat(inst)
-                res.append(normalize(expected_rhs))
+                res.append(normalize(expected_rhs, ctx.get_conds()))
         return res
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
@@ -466,7 +474,7 @@ class DefiniteIntegralIdentity(Rule):
             inst[identity.lhs.var] = Var(e.var)
             assert identity.rhs.is_plus() and identity.rhs.args[1].is_skolem_func()
             pat_rhs = identity.rhs.args[0]  # remove Skolem constant C
-            return EvalAt(e.var, e.lower, e.upper, normalize(pat_rhs.inst_pat(inst)))
+            return EvalAt(e.var, e.lower, e.upper, normalize(pat_rhs.inst_pat(inst), ctx.get_conds()))
 
         # Look for definite integral identities
         for identity in ctx.get_definite_integrals():
@@ -480,7 +488,7 @@ class DefiniteIntegralIdentity(Rule):
                     if not ctx.get_conds().check_condition(cond):
                         satisfied = False
                 if satisfied:
-                    return normalize(identity.rhs.inst_pat(inst))
+                    return normalize(identity.rhs.inst_pat(inst), ctx.get_conds())
 
         # No matching identity found
         return e
@@ -654,7 +662,7 @@ class DerivativeSimplify(Rule):
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if not isinstance(e, Deriv):
             return e
-        return deriv(e.var, e.body)
+        return deriv(e.var, e.body, ctx)
 
 
 class SimplifyIdentity(Rule):
@@ -780,7 +788,7 @@ class OnLocation(Rule):
         return self.rule.get_substs()
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        def rec(cur_e, loc):
+        def rec(cur_e, loc, ctx):
             if loc.is_empty():
                 return self.rule.eval(cur_e, ctx)
             elif cur_e.is_var() or cur_e.is_const():
@@ -788,12 +796,12 @@ class OnLocation(Rule):
             elif cur_e.is_op():
                 assert loc.head < len(cur_e.args), "OnLocation: invalid location"
                 if len(cur_e.args) == 1:
-                    return Op(cur_e.op, rec(cur_e.args[0], loc.rest))
+                    return Op(cur_e.op, rec(cur_e.args[0], loc.rest, ctx))
                 elif len(cur_e.args) == 2:
                     if loc.head == 0:
-                        return Op(cur_e.op, rec(cur_e.args[0], loc.rest), cur_e.args[1])
+                        return Op(cur_e.op, rec(cur_e.args[0], loc.rest, ctx), cur_e.args[1])
                     elif loc.head == 1:
-                        return Op(cur_e.op, cur_e.args[0], rec(cur_e.args[1], loc.rest))
+                        return Op(cur_e.op, cur_e.args[0], rec(cur_e.args[1], loc.rest, ctx))
                     else:
                         raise AssertionError("OnLocation: invalid location")
                 else:
@@ -801,52 +809,55 @@ class OnLocation(Rule):
             elif cur_e.is_fun():
                 assert loc.head < len(cur_e.args), "OnLocation: invalid location"
                 new_args = list(cur_e.args)
-                new_args[loc.head] = rec(cur_e.args[loc.head], loc.rest)
+                new_args[loc.head] = rec(cur_e.args[loc.head], loc.rest, ctx)
                 return Fun(cur_e.func_name, *tuple(new_args))
             elif cur_e.is_integral():
+                ctx2 = Context(ctx)
+                ctx2.add_condition(expr.Op(">", Var(cur_e.var), cur_e.lower))
+                ctx2.add_condition(expr.Op("<", Var(cur_e.var), cur_e.upper))
                 if loc.head == 0:
-                    return Integral(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
+                    return Integral(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest, ctx2))
                 elif loc.head == 1:
-                    return Integral(cur_e.var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body)
+                    return Integral(cur_e.var, rec(cur_e.lower, loc.rest, ctx), cur_e.upper, cur_e.body)
                 elif loc.head == 2:
-                    return Integral(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
+                    return Integral(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest, ctx), cur_e.body)
                 else:
                     raise AssertionError("OnLocation: invalid location")
             elif cur_e.is_evalat():
                 if loc.head == 0:
-                    return EvalAt(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
+                    return EvalAt(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest, ctx))
                 elif loc.head == 1:
-                    return EvalAt(cur_e.var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body)
+                    return EvalAt(cur_e.var, rec(cur_e.lower, loc.rest, ctx), cur_e.upper, cur_e.body)
                 elif loc.head == 2:
-                    return EvalAt(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
+                    return EvalAt(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest, ctx), cur_e.body)
                 else:
                     raise AssertionError("OnLocation: invalid location")
             elif cur_e.is_deriv():
                 assert loc.head == 0, "OnLocation: invalid location"
-                return Deriv(cur_e.var, rec(cur_e.body, loc.rest))
+                return Deriv(cur_e.var, rec(cur_e.body, loc.rest, ctx))
             elif cur_e.is_limit():
                 if loc.head == 0:
-                    return Limit(cur_e.var, cur_e.lim, rec(cur_e.body, loc.rest), drt=cur_e.drt)
+                    return Limit(cur_e.var, cur_e.lim, rec(cur_e.body, loc.rest, ctx), drt=cur_e.drt)
                 elif loc.head == 1:
-                    return Limit(cur_e.var, rec(cur_e.lim, loc.rest), cur_e.body, drt=cur_e.drt)
+                    return Limit(cur_e.var, rec(cur_e.lim, loc.rest, ctx), cur_e.body, drt=cur_e.drt)
                 else:
                     raise AssertionError("OnLocation: invalid location")
             elif cur_e.is_indefinite_integral():
                 assert loc.head == 0, "OnLocation: invalid location"
-                return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest), cur_e.skolem_args)
+                return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest, ctx), cur_e.skolem_args)
             elif cur_e.is_summation():
                 if loc.head == 0:
-                    return Summation(cur_e.index_var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
+                    return Summation(cur_e.index_var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest, ctx))
                 elif loc.head == 1:
-                    return Summation(cur_e.index_var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body)
+                    return Summation(cur_e.index_var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body, ctx)
                 elif loc.head == 2:
-                    return Summation(cur_e.index_var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
+                    return Summation(cur_e.index_var, cur_e.lower, rec(cur_e.upper, loc.rest, ctx), cur_e.body)
                 else:
                     raise AssertionError("OnLocation: invalid location")
             else:
                 raise NotImplementedError
 
-        return rec(e, self.loc)
+        return rec(e, self.loc, ctx)
 
 
 class SimplifyPower(Rule):
@@ -934,7 +945,7 @@ class ReduceLimit(Rule):
         elif e.lim == NEG_INF:
             raise limits.reduce_neg_inf_limit(e.body, e.var, conds=ctx.get_conds())
         else:
-            return limits.reduce_finite_limit(e)
+            return limits.reduce_finite_limit(e, conds=ctx.get_conds())
 
 
 class FullSimplify(Rule):
@@ -1037,7 +1048,7 @@ class ApplyEquation(Rule):
                 return tmp.inst_pat(tmp_inst_lhs)
 
         # Finally, try to solve for e in the equation.
-        res = solve_for_term(self.eq, e)
+        res = solve_for_term(self.eq, e, ctx.get_conds())
         if res is not None:
             return res
         else:
@@ -1131,22 +1142,26 @@ class Substitution(Rule):
         if e.var not in var_subst.get_vars():
             raise AssertionError("Substitution: variable not found")
 
-        dfx = deriv(e.var, var_subst)
-        body = normalize(e.body / dfx)
+        dfx = deriv(e.var, var_subst, ctx)
+        ctx2 = Context(ctx)
+        if e.is_integral():
+            ctx2.add_condition(expr.Op(">", Var(e.var), e.lower))
+            ctx2.add_condition(expr.Op("<", Var(e.var), e.upper))
+        body = normalize(e.body / dfx, ctx2.get_conds())
         body_subst = body.replace(var_subst, var_name)
         if e.var not in body_subst.get_vars():
             # Substitution is able to clear all x in original integrand
             self.f = body_subst
         else:
             # Substitution is unable to clear x, need to solve for x
-            gu = solve_equation(var_subst, var_name, e.var)
+            gu = solve_equation(var_subst, var_name, e.var, ctx.get_conds())
             if gu is None:
                 print('Solve %s = %s for %s' % (var_subst, var_name, e.var))
                 raise AssertionError("Substitution: unable to solve equation")
 
-            gu = normalize(gu)
+            gu = normalize(gu, ctx.get_conds())
             c = e.body.replace(parser.parse_expr(e.var), gu)
-            new_problem_body = c * deriv(str(var_name), gu)
+            new_problem_body = c * deriv(str(var_name), gu, ctx)
             self.f = new_problem_body
 
         if e.is_integral():
@@ -1165,17 +1180,18 @@ class Substitution(Rule):
                 upper = limits.reduce_inf_limit(upper.subst(e.var, e.upper - (1 / x)), e.var, ctx.get_conds())
                 upper = full_normalize(upper, ctx)
             if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
-                return normalize(Integral(self.var_name, upper, lower, Op("-", self.f)))
+                return normalize(Integral(self.var_name, upper, lower, Op("-", self.f)), ctx.get_conds())
             else:
-                return normalize(Integral(self.var_name, lower, upper, self.f))
+                return normalize(Integral(self.var_name, lower, upper, self.f), ctx.get_conds())
         elif e.is_indefinite_integral():
-            return normalize(IndefiniteIntegral(self.var_name, self.f, e.skolem_args))
+            return normalize(IndefiniteIntegral(self.var_name, self.f, e.skolem_args), ctx.get_conds())
         else:
             raise TypeError
 
 def full_normalize(e: Expr, ctx: Context) -> Expr:
+    conds = ctx.get_conds()
     for i in range(5):
-        e = normalize(e)
+        e = normalize(e, conds)
         e = FunctionTable().eval(e, ctx)
     return e
 
@@ -1215,7 +1231,7 @@ class SubstitutionInverse(Rule):
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         # dx = f'(u) * du
-        subst_deriv = deriv(self.var_name, self.var_subst)
+        subst_deriv = deriv(self.var_name, self.var_subst, ctx)
 
         # Replace x with f(u)
         new_e_body = e.body.replace(Var(e.var), self.var_subst)
@@ -1226,8 +1242,8 @@ class SubstitutionInverse(Rule):
         # Solve the equations lower = f(u) and upper = f(u) for u.
         # Solve the equations lower = f(u) and upper = f(u) for u.
         x = Var("_" + self.var_name)
-        lower = solve_equation(self.var_subst, x, self.var_name)
-        upper = solve_equation(self.var_subst, x, self.var_name)
+        lower = solve_equation(self.var_subst, x, self.var_name, ctx.get_conds())
+        upper = solve_equation(self.var_subst, x, self.var_name, ctx.get_conds())
         if lower is None or upper is None:
             raise AssertionError("SubstitutionInverse: cannot solve")
 
@@ -1258,24 +1274,25 @@ class ExpandPolynomial(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        conds = ctx.get_conds()
         if e.is_power() and e.args[1].is_const() and e.args[1].val > 1 and \
                 int(e.args[1].val) == e.args[1].val:
             n = int(e.args[1].val)
-            base = to_poly(self.eval(e.args[0], ctx))
+            base = to_poly(self.eval(e.args[0], ctx), conds)
             res = base
             for i in range(n - 1):
                 res = res * base
             return from_poly(res)
         elif e.is_times():
             s1, s2 = self.eval(e.args[0], ctx), self.eval(e.args[1], ctx)
-            return from_poly(to_poly(s1) * to_poly(s2))
+            return from_poly(to_poly(s1, conds) * to_poly(s2, conds))
         elif e.is_divides():
             s1, s2 = self.eval(e.args[0], ctx), self.eval(e.args[1], ctx)
-            p1, p2 = to_poly(s1), to_poly(s2)
+            p1, p2 = to_poly(s1, conds), to_poly(s2, conds)
             if p2.is_monomial():
                 return from_poly(p1 / p2)
             else:
-                return from_poly(p1 / poly.singleton(from_poly(p2)))
+                return from_poly(p1 / poly.singleton(from_poly(p2), conds))
         elif e.is_integral():
             return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body, ctx))
         else:
@@ -1338,22 +1355,23 @@ class Equation(Rule):
         if e == Const(1) and expr.match(self.new_expr, p):
             return self.new_expr
 
-        if norm.eq_quotient(e, self.new_expr):
+        conds = ctx.get_conds()
+        if norm.eq_quotient(e, self.new_expr, conds):
             return self.new_expr
 
-        if norm.eq_power(e, self.new_expr):
+        if norm.eq_power(e, self.new_expr, conds):
             return self.new_expr
 
-        if norm.eq_log(e, self.new_expr):
+        if norm.eq_log(e, self.new_expr, conds):
             return self.new_expr
 
-        if norm.eq_definite_integral(e, self.new_expr):
+        if norm.eq_definite_integral(e, self.new_expr, conds):
             return self.new_expr
 
-        if norm.simp_definite_integral(e) == normalize(self.new_expr):
+        if norm.simp_definite_integral(e, conds) == normalize(self.new_expr, conds):
             return self.new_expr
         
-        if normalize(norm.normalize_exp(e)) == normalize(self.new_expr):
+        if normalize(norm.normalize_exp(e), conds) == normalize(self.new_expr, conds):
             return self.new_expr
 
         raise AssertionError("Equation: rewriting %s to %s failed" % (e, self.new_expr))
@@ -1396,28 +1414,33 @@ class IntegrationByParts(Rule):
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
-        e.body = normalize(e.body)
-        du = deriv(e.var, self.u)
-        dv = deriv(e.var, self.v)
-        udv = normalize(self.u * dv)
+        ctx2 = Context(ctx)
+        if e.is_integral():
+            ctx2.add_condition(expr.Op(">", Var(e.var), e.lower))
+            ctx2.add_condition(expr.Op("<", Var(e.var), e.upper))
+        conds = ctx2.get_conds()
+        e.body = normalize(e.body, conds)
+        du = deriv(e.var, self.u, ctx)
+        dv = deriv(e.var, self.v, ctx)
+        udv = normalize(self.u * dv, conds)
 
         equal = False
         if udv == e.body:
             equal = True
 
-        if not equal and norm.eq_quotient(udv, e.body):
+        if not equal and norm.eq_quotient(udv, e.body, conds):
             equal = True
 
-        if not equal and norm.eq_power(udv, e.body):
+        if not equal and norm.eq_power(udv, e.body, conds):
             equal = True
 
         if equal:
             if e.is_integral():
-                return expr.EvalAt(e.var, e.lower, e.upper, normalize(self.u * self.v)) - \
-                       expr.Integral(e.var, e.lower, e.upper, normalize(self.v * du))
+                return expr.EvalAt(e.var, e.lower, e.upper, normalize(self.u * self.v, conds)) - \
+                       expr.Integral(e.var, e.lower, e.upper, normalize(self.v * du, conds))
             elif e.is_indefinite_integral():
-                return normalize(self.u * self.v) - \
-                       expr.IndefiniteIntegral(e.var, normalize(self.v * du), e.skolem_args)
+                return normalize(self.u * self.v, conds) - \
+                       expr.IndefiniteIntegral(e.var, normalize(self.v * du, conds), e.skolem_args)
         else:
             raise AssertionError("Integration by parts: %s != %s" % (str(udv), str(e.body)))
 
@@ -1454,8 +1477,9 @@ class SplitRegion(Rule):
             return expr.Integral(e.var, e.lower, self.c, e.body) + \
                    expr.Integral(e.var, self.c, e.upper, e.body)
         else:
-            return Limit(x.name, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1/x), e.body) +
-                         Integral(e.var, normalize(self.c + 1/x), e.upper, e.body))
+            conds = ctx.get_conds()
+            return Limit(x.name, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1/x, conds), e.body) +
+                         Integral(e.var, normalize(self.c + 1/x, conds), e.upper, e.body))
 
 
 class IntegrateByEquation(Rule):
@@ -1463,7 +1487,7 @@ class IntegrateByEquation(Rule):
 
     def __init__(self, lhs: Expr):
         self.name = "IntegrateByEquation"
-        self.lhs = normalize(lhs)
+        self.lhs = lhs
         self.coeff = None
 
     def __str__(self):
@@ -1476,24 +1500,16 @@ class IntegrateByEquation(Rule):
             "str": str(self)
         }
 
-    def validate(self, e: Expr) -> bool:
-        """Determine whether the lhs exists in e."""
-        integrals = e.separate_integral()
-        if not integrals:
-            return False
-        for i, j in integrals:
-            if normalize(i) == self.lhs:
-                return True
-        return False
-
     def eval(self, e: Expr, ctx: Context) -> Expr:
         """Eliminate the lhs's integral in rhs by solving equation."""
-        norm_e = normalize(e)
+        conds = ctx.get_conds()
+        norm_e = normalize(e, conds)
         rhs_var = None
+        lhs = normalize(self.lhs, conds)
 
         def get_coeff(t: Expr):
             nonlocal rhs_var
-            if t == self.lhs:
+            if t == lhs:
                 if t.is_integral():
                     rhs_var = t.var
                 return Const(1)
@@ -1511,16 +1527,16 @@ class IntegrateByEquation(Rule):
             else:
                 return Const(0)
 
-        coeff = normalize(get_coeff(norm_e))
+        coeff = normalize(get_coeff(norm_e), conds)
         if coeff == Const(0):
             return e
 
         if rhs_var != None:
-            new_rhs = normalize(norm_e + ((-coeff) * self.lhs.alpha_convert(rhs_var)))
+            new_rhs = normalize(norm_e + ((-coeff) * lhs.alpha_convert(rhs_var)), conds)
         else:
-            new_rhs = normalize(norm_e + ((-coeff) * self.lhs))
-        self.coeff = normalize(-(coeff))
-        return normalize(new_rhs / ((Const(1) - coeff)))
+            new_rhs = normalize(norm_e + ((-coeff) * lhs), conds)
+        self.coeff = normalize(-(coeff), conds)
+        return normalize(new_rhs / ((Const(1) - coeff)), conds)
 
 
 class ElimInfInterval(Rule):
@@ -1787,7 +1803,7 @@ class ExpandDefinition(Rule):
             for identity in ctx.get_definitions():
                 if identity.lhs.is_fun() and identity.lhs.func_name == self.func_name:
                     inst = expr.match(e, identity.lhs)
-                    return normalize(identity.rhs.inst_pat(inst))
+                    return normalize(identity.rhs.inst_pat(inst), ctx.get_conds())
         if e.is_var() and e.name == self.func_name:
             for identity in ctx.get_definitions():
                 if identity.lhs.is_symbol() and identity.lhs.name == self.func_name:
@@ -1834,7 +1850,7 @@ class FoldDefinition(Rule):
             if identity.lhs.is_fun() and identity.lhs.func_name == self.func_name:
                 inst = expr.match(e, identity.rhs)
                 if inst:
-                    return normalize(identity.lhs.inst_pat(inst))
+                    return normalize(identity.lhs.inst_pat(inst), ctx.get_conds())
 
             if identity.lhs.is_symbol() and identity.lhs.name == self.func_name:
                 if e == identity.rhs:
@@ -2057,10 +2073,10 @@ class SolveEquation(Rule):
     def eval(self, e: Expr, ctx: Context):
         assert e.is_equals()
 
-        res = solve_for_term(e, self.solve_for)
+        res = solve_for_term(e, self.solve_for, ctx.get_conds())
         if not res:
             raise AssertionError("SolveEquation: cannot solve")
-        return Op("=", self.solve_for, normalize(res))
+        return Op("=", self.solve_for, normalize(res, ctx.get_conds()))
 
     def __str__(self):
         return "solve equation for %s" % str(self.solve_for)

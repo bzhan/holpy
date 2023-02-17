@@ -107,8 +107,79 @@
                     "latex_cond": "y > 0"
                 },
                 {
-                    "cond": "a != 0",
-                    "latex_cond": "a \\neq 0"
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+            "latex_goal": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
+            "proof": {
+                "finished": true,
+                "goal": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                "latex_goal": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "y > 0",
+                            "latex_cond": "y > 0"
+                        }
+                    ],
+                    "latex_start": "\\frac{d}{dy} g(y,a) = \\frac{-a}{a ^ {2} + y ^ {2}}",
+                    "start": "(D y. g(y,a)) = -a / (a ^ 2 + y ^ 2)",
+                    "steps": [
+                        {
+                            "latex_res": "g(y,a) = \\int \\frac{-a}{a ^ {2} + y ^ {2}} \\,dy",
+                            "res": "g(y,a) = (INT y [a]. -a / (a ^ 2 + y ^ 2))",
+                            "rule": {
+                                "name": "IntegrateBothSide",
+                                "str": "integrate both side"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "g(y,a) = -a (\\int \\frac{1}{a ^ {2} + y ^ {2}} \\,dy)",
+                            "res": "g(y,a) = -(a * (INT y [a]. 1 / (a ^ 2 + y ^ 2)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "g(y,a) = -a (\\frac{1}{a} \\tan^{-1}{(\\frac{y}{a})}) + C(a)",
+                            "res": "g(y,a) = -(a * (1 / a * atan(y / a))) + SKOLEM_FUNC(C(a))",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
+                            "res": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "y > 0",
+                    "latex_cond": "y > 0"
+                },
+                {
+                    "cond": "a < 0",
+                    "latex_cond": "a < 0"
                 }
             ],
             "finished": true,
@@ -247,8 +318,8 @@
                             "latex_cond": "y > 0"
                         },
                         {
-                            "cond": "a != 0",
-                            "latex_cond": "a \\neq 0"
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
                         }
                     ],
                     "latex_start": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
@@ -326,8 +397,8 @@
                             "latex_cond": "y > 0"
                         },
                         {
-                            "cond": "a != 0",
-                            "latex_cond": "a \\neq 0"
+                            "cond": "a < 0",
+                            "latex_cond": "a < 0"
                         }
                     ],
                     "latex_start": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",

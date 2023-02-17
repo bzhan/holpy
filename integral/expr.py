@@ -230,11 +230,11 @@ class Expr:
         else:
             return False
 
-    def is_odd(self, var) -> bool:
+    def is_odd(self, var, conds) -> bool:
         from integral import poly
         tmp1 = self
         tmp2 = self.subst(var, -Var(var))
-        if poly.normalize(tmp1 + tmp2) == Const(0):
+        if poly.normalize(tmp1 + tmp2, conds) == Const(0):
             return True
         return False
 
