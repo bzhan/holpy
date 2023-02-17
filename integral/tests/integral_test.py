@@ -2612,6 +2612,21 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
-
+    def testExpSinh(self):
+        file = compstate.CompFile("interesting", "exp_sinh")
+        goal = file.add_goal("(INT t:[0, oo]. exp(-p*t) * sinh(t)^3) = 6 / (9 - 10 * p ^ 2 + p ^ 4)", conds=["p>3"])
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("sinh")))
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.Equation("-(p * t) - 3 * t", "(-p-3)*t"))
+        calc.perform_rule(rules.Equation("-(p * t) + 3 * t", "(3-p)*t"))
+        calc.perform_rule(rules.Equation("-(p * t) - t", "(-p-1)*t"))
+        calc.perform_rule(rules.Equation("-(p * t) + t", "(1-p)*t"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("3/8 * (1 / (-p + 1)) - 1/8 * (1 / (-p + 3)) - 3/8 * (1 / (-p - 1)) + 1/8 * (1 / (-p - 3)) ",
+                                         "6/(9-10*p^2+p^4)"))
+        self.checkAndOutput(file)
 if __name__ == "__main__":
     unittest.main()
