@@ -3,12 +3,12 @@
         {
             "conds": [
                 {
-                    "cond": "a != 0",
-                    "latex_cond": "a \\neq 0"
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
                 },
                 {
-                    "cond": "b != 0",
-                    "latex_cond": "b \\neq 0"
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -92,8 +92,8 @@
         {
             "conds": [
                 {
-                    "cond": "a != 0",
-                    "latex_cond": "a \\neq 0"
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
                 },
                 {
                     "cond": "b > 0",
@@ -110,12 +110,12 @@
                 "start": {
                     "conds": [
                         {
-                            "cond": "a != 0",
-                            "latex_cond": "a \\neq 0"
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
                         },
                         {
-                            "cond": "b != 0",
-                            "latex_cond": "b \\neq 0"
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0"
                         }
                     ],
                     "latex_start": "\\int_{0}^{1} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx = \\frac{1}{a b}",

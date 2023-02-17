@@ -1,6 +1,16 @@
 {
     "content": [
         {
+            "conds": [
+                {
+                    "cond": "k >= 0",
+                    "latex_cond": "k \\ge 0"
+                },
+                {
+                    "cond": "a >= 0",
+                    "latex_cond": "a \\ge 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
             "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}",
