@@ -167,6 +167,10 @@
             "expr": "cosh(x) = (exp(x) + exp(-x)) / 2"
         },
         {
+            "type": "definition",
+            "expr": "sinh(x) = (exp(x) - exp(-x)) / 2"
+        },
+        {
             "type": "header",
             "name": "Power identities",
             "level": 2
