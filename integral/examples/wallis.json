@@ -5,6 +5,10 @@
                 {
                     "cond": "b > 0",
                     "latex_cond": "b > 0"
+                },
+                {
+                    "cond": "m >= 0",
+                    "latex_cond": "m \\ge 0"
                 }
             ],
             "eq": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
@@ -17,6 +21,10 @@
                 {
                     "cond": "b > 0",
                     "latex_cond": "b > 0"
+                },
+                {
+                    "cond": "m >= 0",
+                    "latex_cond": "m \\ge 0"
                 }
             ],
             "finished": true,
@@ -98,6 +106,10 @@
                 {
                     "cond": "b > 0",
                     "latex_cond": "b > 0"
+                },
+                {
+                    "cond": "m >= 0",
+                    "latex_cond": "m \\ge 0"
                 }
             ],
             "finished": true,

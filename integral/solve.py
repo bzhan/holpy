@@ -45,10 +45,10 @@ def solve_equation(f: Expr, a: Expr, x: str, conds: Conditions) -> Optional[Expr
             return solve_equation(u, v + a, x, conds)
     if f.is_times():
         u, v = f.args
-        if not u.contains_var(x):
+        if not u.contains_var(x) and (conds.is_positive(u) or conds.is_negative(u)):
             # u * v = a  ==>  v = a / u
             return solve_equation(v, a / u, x, conds)
-        if not v.contains_var(x):
+        if not v.contains_var(x) and (conds.is_positive(v) or conds.is_negative(v)):
             # u * v = a  ==>  u = a / v
             return solve_equation(u, a / v, x, conds)
     if f.is_divides():
@@ -86,7 +86,7 @@ def solve_equation(f: Expr, a: Expr, x: str, conds: Conditions) -> Optional[Expr
     if extract_res:
         # b * x + c = a  ==>  x = (a - c) / b
         b, c = extract_res
-        if normalize(b, conds) != Const(0):
+        if normalize(b, conds) != Const(0) and (conds.is_positive(b) or conds.is_negative(b)):
             return normalize((a - c) / b, conds)
 
 def extract_linear(e: Expr, x: str) -> Optional[Tuple[Expr, Expr]]:
