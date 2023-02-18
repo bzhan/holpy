@@ -1282,7 +1282,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition("I"))
 
         # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
-        goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)")
+        goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)", conds=["a>0"])
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("J"))
@@ -1672,7 +1672,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="log(1+x)", index_var='k'))
 
         goal02 = file.add_goal("x / (-(x ^ 2) + 1) = \
-                1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
+                1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",conds = ["abs(x) < 1"])
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin = goal01)
         calc = proof_of_goal02.begin
         calc.perform_rule(rules.DerivEquation('x'))

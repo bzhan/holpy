@@ -1,5 +1,5 @@
 """Intervals and propagation algorithm."""
-
+import fractions
 from typing import Dict, Tuple, Optional
 
 from integral import expr
@@ -175,7 +175,7 @@ class Interval:
     def __pow__(self, other: "Interval") -> "Interval":
         """Power in interval arithmetic."""
         from integral.poly import normalize_constant
-
+        from integral import limits
         if eval_expr(other.start) == eval_expr(other.end):
             # Exponent has single value
             if eval_expr(other.start) == 0:
@@ -186,6 +186,33 @@ class Interval:
                     return Interval(normalize_constant(self.start ** expr.Const(2)),
                                     normalize_constant(self.end ** expr.Const(2)) \
                         if not self.end.is_inf() else expr.POS_INF, self.left_open, self.right_open)
+                else:
+                    es, ee = eval_expr(self.start), eval_expr(self.end)
+                    if es == float('-inf'):
+                        if ee <= 0:
+                            return Interval(normalize_constant(self.end ** expr.Const(2)), \
+                                            expr.POS_INF, self.right_open, True)
+                        elif ee > 0:
+                            return Interval(expr.Const(0), expr.POS_INF, False, True)
+                    elif es < 0:
+                        if ee <= 0:
+                            return Interval(normalize_constant(self.end ** expr.Const(2)), \
+                                            normalize_constant(self.start ** expr.Const(2)), \
+                                            self.right_open, self.left_open)
+                        elif ee > 0:
+                            if ee == float('inf'):
+                                return Interval.ropen(expr.Const(0), expr.POS_INF)
+                            else:
+                                aee, aes = abs(ee), abs(es)
+                                if aes > aee:
+                                    return Interval(expr.Const(0), normalize_constant(self.start ** expr.Const(2)), \
+                                                    False, self.left_open)
+                                elif aes == aee:
+                                    return Interval(expr.Const(0), normalize_constant(self.start ** expr.Const(2)), \
+                                                    False, self.left_open and self.right_open)
+                                else:
+                                    return Interval(expr.Const(0), normalize_constant(self.end ** expr.Const(2)), \
+                                                    False, self.right_open)
                 return Interval.ropen(expr.Const(0), expr.POS_INF)
             elif eval_expr(other.start) > 0:
                 # TODO: distinguish by parity of denominator        
@@ -202,6 +229,17 @@ class Interval:
             elif eval_expr(other.start) < 0:
                 return (self ** Interval.point(-other.start)).inverse()
         else:
+            if eval_expr(self.start) > 0:
+                if eval_expr(other.start) > 0:
+                    r = eval_expr(self.end) * eval_expr(other.end)
+                    l = eval_expr(self.start) * eval_expr(other.start)
+                    if r != float('inf'):
+                        r = normalize_constant(self.end * other.end)
+                        l = normalize_constant(self.start * other.start)
+                        return Interval(l, r, self.left_open or other.left_open, self.right_open or other.right_open)
+                    else:
+                        l = expr.Const(fractions.Fraction(l))
+                        return Interval(l, expr.POS_INF, self.left_open or other.left_open, True)
             return Interval.open(expr.NEG_INF, expr.POS_INF)
 
     def less(self, other: "Interval") -> bool:
