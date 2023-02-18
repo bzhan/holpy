@@ -764,6 +764,11 @@
             "reference": "Inside interesting Integrals, Section 3.1.7"
         },
         {
+            "type": "axiom",
+            "expr": "(INT x:[0, oo]. x ^ (m - 1) / (x + 1)) = pi / sin(m * pi)",
+            "reference": "Inside interesting Integrals, Section 8.7.9"
+        },
+        {
             "type": "header",
             "name": "Gamma and Beta function",
             "level": 1

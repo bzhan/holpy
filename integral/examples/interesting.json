@@ -464,6 +464,16 @@
             "path": "BetaWallis"
         },
         {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. x ^ (m - 1) / (x + 1)) = B(m, 1 - m)",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "B(m, 1 - m) = Gamma(m) * Gamma(1 - m)",
+            "path": "BetaWallis"
+        },
+        {
             "type": "header",
             "name": "5. Using Power Series to Evaluate Integrals",
             "level": 1
