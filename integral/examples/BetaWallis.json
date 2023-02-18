@@ -1202,6 +1202,217 @@
                 "type": "RewriteGoalProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "B(m,n) = (INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + n))",
+            "latex_goal": "B(m,n) = \\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{(x + 1) ^ {m + n}} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "B(m,n) = (INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + n))",
+                "latex_goal": "B(m,n) = \\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{(x + 1) ^ {m + n}} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "B(m,n)",
+                    "start": "B(m,n)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {m - 1} (-x + 1) ^ {n - 1} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (m - 1) * (-x + 1) ^ (n - 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{(\\frac{1}{y + 1}) ^ {n - 1} (-\\frac{1}{y + 1} + 1) ^ {m - 1}}{(y + 1) ^ {2}} \\,dy",
+                            "res": "INT y:[0,oo]. (1 / (y + 1)) ^ (n - 1) * (-(1 / (y + 1)) + 1) ^ (m - 1) / (y + 1) ^ 2",
+                            "rule": {
+                                "latex_str": "substitute \\(y\\) for \\(\\frac{1}{1 - x} - 1\\)",
+                                "name": "Substitution",
+                                "str": "substitute y for 1 / (1 - x) - 1",
+                                "var_name": "y",
+                                "var_subst": "1 / (1 - x) - 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{(\\frac{1}{y + 1}) ^ {n - 1} (-\\frac{1}{y + 1} + 1) ^ {m - 1}}{(y + 1) ^ {2}} \\,dy",
+                            "res": "INT y:[0,oo]. (1 / (y + 1)) ^ (n - 1) * (-(1 / (y + 1)) + 1) ^ (m - 1) / (y + 1) ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{(\\frac{1}{y + 1}) ^ {n - 1} (\\frac{y}{y + 1}) ^ {m - 1}}{(y + 1) ^ {2}} \\,dy",
+                            "res": "INT y:[0,oo]. (1 / (y + 1)) ^ (n - 1) * (y / (y + 1)) ^ (m - 1) / (y + 1) ^ 2",
+                            "rule": {
+                                "latex_str": "rewriting \\(-\\frac{1}{y + 1} + 1\\) to \\(\\frac{y}{y + 1}\\)",
+                                "name": "Equation",
+                                "new_expr": "y / (y + 1)",
+                                "old_expr": "-(1 / (y + 1)) + 1",
+                                "str": "rewriting -(1 / (y + 1)) + 1 to y / (y + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{(y + 1) ^ {n - 1}} (\\frac{y}{y + 1}) ^ {m - 1}}{(y + 1) ^ {2}} \\,dy",
+                            "res": "INT y:[0,oo]. 1 / (y + 1) ^ (n - 1) * (y / (y + 1)) ^ (m - 1) / (y + 1) ^ 2",
+                            "rule": {
+                                "latex_str": "rewrite \\((\\frac{1}{y + 1}) ^ {n - 1}\\) to \\(\\frac{1}{(y + 1) ^ {n - 1}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(1 / (y + 1)) ^ (n - 1)",
+                                "str": "rewrite (1 / (y + 1)) ^ (n - 1) to 1 / (y + 1) ^ (n - 1) using identity",
+                                "target": "1 / (y + 1) ^ (n - 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{(y + 1) ^ {n - 1}} (\\frac{y ^ {m - 1}}{(y + 1) ^ {m - 1}})}{(y + 1) ^ {2}} \\,dy",
+                            "res": "INT y:[0,oo]. 1 / (y + 1) ^ (n - 1) * (y ^ (m - 1) / (y + 1) ^ (m - 1)) / (y + 1) ^ 2",
+                            "rule": {
+                                "latex_str": "rewrite \\((\\frac{y}{y + 1}) ^ {m - 1}\\) to \\(\\frac{y ^ {m - 1}}{(y + 1) ^ {m - 1}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(y / (y + 1)) ^ (m - 1)",
+                                "str": "rewrite (y / (y + 1)) ^ (m - 1) to y ^ (m - 1) / (y + 1) ^ (m - 1) using identity",
+                                "target": "y ^ (m - 1) / (y + 1) ^ (m - 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{y ^ {m - 1}}{(y + 1) ^ {m + n}} \\,dy",
+                            "res": "INT y:[0,oo]. y ^ (m - 1) / (y + 1) ^ (m + n)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\frac{1}{(y + 1) ^ {n - 1}} (\\frac{y ^ {m - 1}}{(y + 1) ^ {m - 1}})}{(y + 1) ^ {2}}\\) to \\(\\frac{y ^ {m - 1}}{(y + 1) ^ {m + n}}\\)",
+                                "name": "Equation",
+                                "new_expr": "y ^ (m - 1) / (y + 1) ^ (m + n)",
+                                "old_expr": "1 / (y + 1) ^ (n - 1) * (y ^ (m - 1) / (y + 1) ^ (m - 1)) / (y + 1) ^ 2",
+                                "str": "rewriting 1 / (y + 1) ^ (n - 1) * (y ^ (m - 1) / (y + 1) ^ (m - 1)) / (y + 1) ^ 2 to y ^ (m - 1) / (y + 1) ^ (m + n)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{(x + 1) ^ {m + n}} \\,dx",
+                    "start": "INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + n)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal",
+            "wellformed": false
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. x ^ (m - 1) / (x + 1)) = B(m,1 - m)",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx = B(m,1 - m)",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. x ^ (m - 1) / (x + 1)) = B(m,1 - m)",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx = B(m,1 - m)",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx",
+                    "start": "INT x:[0,oo]. x ^ (m - 1) / (x + 1)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "B(m,1 - m)",
+                    "start": "B(m,1 - m)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{(x + 1) ^ {m + (1 - m)}} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + (1 - m))",
+                            "rule": {
+                                "eq": "B(m,n) = (INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + n))",
+                                "latex_str": "apply equation \\(B(m,n) = \\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{(x + 1) ^ {m + n}} \\,dx\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(m,n) = (INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + n))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ (m - 1) / (x + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "B(m,1 - m) = Gamma(m) * Gamma(1 - m)",
+            "latex_goal": "B(m,1 - m) = \\Gamma{(m)} \\Gamma{(1 - m)}",
+            "proof": {
+                "finished": true,
+                "goal": "B(m,1 - m) = Gamma(m) * Gamma(1 - m)",
+                "latex_goal": "B(m,1 - m) = \\Gamma{(m)} \\Gamma{(1 - m)}",
+                "lhs_calc": {
+                    "latex_start": "B(m,1 - m)",
+                    "start": "B(m,1 - m)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\Gamma{(m)} \\Gamma{(1 - m)}}{\\Gamma{(1)}}",
+                            "res": "Gamma(m) * Gamma(1 - m) / Gamma(1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(m,1 - m)\\) to \\(\\frac{\\Gamma{(m)} \\Gamma{(1 - m)}}{\\Gamma{(1)}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(m,1 - m)",
+                                "str": "rewrite B(m,1 - m) to Gamma(m) * Gamma(1 - m) / Gamma(1) using identity",
+                                "target": "Gamma(m) * Gamma(1 - m) / Gamma(1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\Gamma{(m)} \\Gamma{(1 - m)}}{1}",
+                            "res": "Gamma(m) * Gamma(1 - m) / 1",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(1)}\\) to \\(1\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(1)",
+                                "str": "rewrite Gamma(1) to 1 using identity",
+                                "target": "1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\Gamma{(m)} \\Gamma{(1 - m)}",
+                            "res": "Gamma(m) * Gamma(1 - m)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\Gamma{(m)} \\Gamma{(1 - m)}}{1}\\) to \\(\\Gamma{(m)} \\Gamma{(1 - m)}\\)",
+                                "name": "Equation",
+                                "new_expr": "Gamma(m) * Gamma(1 - m)",
+                                "old_expr": "Gamma(m) * Gamma(1 - m) / 1",
+                                "str": "rewriting Gamma(m) * Gamma(1 - m) / 1 to Gamma(m) * Gamma(1 - m)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\Gamma{(m)} \\Gamma{(1 - m)}",
+                    "start": "Gamma(m) * Gamma(1 - m)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "BetaWallis"
