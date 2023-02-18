@@ -46,6 +46,16 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "n != -1",
+                    "latex_cond": "n \\neq -1"
+                },
+                {
+                    "cond": "n != -2",
+                    "latex_cond": "n \\neq -2"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. (1 - sqrt(x)) ^ n) = 2 / ((n + 1) * (n + 2))",
             "latex_goal": "\\int_{0}^{1} (1 - \\sqrt{x}) ^ {n} \\,dx = \\frac{2}{(n + 1) (n + 2)}",
@@ -221,8 +231,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "chapter4_practice01"

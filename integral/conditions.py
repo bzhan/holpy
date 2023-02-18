@@ -97,9 +97,19 @@ class Conditions:
 
     def is_nonzero(self, e: Expr) -> bool:
         """Return whether conditions imply e is nonzero."""
+        from integral.poly import normalize
+        if e.is_op():
+            if e.is_times():
+                return self.is_nonzero(e.args[0]) and self.is_nonzero(e.args[1])
+            elif e.is_power():
+                if self.is_positive(e.args[0]):
+                    return True
         for cond in self.data:
-            if cond.is_not_equals() and cond.args[0] == e and cond.args[1] == expr.Const(0):
-                return True
+            if cond.is_not_equals():
+                if cond.args[0] == e and cond.args[1] == expr.Const(0):
+                    return True
+                elif normalize(e.replace(cond.args[0], cond.args[1]), self) == expr.Const(0):
+                    return True
         if self.is_positive(e):
             return True
         if self.is_negative(e):

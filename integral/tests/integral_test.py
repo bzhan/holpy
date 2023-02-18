@@ -2555,7 +2555,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition("B"))
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        goal02 = file.add_goal("(INT x:[0,1]. (1-sqrt(x))^n) = 2 / ((n+1)*(n+2))")
+        goal02 = file.add_goal("(INT x:[0,1]. (1-sqrt(x))^n) = 2 / ((n+1)*(n+2))", conds=["n!=-1", "n!=-2"])
         proof = goal02.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", "sqrt(x)"))
