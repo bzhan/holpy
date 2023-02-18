@@ -229,16 +229,16 @@ class Interval:
             elif eval_expr(other.start) < 0:
                 return (self ** Interval.point(-other.start)).inverse()
         else:
-            if eval_expr(self.start) > 0:
+            if eval_expr(self.start) > 0 or eval_expr(self.start) == 0 and self.left_open:
                 if eval_expr(other.start) > 0:
-                    r = eval_expr(self.end) * eval_expr(other.end)
-                    l = eval_expr(self.start) * eval_expr(other.start)
+                    r = eval_expr(self.end) ** eval_expr(other.end)
+                    l = eval_expr(self.start) ** eval_expr(other.start)
                     if r != float('inf'):
-                        r = normalize_constant(self.end * other.end)
-                        l = normalize_constant(self.start * other.start)
+                        r = normalize_constant(self.end ** other.end)
+                        l = normalize_constant(self.start ** other.start)
                         return Interval(l, r, self.left_open or other.left_open, self.right_open or other.right_open)
                     else:
-                        l = expr.Const(fractions.Fraction(l))
+                        l = normalize_constant(self.start ** other.start)
                         return Interval(l, expr.POS_INF, self.left_open or other.left_open, True)
             return Interval.open(expr.NEG_INF, expr.POS_INF)
 

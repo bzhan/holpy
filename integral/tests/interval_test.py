@@ -52,7 +52,12 @@ class IntervalTest(unittest.TestCase):
     def testGetBoundForExpression(self):
         test_data = [
                      (["abs(x) < 1"], "-x^2 + 1", "(0, 1]"),
-                     (["k>1","x>1","x < oo"], "x^k", "(1, oo)")
+                     (["k>1","x>1","x < oo"], "x^k", "(1, oo)"),
+                     (["m>=0"], "2*m+1", "[1, oo)"),
+                     (["x>=1"], "2^x", "[2, oo)"),
+                     (["m>=0"], "(2*m+1)/2", "[1/2, oo)"),
+                     (["x>=1/2"], "2^x", "[sqrt(2), oo)"),
+                     (["x>=1/2","b>0"], "b^x", "(0, oo)"),
                     ]
         for c, e, res in test_data:
             conds = conditions.Conditions()
