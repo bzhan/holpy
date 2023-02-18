@@ -2400,6 +2400,31 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Substitution(var_name="x", var_subst="pi / 2 - x"))
         calc.perform_rule(rules.FullSimplify())
 
+        goal18 = file.add_goal("B(m, n) = (INT x:[0, oo]. x ^ (m - 1) / (x + 1) ^ (m + n))")
+        proof_of_goal18 = goal18.proof_by_calculation()
+        calc = proof_of_goal18.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("B"))
+        calc.perform_rule(rules.Substitution(var_name="y", var_subst="1 / (1 - x) - 1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("-(1 / (y + 1)) + 1", "y / (y + 1)"))
+        calc.perform_rule(rules.ApplyIdentity("(1 / (y + 1)) ^ (n - 1)", "1 / (y + 1) ^ (n - 1)"))
+        calc.perform_rule(rules.ApplyIdentity("(y / (y + 1)) ^ (m - 1)", "y ^ (m - 1) / (y + 1) ^ (m - 1)"))
+        calc.perform_rule(rules.Equation("1 / (y + 1) ^ (n - 1) * (y ^ (m - 1) / (y + 1) ^ (m - 1)) / (y + 1) ^ 2",
+                                         "y ^ (m - 1) / (y + 1) ^ (m + n)"))
+
+        goal19 = file.add_goal("(INT x:[0, oo]. x ^ (m - 1) / (x + 1)) = B(m, 1 - m)")
+        proof_of_goal19 = goal19.proof_by_calculation()
+        calc = proof_of_goal19.rhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal18.goal))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal20 = file.add_goal("B(m, 1 - m) = Gamma(m) * Gamma(1 - m)")
+        proof_of_goal20 = goal20.proof_by_calculation()
+        calc = proof_of_goal20.lhs_calc
+        calc.perform_rule(rules.ApplyIdentity("B(m, 1 - m)", "Gamma(m) * Gamma(1 - m) / Gamma(1)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(1)", "1"))
+        calc.perform_rule(rules.Equation("Gamma(m) * Gamma(1 - m) / 1", "Gamma(m) * Gamma(1 - m)"))
+
         self.checkAndOutput(file)
 
 
