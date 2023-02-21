@@ -405,6 +405,15 @@ class RulesTest(unittest.TestCase):
             res = rules.SolveEquation(parse_expr(b)).eval(e, ctx)
             self.assertEqual(str(res), c)
 
+    def testDefiniteIntegralIdentity(self):
+        test_data = [("(INT x:[1,oo]. log(x) / (x^2+1))", "G"),]
+        ctx = context.Context()
+        ctx.load_book("interesting", upto="xxx")
+        r = rules.DefiniteIntegralIdentity()
+        for e, res in test_data:
+            e = parse_expr(e)
+            self.assertEqual(str(r.eval(e, ctx)), str(res))
+
 
 if __name__ == "__main__":
     unittest.main()
