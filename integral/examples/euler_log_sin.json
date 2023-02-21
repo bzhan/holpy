@@ -286,6 +286,9 @@
             "type": "Goal"
         },
         {
+            "bad_parts": [
+                "a / 2 > 0"
+            ],
             "finished": true,
             "goal": "I(a) = pi / 2 * log(a / 2)",
             "latex_goal": "I{(a)} = \\frac{\\pi}{2} \\log{(\\frac{a}{2})}",
@@ -383,7 +386,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "euler_log_sin"

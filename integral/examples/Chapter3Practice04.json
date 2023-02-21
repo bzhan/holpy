@@ -1,6 +1,9 @@
 {
     "content": [
         {
+            "bad_parts": [
+                "x ^ 2 - b ^ 2 != 0"
+            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = 1/2 * (INT x:[-oo,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2))",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{x ^ {2} - b ^ {2}} \\,dx = \\frac{1}{2} (\\int_{-\\infty}^{\\infty} \\frac{x \\sin{(a x)}}{x ^ {2} - b ^ {2}} \\,dx)",
@@ -81,6 +84,10 @@
             "wellformed": false
         },
         {
+            "bad_parts": [
+                "x ^ 2 - b ^ 2 != 0",
+                "2 != 0"
+            ],
             "conds": [
                 {
                     "cond": "a > 0",

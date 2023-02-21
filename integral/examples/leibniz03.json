@@ -7,6 +7,9 @@
             "type": "FuncDef"
         },
         {
+            "bad_parts": [
+                "pi / 2 >= 0"
+            ],
             "finished": true,
             "goal": "I(0) = sqrt(pi / 2)",
             "latex_goal": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
@@ -88,7 +91,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -239,6 +243,9 @@
             "type": "Goal"
         },
         {
+            "bad_parts": [
+                "I(t) > 0"
+            ],
             "finished": true,
             "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
             "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
@@ -279,7 +286,8 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,
@@ -334,6 +342,10 @@
             "type": "Goal"
         },
         {
+            "bad_parts": [
+                "I(t) > 0",
+                "2 != 0"
+            ],
             "finished": true,
             "goal": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
             "latex_goal": "\\log{(I{(t)})} = \\frac{-t ^ {2}}{2} + \\log{(\\sqrt{\\frac{\\pi}{2}})}",
@@ -398,9 +410,13 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
+            "bad_parts": [
+                "pi / 2 >= 0"
+            ],
             "finished": true,
             "goal": "I(t) = sqrt(pi / 2) * exp(-(t ^ 2) / 2)",
             "latex_goal": "I{(t)} = \\sqrt{\\frac{\\pi}{2}} e^{-t ^ {2}/2}",
@@ -449,7 +465,8 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "leibniz03"

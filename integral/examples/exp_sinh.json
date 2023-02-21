@@ -1,6 +1,9 @@
 {
     "content": [
         {
+            "bad_parts": [
+                "9 - 10 * p ^ 2 + p ^ 4 != 0"
+            ],
             "conds": [
                 {
                     "cond": "p > 3",

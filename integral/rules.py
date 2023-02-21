@@ -29,7 +29,7 @@ def deriv(var: str, e: Expr, ctx: Context) -> Expr:
     conds = ctx.get_conds()
     def normal(x):
         return normalize(x, conds)
-    
+
     def rec(e):
         if e.is_var():
             if e.name == var:
@@ -135,8 +135,8 @@ def deriv(var: str, e: Expr, ctx: Context) -> Expr:
                 return Deriv(var, e)
         elif e.is_integral():
             return normal(Integral(e.var, e.lower, e.upper, rec(e.body))
-                        + e.body.subst(e.var, e.upper) * rec(e.upper)
-                        - e.body.subst(e.var, e.lower) * rec(e.lower))
+                          + e.body.subst(e.var, e.upper) * rec(e.upper)
+                          - e.body.subst(e.var, e.lower) * rec(e.lower))
         elif e.is_limit():
             return Limit(e.var, e.lim, rec(e.body))
         elif e.is_summation():
@@ -149,33 +149,87 @@ def deriv(var: str, e: Expr, ctx: Context) -> Expr:
 
     return rec(e)
 
+
 def check_wellformed(e: Expr, conds: Conditions) -> bool:
-    if e.is_var() or e.is_const():
-        return True
-    elif e.is_op():
-        for arg in e.args:
-            if not check_wellformed(arg, conds):
-                return False
-        if e.is_divides():
-            if conds.is_nonzero(e.args[1]):
-                return True
-            return False
+
+    bad_parts = set()
+    def rec(e:Expr, conds:Conditions):
+        nonlocal bad_parts
+        if e.is_var() or e.is_const():
+            return (True, set())
+        elif e.is_op():
+            for arg in e.args:
+                flag, tmp = rec(arg, conds)
+                if not flag:
+                    bad_parts.union(tmp)
+            if e.is_divides():
+                if conds.is_nonzero(e.args[1]) and len(bad_parts) == 0:
+                    return (True, set())
+                bad_parts.add(Op("!=", e.args[1], Const(0)))
+            else:
+                # TODO: add checks for power
+                if len(bad_parts) == 0:
+                    return (True, set())
+        elif e.is_fun():
+            for arg in e.args:
+                flag, tmp = check_wellformed(arg, conds)
+                if not flag:
+                    bad_parts.union(tmp)
+            if e.func_name == 'log':
+                if conds.is_positive(e.args[0]):
+                    return (True, set())
+                else:
+                    bad_parts.add(Op(">", e.args[0], Const(0)))
+            elif e.func_name == 'sqrt':
+                if conds.is_not_negative(e.args[0]):
+                    return (True, set())
+                else:
+                    bad_parts.add(Op(">=", e.args[0], Const(0)))
+            if len(bad_parts) == 0:
+                return (True,set())
+        elif e.is_integral():
+            conds2 = Conditions(conds)
+            conds2.add_condition(expr.Op(">", Var(e.var), e.lower))
+            conds2.add_condition(expr.Op("<", Var(e.var), e.upper))
+            f1, tmp1 = check_wellformed(e.lower, conds)
+            f2, tmp2 = check_wellformed(e.upper, conds)
+            f3, tmp3 = check_wellformed(e.body, conds2)
+            if f1 and f2 and f3 and len(bad_parts) == 0:
+                return (True, set())
+            bad_parts = bad_parts.union(tmp1)
+            bad_parts = bad_parts.union(tmp2)
+            bad_parts = bad_parts.union(tmp3)
         else:
-            # TODO: add checks for power
-            return True
-    elif e.is_fun():
-        for arg in e.args:
-            if not check_wellformed(arg, conds):
-                return False
-        return True
-    elif e.is_integral():
-        conds2 = Conditions(conds)
-        conds2.add_condition(expr.Op(">", Var(e.var), e.lower))
-        conds2.add_condition(expr.Op("<", Var(e.var), e.upper))
-        return check_wellformed(e.lower, conds) and check_wellformed(e.upper, conds) and \
-               check_wellformed(e.body, conds2)
-    else:
-        return True
+            if len(bad_parts) == 0:
+                return (True, set())
+        return (False, bad_parts)
+    return rec(e, conds)
+    # if e.is_var() or e.is_const():
+    #     return True
+    # elif e.is_op():
+    #     for arg in e.args:
+    #         if not check_wellformed(arg, conds):
+    #             return False
+    #     if e.is_divides():
+    #         if conds.is_nonzero(e.args[1]):
+    #             return True
+    #         return False
+    #     else:
+    #         # TODO: add checks for power
+    #         return True
+    # elif e.is_fun():
+    #     for arg in e.args:
+    #         if not check_wellformed(arg, conds):
+    #             return False
+    #     return True
+    # elif e.is_integral():
+    #     conds2 = Conditions(conds)
+    #     conds2.add_condition(expr.Op(">", Var(e.var), e.lower))
+    #     conds2.add_condition(expr.Op("<", Var(e.var), e.upper))
+    #     return check_wellformed(e.lower, conds) and check_wellformed(e.upper, conds) and \
+    #            check_wellformed(e.body, conds2)
+    # else:
+    #     return True
 
 class Rule:
     """
@@ -195,7 +249,7 @@ class Rule:
     def export(self):
         """Returns the JSON representation of the rule."""
         raise NotImplementedError
-    
+
     def get_substs(self) -> Dict[str, Expr]:
         """Return dictionary of variable substitutions produced by the rule."""
         return dict()
@@ -328,7 +382,7 @@ class Linearity(Rule):
             elif e.is_summation():
                 v, l, u, body = e.index_var, e.lower, e.upper, e.body
                 if e.body.is_minus():
-                    return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
+                    return Summation(v, l, u, body.args[0]) - Summation(v, l, u, body.args[1])
                 elif e.body.is_uminus():
                     return -Summation(v, l, u, body.args[0])
                 elif e.body.is_times() or e.body.is_divides():
@@ -357,6 +411,7 @@ class Linearity(Rule):
 
 class CommonIntegral(Rule):
     """Applies common integrals"""
+
     def __init__(self):
         self.name = "CommonIntegral"
 
@@ -381,6 +436,7 @@ class CommonIntegral(Rule):
 
 class FunctionTable(Rule):
     """Apply information from function table."""
+
     def __init__(self):
         self.name = "FunctionTable"
 
@@ -396,7 +452,7 @@ class FunctionTable(Rule):
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_fun() or len(e.args) != 1:
             return e
-        
+
         func_table = ctx.get_function_tables()
         if not e.func_name in func_table:
             return e
@@ -415,6 +471,7 @@ class ApplyIdentity(Rule):
     be multiple options.
 
     """
+
     def __init__(self, source: Union[str, Expr], target: Union[str, Expr]):
         self.name = "ApplyIdentity"
         if isinstance(source, str):
@@ -464,12 +521,13 @@ class ApplyIdentity(Rule):
                 expected_rhs = identity.rhs.inst_pat(inst)
                 if full_normalize(expected_rhs, ctx) == full_normalize(self.target, ctx):
                     return self.target
-        
+
         raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
 
 
 class DefiniteIntegralIdentity(Rule):
     """Apply definite integral identity in current theory."""
+
     def __init__(self):
         self.name = "DefiniteIntegralIdentity"
 
@@ -524,6 +582,7 @@ class DefiniteIntegralIdentity(Rule):
 
 class SeriesExpansionIdentity(Rule):
     """Apply series expansion in the current theory."""
+
     def __init__(self, *, old_expr: Optional[Union[str, Expr]] = None, index_var: str = 'n'):
         self.name = "SeriesExpansionIdentity"
         if isinstance(old_expr, str):
@@ -572,6 +631,7 @@ class SeriesExpansionIdentity(Rule):
 
 class SeriesEvaluationIdentity(Rule):
     """Apply series evaluation in the current theory."""
+
     def __init__(self):
         self.name = "SeriesEvaluationIdentity"
 
@@ -598,12 +658,13 @@ class SeriesEvaluationIdentity(Rule):
 
 class IndefiniteIntegralIdentity(Rule):
     """Apply indefinite integral identity in current theory."""
+
     def __init__(self):
         self.name = "IndefiniteIntegralIdentity"
 
     def __str__(self):
         return "apply indefinite integral"
-    
+
     def export(self):
         return {
             "name": self.name,
@@ -640,7 +701,7 @@ class IndefiniteIntegralIdentity(Rule):
             if new_e != sub_e:
                 e = e.replace_expr(loc, new_e)
                 skolem_args = skolem_args.union(set(sub_e.skolem_args))
-        
+
         if e.is_plus() and e.args[1].is_skolem_func():
             # If already has Skolem variable at right
             skolem_args = skolem_args.union(set(arg.name for arg in e.args[1].dependent_vars))
@@ -654,6 +715,7 @@ class IndefiniteIntegralIdentity(Rule):
 
 class ReplaceSubstitution(Rule):
     """Replace previously performed substitution"""
+
     def __init__(self):
         self.name = "ReplaceSubstitution"
 
@@ -695,12 +757,13 @@ class DerivativeSimplify(Rule):
 
 class SimplifyIdentity(Rule):
     """Simplification using identity."""
+
     def __init__(self):
         self.name = "SimplifyIdentity"
 
     def __str__(self):
         return "simplify identity"
-    
+
     def export(self):
         return {
             "name": self.name,
@@ -902,6 +965,7 @@ class SimplifyPower(Rule):
         (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
 
     """
+
     def __init__(self):
         self.name = "SimplifyPower"
 
@@ -1028,6 +1092,7 @@ class FullSimplify(Rule):
 
 class ApplyEquation(Rule):
     """Apply the given equation for rewriting."""
+
     def __init__(self, eq: Union[Expr, str]):
         self.name = "ApplyEquation"
         if isinstance(eq, str):
@@ -1140,7 +1205,7 @@ class Substitution(Rule):
             "latex_str": "substitute \\(%s\\) for \\(%s\\)" % \
                          (self.var_name, latex.convert_expr(self.var_subst))
         }
-    
+
     def get_substs(self):
         return {self.var_name: self.var_subst}
 
@@ -1216,12 +1281,14 @@ class Substitution(Rule):
         else:
             raise TypeError
 
+
 def full_normalize(e: Expr, ctx: Context) -> Expr:
     conds = ctx.get_conds()
     for i in range(5):
         e = normalize(e, conds)
         e = FunctionTable().eval(e, ctx)
     return e
+
 
 class SubstitutionInverse(Rule):
     """Apply substitution x = f(u).
@@ -1231,7 +1298,7 @@ class SubstitutionInverse(Rule):
 
     """
 
-    def __init__(self, var_name: str, var_subst: Union[Expr,str]):
+    def __init__(self, var_name: str, var_subst: Union[Expr, str]):
         self.name = "SubstitutionInverse"
         self.var_name = var_name
         if isinstance(var_subst, str):
@@ -1350,7 +1417,7 @@ class Equation(Rule):
             latex_str = "rewriting to \\(%s\\)" % latex.convert_expr(self.new_expr)
         else:
             latex_str = "rewriting \\(%s\\) to \\(%s\\)" % \
-                (latex.convert_expr(self.old_expr), latex.convert_expr(self.new_expr))
+                        (latex.convert_expr(self.old_expr), latex.convert_expr(self.new_expr))
         res = {
             "name": self.name,
             "new_expr": str(self.new_expr),
@@ -1398,7 +1465,7 @@ class Equation(Rule):
 
         if norm.simp_definite_integral(e, conds) == normalize(self.new_expr, conds):
             return self.new_expr
-        
+
         if normalize(norm.normalize_exp(e), conds) == normalize(self.new_expr, conds):
             return self.new_expr
 
@@ -1411,6 +1478,7 @@ class IntegrationByParts(Rule):
     The arguments u and v should satisfy u * dv equals the integrand.
 
     """
+
     def __init__(self, u: Expr, v: Expr):
         self.name = "IntegrationByParts"
         if isinstance(u, str):
@@ -1476,9 +1544,9 @@ class IntegrationByParts(Rule):
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
 
-    def __init__(self, c: Union[Expr,str]):
+    def __init__(self, c: Union[Expr, str]):
         self.name = "SplitRegion"
-        if isinstance(c,str):
+        if isinstance(c, str):
             c = parser.parse_expr(c)
         self.c = c
 
@@ -1500,14 +1568,15 @@ class SplitRegion(Rule):
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
         x = Var("c")
-        is_cpv = limits.reduce_inf_limit(e.body.subst(e.var, self.c+1/x), x.name, ctx.get_conds()) in [POS_INF, NEG_INF]
+        is_cpv = limits.reduce_inf_limit(e.body.subst(e.var, self.c + 1 / x), x.name, ctx.get_conds()) in [POS_INF,
+                                                                                                           NEG_INF]
         if not is_cpv:
             return expr.Integral(e.var, e.lower, self.c, e.body) + \
                    expr.Integral(e.var, self.c, e.upper, e.body)
         else:
             conds = ctx.get_conds()
-            return Limit(x.name, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1/x, conds), e.body) +
-                         Integral(e.var, normalize(self.c + 1/x, conds), e.upper, e.body))
+            return Limit(x.name, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1 / x, conds), e.body) +
+                         Integral(e.var, normalize(self.c + 1 / x, conds), e.upper, e.body))
 
 
 class IntegrateByEquation(Rule):
@@ -1575,6 +1644,7 @@ class ElimInfInterval(Rule):
     provided.
 
     """
+
     def __init__(self, a=Const(0), new_var='t'):
         self.name = "ElimInfInterval"
         self.a = a
@@ -1858,7 +1928,7 @@ class FoldDefinition(Rule):
             "func_name": self.func_name,
             "str": str(self)
         }
-    
+
     @staticmethod
     def search(e: Expr, ctx: Context) -> List[Tuple[Expr, expr.Location, str]]:
         subexprs = e.find_subexpr_pred(lambda t: True)
@@ -1895,6 +1965,7 @@ class IntegralEquation(Rule):
     can then be evaluated to produce a Skolem constant.
 
     """
+
     def __init__(self):
         self.name = "IntegrateBothSide"
 
@@ -1927,6 +1998,7 @@ class LimitEquation(Rule):
         A = B -> LIM {x -> a}. A = LIM {x -> a}. B
 
     """
+
     def __init__(self, var: str, lim: Expr):
         self.name = "LimitEquation"
         self.var: str = var
@@ -1948,7 +2020,7 @@ class LimitEquation(Rule):
             "var": self.var,
             "lim": str(self.lim),
             "latex_str": "apply limit \\(%s \\to %s\\) to equation" %
-                (self.var, latex.convert_expr(self.lim))
+                         (self.var, latex.convert_expr(self.lim))
         }
 
 
@@ -2019,6 +2091,7 @@ class VarSubsOfEquation(Rule):
 
 class MergeSummation(Rule):
     "SUM(u,0,oo, body1) + SUM(k,0,oo,body2) = SUM(u, 0, oo, body1+body2)"
+
     def __init__(self):
         self.name = "MergeSummation"
 
@@ -2032,10 +2105,10 @@ class MergeSummation(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not(e.ty == OP and e.op in ('+', '-') and all([isinstance(arg, Summation) for arg in e.args])):
+        if not (e.ty == OP and e.op in ('+', '-') and all([isinstance(arg, Summation) for arg in e.args])):
             return e
         a, b = e.args
-        if not(a.lower == b.lower and a.upper == b.upper):
+        if not (a.lower == b.lower and a.upper == b.upper):
             return e
         if a.index_var != b.index_var:
             b = b.alpha_convert(a.index_var)
@@ -2048,6 +2121,7 @@ class SummationSimplify(Rule):
     TODO: replace with more robust tactic.
     
     """
+
     def __init__(self):
         self.name = "SummationSimplify"
 
@@ -2063,7 +2137,7 @@ class SummationSimplify(Rule):
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_summation():
             return e
-        e = e.replace((Const(-1))^(Const(2)*Var(e.index_var)), Const(1))
+        e = e.replace((Const(-1)) ^ (Const(2) * Var(e.index_var)), Const(1))
         return e
 
 

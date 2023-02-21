@@ -1,6 +1,10 @@
 {
     "content": [
         {
+            "bad_parts": [
+                "b != 0",
+                "b ^ 2 - x ^ 2 != 0"
+            ],
             "conds": [
                 {
                     "cond": "a > 0",
