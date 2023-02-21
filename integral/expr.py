@@ -1237,6 +1237,7 @@ def factorial(e: Expr) -> Expr:
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
+G = Fun("G")
 
 
 def Eq(s: Expr, t: Expr) -> Expr:

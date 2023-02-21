@@ -116,7 +116,10 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
             raise NotImplementedError
     elif e.is_fun():
         if len(e.args) == 0:
-            return "\\%s" % e.func_name
+            if e.func_name in ['pi', 'E']:
+                return "\\%s" % e.func_name
+            else:
+                return "%s" % e.func_name
         elif len(e.args) == 1:
             x, = e.args
             sx = convert_expr(x, mode)

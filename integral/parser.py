@@ -15,6 +15,7 @@ grammar = r"""
         | DECIMAL -> decimal_expr
         | "D" CNAME "." expr -> deriv_expr
         | "pi" -> pi_expr
+        | "G" -> g_expr
         | "inf" -> pos_inf_expr
         | "oo" -> pos_inf_expr
         | "-inf" -> neg_inf_expr
@@ -125,6 +126,9 @@ class ExprTransformer(Transformer):
 
     def pi_expr(self):
         return expr.pi
+
+    def g_expr(self):
+        return expr.G
 
     def pos_inf_expr(self):
         return expr.Inf(Decimal("inf"))
