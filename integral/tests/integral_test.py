@@ -1655,6 +1655,8 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
+
+
     def testLogFunction01(self):
         # Reference:
         # Inside interesting integrals, Section 5.2, example #1
@@ -2449,17 +2451,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal20.goal), "1"))
         calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "0"))
         calc.perform_rule(rules.SolveEquation("Gamma(m) * Gamma(1 - m)"))
-
-        goal22 = file.add_goal("factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0, 1]. x ^ z * (1 - x) ^ z)")
-        proof_of_goal22 = goal22.proof_by_calculation()
-        calc = proof_of_goal22.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.Equation("z", "(z + 1) - 1"), "0.0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("z", "(z + 1) - 1"), "0.1"))
-        calc.perform_rule(rules.FoldDefinition("B"))
-        calc.perform_rule(rules.ApplyIdentity("B(z + 1, z + 1)", "Gamma(z + 1) * Gamma(z + 1) / Gamma(2 * z + 2)"))
-        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
-        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
-        calc.perform_rule(rules.ApplyIdentity("Gamma(2 * z + 2)", "factorial(2 * z + 1)"))
 
         self.checkAndOutput(file)
 

@@ -1413,6 +1413,59 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "Gamma(m) * Gamma(1 - m) = pi / sin(m * pi)",
+            "latex_goal": "\\Gamma{(m)} \\Gamma{(1 - m)} = \\frac{\\pi}{\\sin{(m\\cdot \\pi)}}",
+            "proof": {
+                "finished": true,
+                "goal": "Gamma(m) * Gamma(1 - m) = pi / sin(m * pi)",
+                "latex_goal": "\\Gamma{(m)} \\Gamma{(1 - m)} = \\frac{\\pi}{\\sin{(m\\cdot \\pi)}}",
+                "start": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx = B(m,1 - m)",
+                    "start": "(INT x:[0,oo]. x ^ (m - 1) / (x + 1)) = B(m,1 - m)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx = \\Gamma{(m)} \\Gamma{(1 - m)}",
+                            "res": "(INT x:[0,oo]. x ^ (m - 1) / (x + 1)) = Gamma(m) * Gamma(1 - m)",
+                            "rule": {
+                                "eq": "B(m,1 - m) = Gamma(m) * Gamma(1 - m)",
+                                "latex_str": "apply equation \\(B(m,1 - m) = \\Gamma{(m)} \\Gamma{(1 - m)}\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(m,1 - m) = Gamma(m) * Gamma(1 - m) at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\pi (\\frac{1}{\\sin{(\\pi m)}}) = \\Gamma{(m)} \\Gamma{(1 - m)}",
+                            "res": "pi * (1 / sin(pi * m)) = Gamma(m) * Gamma(1 - m)",
+                            "rule": {
+                                "loc": "0",
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\Gamma{(m)} \\Gamma{(1 - m)} = \\pi (\\frac{1}{\\sin{(\\pi m)}})",
+                            "res": "Gamma(m) * Gamma(1 - m) = pi * (1 / sin(pi * m))",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\Gamma{(m)} \\Gamma{(1 - m)}\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "Gamma(m) * Gamma(1 - m)",
+                                "str": "solve equation for Gamma(m) * Gamma(1 - m)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "BetaWallis"
