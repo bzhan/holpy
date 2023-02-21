@@ -83,6 +83,7 @@
         {
             "type": "problem",
             "expr": "(INT x:[0,1]. log(x+1) / (x^2 + 1)) = pi / 8 * log(2)",
+            "category": "new trick",
             "path": "trick2d"
         },
         {
@@ -474,6 +475,11 @@
             "path": "BetaWallis"
         },
         {
+            "type": "problem",
+            "expr": "Gamma(m) * Gamma(1 - m) = pi / sin(m * pi)",
+            "path": "BetaWallis"
+        },
+        {
             "type": "header",
             "name": "5. Using Power Series to Evaluate Integrals",
             "level": 1
@@ -496,6 +502,11 @@
         {
             "type": "problem",
             "expr": "(INT x:[1,oo]. log(x) / (x^2+1)) = G",
+            "path": "CatalanConstant02"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. log(x + 1) / (x ^ 2 + 1)) = pi / 4 * log(2) + G",
             "path": "CatalanConstant02"
         },
         {

@@ -1599,7 +1599,7 @@ class IntegralTest(unittest.TestCase):
 
     def testCatalanConstant02(self):
         # Reference:
-        # Inside interesting integrals, Section 5.1, example #2
+        # Inside interesting integrals, Section 5.1, example #2 and example #3
         file = compstate.CompFile("interesting", 'CatalanConstant02')
 
         # Evaluate I(k)
@@ -1609,7 +1609,7 @@ class IntegralTest(unittest.TestCase):
         u = parser.parse_expr("log(x)")
         v = parser.parse_expr("(x^(1-k)) / (1-k)")
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.IntegrationByParts(u=u,v=v))
+        calc.perform_rule(rules.IntegrationByParts(u=u, v=v))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
@@ -1635,6 +1635,23 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal5.rhs_calc
         calc.perform_rule(rules.ExpandDefinition("G"))
+
+        goal6 = file.add_goal("(INT x:[0, oo]. log(x + 1) / (x ^ 2 + 1)) = pi / 4 * log(2) + G")
+        proof_of_goal6 = goal6.proof_by_calculation()
+        calc = proof_of_goal6.lhs_calc
+        calc.perform_rule(rules.SplitRegion("1"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.Equation("x + 1", "x * (1 + 1 / x)"))
+        calc.perform_rule(rules.ApplyIdentity("log(x * (1 + 1 / x))", "log(x) + log(1 + 1 / x)"))
+        calc.perform_rule(rules.Equation("(log(x) + log(1 + 1 / x)) / (x ^ 2 + 1)",
+                                         "log(x) / (x ^ 2 + 1) + log(1 + 1 / x) / (x ^ 2 + 1)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal5.goal), "0.1"))
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="1 / x"))
+        calc.perform_rule(rules.Equation("u ^ 2 * (1 / u ^ 2 + 1)", "u ^ 2 + 1"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("pi * log(2) / 4", "pi / 4 * log(2)"))
 
         self.checkAndOutput(file)
 
@@ -1709,6 +1726,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file)
+
 
     def testBernoulliIntegral(self):
         # Reference:
@@ -2424,6 +2442,24 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyIdentity("B(m, 1 - m)", "Gamma(m) * Gamma(1 - m) / Gamma(1)"))
         calc.perform_rule(rules.ApplyIdentity("Gamma(1)", "1"))
         calc.perform_rule(rules.Equation("Gamma(m) * Gamma(1 - m) / 1", "Gamma(m) * Gamma(1 - m)"))
+
+        goal21 = file.add_goal("Gamma(m) * Gamma(1 - m) = pi / sin(m * pi)")
+        proof_of_goal21 = goal21.proof_by_rewrite_goal(begin=goal19)
+        calc = proof_of_goal21.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal20.goal), "1"))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "0"))
+        calc.perform_rule(rules.SolveEquation("Gamma(m) * Gamma(1 - m)"))
+
+        goal22 = file.add_goal("factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0, 1]. x ^ z * (1 - x) ^ z)")
+        proof_of_goal22 = goal22.proof_by_calculation()
+        calc = proof_of_goal22.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.Equation("z", "(z + 1) - 1"), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("z", "(z + 1) - 1"), "0.1"))
+        calc.perform_rule(rules.FoldDefinition("B"))
+        calc.perform_rule(rules.ApplyIdentity("B(z + 1, z + 1)", "Gamma(z + 1) * Gamma(z + 1) / Gamma(2 * z + 2)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(2 * z + 2)", "factorial(2 * z + 1)"))
 
         self.checkAndOutput(file)
 
