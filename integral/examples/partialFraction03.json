@@ -319,6 +319,12 @@
             "bad_parts": [
                 "cos(a) ^ 2 + x ^ 2 != 0"
             ],
+            "conds": [
+                {
+                    "cond": "cos(a) != 0",
+                    "latex_cond": "\\cos{a} \\neq 0"
+                }
+            ],
             "finished": true,
             "goal": "I(a) = 1/4 * (INT x:[-oo,oo]. 1 / (cos(a) ^ 2 + x ^ 2))",
             "latex_goal": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{1}{\\cos^{2}(a) + x ^ {2}} \\,dx)",

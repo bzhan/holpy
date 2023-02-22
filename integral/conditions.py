@@ -98,12 +98,20 @@ class Conditions:
     def is_nonzero(self, e: Expr) -> bool:
         """Return whether conditions imply e is nonzero."""
         from integral.poly import normalize
-        if e.is_op():
+        if e.is_const():
+            return e != expr.Const(0)
+        elif e.is_op():
             if e.is_times():
                 return self.is_nonzero(e.args[0]) and self.is_nonzero(e.args[1])
             elif e.is_power():
                 if self.is_positive(e.args[0]):
                     return True
+        elif e.is_fun():
+            if e.func_name == 'sqrt':
+                if self.is_positive(e.args[0]):
+                    return True
+                else:
+                    return False
         for cond in self.data:
             if cond.is_not_equals():
                 if cond.args[0] == e and cond.args[1] == expr.Const(0):

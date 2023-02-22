@@ -152,7 +152,7 @@ class Goal(StateItem):
 
         self.ctx = Context(ctx)
         self.ctx.extend_condition(self.conds)
-        self.wellformed, self.bad_parts = check_wellformed(goal, self.conds)
+        self.wellformed, self.bad_parts = check_wellformed(goal, self.ctx.get_conds())
 
     def __str__(self):
         if self.is_finished():

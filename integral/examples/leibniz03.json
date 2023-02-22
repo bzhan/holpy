@@ -7,9 +7,6 @@
             "type": "FuncDef"
         },
         {
-            "bad_parts": [
-                "pi / 2 >= 0"
-            ],
             "finished": true,
             "goal": "I(0) = sqrt(pi / 2)",
             "latex_goal": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
@@ -91,8 +88,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,
@@ -343,8 +339,7 @@
         },
         {
             "bad_parts": [
-                "I(t) > 0",
-                "2 != 0"
+                "I(t) > 0"
             ],
             "finished": true,
             "goal": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
@@ -414,9 +409,6 @@
             "wellformed": false
         },
         {
-            "bad_parts": [
-                "pi / 2 >= 0"
-            ],
             "finished": true,
             "goal": "I(t) = sqrt(pi / 2) * exp(-(t ^ 2) / 2)",
             "latex_goal": "I{(t)} = \\sqrt{\\frac{\\pi}{2}} e^{-t ^ {2}/2}",
@@ -465,8 +457,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "leibniz03"
