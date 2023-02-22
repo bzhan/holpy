@@ -371,14 +371,14 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "(k + 1) ^ 2 != 0",
-                "k + 1 != 0"
-            ],
             "conds": [
                 {
                     "cond": "x > 0",
                     "latex_cond": "x > 0"
+                },
+                {
+                    "cond": "k != -1",
+                    "latex_cond": "k \\neq -1"
                 }
             ],
             "finished": true,
@@ -442,8 +442,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "conds": [
@@ -461,9 +460,6 @@
             "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
             "proof": {
                 "base_case": {
-                    "bad_parts": [
-                        "m + 1 != 0"
-                    ],
                     "finished": true,
                     "goal": "(INT x:[0,1]. x ^ m) = 1 / (m + 1)",
                     "latex_goal": "\\int_{0}^{1} x ^ {m} \\,dx = \\frac{1}{m + 1}",
@@ -504,8 +500,7 @@
                         },
                         "type": "CalculationProof"
                     },
-                    "type": "Goal",
-                    "wellformed": false
+                    "type": "Goal"
                 },
                 "finished": true,
                 "goal": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
@@ -698,9 +693,15 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "log(a) != 0",
-                "a > 0"
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "a != 1",
+                    "latex_cond": "a \\neq 1"
+                }
             ],
             "finished": true,
             "goal": "(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)",
@@ -754,8 +755,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,

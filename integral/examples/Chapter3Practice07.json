@@ -13,9 +13,6 @@
             "type": "FuncDef"
         },
         {
-            "bad_parts": [
-                "pi / a >= 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -127,14 +124,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 * a != 0",
-                "pi / a >= 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -194,13 +186,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi / a >= 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -260,13 +248,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi / a >= 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -315,14 +299,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 * a != 0",
-                "pi / a >= 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -382,13 +361,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi * sqrt(exp(1)) >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[-oo,oo]. x * exp(-(x ^ 2) - x)) = -1/2 * sqrt(pi * sqrt(exp(1)))",
             "latex_goal": "\\int_{-\\infty}^{\\infty} x e^{-x ^ {2} - x} \\,dx = -\\frac{1}{2} \\sqrt{\\pi \\sqrt{e}}",
@@ -445,13 +420,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi * sqrt(exp(1)) >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[-oo,oo]. x ^ 2 * exp(-(x ^ 2) - x)) = 3/4 * sqrt(pi * sqrt(exp(1)))",
             "latex_goal": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-x ^ {2} - x} \\,dx = \\frac{3}{4} \\sqrt{\\pi \\sqrt{e}}",
@@ -508,8 +479,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "Chapter3Practice07"

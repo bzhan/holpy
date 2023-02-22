@@ -1,10 +1,6 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "b ^ 4 - x ^ 4 != 0",
-                "2 * b ^ 3 != 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -13,6 +9,10 @@
                 {
                     "cond": "b > 0",
                     "latex_cond": "b > 0"
+                },
+                {
+                    "cond": "b != x",
+                    "latex_cond": "b \\neq x"
                 }
             ],
             "finished": true,
@@ -145,8 +145,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "Chapter3Practice03"

@@ -1,8 +1,11 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "x ^ 2 - b ^ 2 != 0"
+            "conds": [
+                {
+                    "cond": "x != b",
+                    "latex_cond": "x \\neq b"
+                }
             ],
             "finished": true,
             "goal": "(INT x:[0,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = 1/2 * (INT x:[-oo,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2))",
@@ -80,14 +83,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "x ^ 2 - b ^ 2 != 0",
-                "2 != 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -96,6 +94,10 @@
                 {
                     "cond": "b > 0",
                     "latex_cond": "b > 0"
+                },
+                {
+                    "cond": "b != x",
+                    "latex_cond": "b \\neq x"
                 }
             ],
             "finished": true,
@@ -106,6 +108,12 @@
                 "goal": "(INT x:[0,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = pi / 2 * cos(a * b)",
                 "latex_goal": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{x ^ {2} - b ^ {2}} \\,dx = \\frac{\\pi}{2} \\cos{(a b)}",
                 "start": {
+                    "conds": [
+                        {
+                            "cond": "x != b",
+                            "latex_cond": "x \\neq b"
+                        }
+                    ],
                     "latex_start": "\\int_{0}^{\\infty} \\frac{x \\sin{(a x)}}{x ^ {2} - b ^ {2}} \\,dx = \\frac{1}{2} (\\int_{-\\infty}^{\\infty} \\frac{x \\sin{(a x)}}{x ^ {2} - b ^ {2}} \\,dx)",
                     "start": "(INT x:[0,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2)) = 1/2 * (INT x:[-oo,oo]. x * sin(a * x) / (x ^ 2 - b ^ 2))",
                     "steps": [
@@ -445,8 +453,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "Chapter3Practice04"

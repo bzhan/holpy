@@ -392,9 +392,6 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 * pi >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
             "latex_goal": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
@@ -459,13 +456,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi / 2 >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. exp(-(x ^ 2) / 2)) = sqrt(pi / 2)",
             "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{\\frac{\\pi}{2}}",
@@ -526,13 +519,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi / a >= 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -625,8 +614,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "leibniz02"

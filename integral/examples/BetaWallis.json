@@ -361,10 +361,6 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 != 0",
-                "pi >= 0"
-            ],
             "finished": true,
             "goal": "factorial(1/2) = sqrt(pi) / 2",
             "latex_goal": "(\\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2}",
@@ -404,14 +400,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 != 0",
-                "pi >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. exp(-x) * sqrt(x)) = sqrt(pi) / 2",
             "latex_goal": "\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx = \\frac{\\sqrt{\\pi}}{2}",
@@ -491,14 +482,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 != 0",
-                "pi >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,1]. sqrt(-log(x))) = sqrt(pi) / 2",
             "latex_goal": "\\int_{0}^{1} \\sqrt{-\\log{x}} \\,dx = \\frac{\\sqrt{\\pi}}{2}",
@@ -565,8 +551,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,
@@ -651,9 +636,6 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = sqrt(pi)",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\sqrt{\\pi}",
@@ -692,13 +674,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi >= 0"
-            ],
             "finished": true,
             "goal": "Gamma(1/2) = sqrt(pi)",
             "latex_goal": "\\Gamma{(\\frac{1}{2})} = \\sqrt{\\pi}",
@@ -742,13 +720,9 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi >= 0"
-            ],
             "finished": true,
             "goal": "factorial(-1/2) = sqrt(pi)",
             "latex_goal": "(-\\frac{1}{2})! = \\sqrt{\\pi}",
@@ -777,8 +751,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,
@@ -793,8 +766,8 @@
                     "start": "INT x:[0,pi / 2]. sqrt(sin(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\lim\\limits_{x\\to \\infty} (\\,\\sin^{2}(\\frac{\\pi}{2} - \\frac{1}{x})\\,)} \\frac{1}{2} (\\frac{1}{u ^ {1/4} \\sqrt{-u + 1}}) \\,du",
-                            "res": "INT u:[0,LIM {x -> oo}. sin(pi / 2 - 1 / x) ^ 2]. 1/2 * (1 / (u ^ (1/4) * sqrt(-u + 1)))",
+                            "latex_res": "\\int_{0}^{\\sin^{2}(\\frac{\\pi}{2})} \\frac{1}{2} (\\frac{1}{u ^ {1/4} \\sqrt{-u + 1}}) \\,du",
+                            "res": "INT u:[0,sin(pi / 2) ^ 2]. 1/2 * (1 / (u ^ (1/4) * sqrt(-u + 1)))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\sin^{2}(x)\\)",
                                 "name": "Substitution",
@@ -1025,10 +998,6 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "pi >= 0",
-                "2 * sqrt(pi) != 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x) * cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(pi))",
             "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x} \\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{\\pi}}",
@@ -1070,14 +1039,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 * sqrt(2 * pi) != 0",
-                "2 * pi >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,pi / 2]. 1 / sqrt(sin(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
             "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
@@ -1197,14 +1161,9 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
-            "bad_parts": [
-                "2 * sqrt(2 * pi) != 0",
-                "2 * pi >= 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,pi / 2]. 1 / sqrt(cos(x))) = Gamma(1/4) ^ 2 / (2 * sqrt(2 * pi))",
             "latex_goal": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\cos{x}}} \\,dx = \\frac{\\Gamma{(\\frac{1}{4})} ^ {2}}{2 \\sqrt{2 \\pi}}",
@@ -1242,8 +1201,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "finished": true,
@@ -1456,9 +1414,6 @@
             "type": "Goal"
         },
         {
-            "bad_parts": [
-                "sin(m * pi) != 0"
-            ],
             "conds": [
                 {
                     "cond": "m > 0",
@@ -1518,8 +1473,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "BetaWallis"

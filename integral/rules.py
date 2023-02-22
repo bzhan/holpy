@@ -163,9 +163,11 @@ def check_wellformed(e: Expr, conds: Conditions) -> bool:
                 if not flag:
                     bad_parts.union(tmp)
             if e.is_divides():
-                if conds.is_nonzero(e.args[1]) and len(bad_parts) == 0:
+                flag = conds.is_nonzero(e.args[1])
+                if flag and len(bad_parts) == 0:
                     return (True, set())
-                bad_parts.add(Op("!=", e.args[1], Const(0)))
+                elif not flag:
+                    bad_parts.add(Op("!=", e.args[1], Const(0)))
             else:
                 # TODO: add checks for power
                 if len(bad_parts) == 0:

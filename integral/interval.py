@@ -427,7 +427,8 @@ def get_bounds_for_expr(e: Expr, bounds: Dict[Expr, Interval]) -> Interval:
                     return Interval.open(expr.Const(0), expr.POS_INF)
                 else:
                     return Interval.open(expr.NEG_INF, expr.POS_INF)
-
+            elif e.func_name == "pi":
+                return Interval.closed(expr.pi, expr.pi)
         elif e.is_integral():
             if get_bounds_for_expr(e.body, bounds).contained_in(Interval.open(expr.Const(0), expr.POS_INF)) and \
                 e.lower.is_evaluable() and e.upper.is_evaluable() and eval_expr(e.lower) < eval_expr(e.upper):
