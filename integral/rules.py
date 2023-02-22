@@ -167,7 +167,17 @@ def check_wellformed(e: Expr, conds: Conditions) -> bool:
                 if flag and len(bad_parts) == 0:
                     return (True, set())
                 elif not flag:
-                    bad_parts.add(Op("!=", e.args[1], Const(0)))
+                    if e.args[1].is_fun():
+                        if e.args[1].func_name == 'sqrt':
+                            bad_parts.remove(Op('>=', e.args[1].args[0], Const(0)))
+                            bad_parts.add(Op('>', e.args[1].args[0], Const(0)))
+                        elif e.args[1].func_name == 'log':
+                            bad_parts.remove(Op('>', e.args[1].args[0], Const(0)))
+                            bad_parts.add(Op('>', e.args[1].args[0], Const(1)))
+                        else:
+                            bad_parts.add(Op("!=", e.args[1], Const(0)))
+                    else:
+                        bad_parts.add(Op("!=", e.args[1], Const(0)))
             else:
                 # TODO: add checks for power
                 if len(bad_parts) == 0:

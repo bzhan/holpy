@@ -65,6 +65,19 @@ class Conditions:
 
     def is_positive(self, e: Expr) -> bool:
         """Return whether conditions imply e is positive."""
+        if e.is_op():
+            if e.op in ['+', '*', '/']:
+                if all(self.is_positive(arg) for arg in e.args):
+                    return True
+            elif e.op == '^':
+                if e.args[1].is_evaluable():
+                    tmp = expr.eval_expr(e.args[1])
+                    if self.is_nonzero(e.args[0]) and tmp == int(tmp) and tmp % 2 == 0:
+                        return True
+        elif e.is_fun():
+            if e.func_name == 'abs':
+                if self.is_nonzero(e.args[0]):
+                    return True
         interval = self.get_bounds_for_expr(e)
         if interval is None:
             return False
@@ -112,6 +125,11 @@ class Conditions:
                     return True
                 else:
                     return False
+            elif e.func_name in ['cosh', 'exp', 'pi', 'G']:
+                return True
+            elif e.func_name == 'abs':
+                if self.is_nonzero(e.args[0]):
+                    return True
         for cond in self.data:
             if cond.is_not_equals():
                 if cond.args[0] == e and cond.args[1] == expr.Const(0):

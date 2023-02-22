@@ -1,8 +1,11 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "abs(x + a) > 0"
+            "conds": [
+                {
+                    "cond": "x != -a",
+                    "latex_cond": "x \\neq -a"
+                }
             ],
             "finished": true,
             "goal": "(INT x. 1 / (x + a)) = log(abs(x + a)) + SKOLEM_CONST(C)",
@@ -56,8 +59,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "conds": [
