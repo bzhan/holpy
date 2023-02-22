@@ -179,6 +179,10 @@
             "type": "Goal"
         },
         {
+            "bad_parts": [
+                "sqrt(4 * x - x ^ 2) != 0",
+                "4 * x - x ^ 2 >= 0"
+            ],
             "finished": true,
             "goal": "(INT x:[0,4]. log(x) / sqrt(4 * x - x ^ 2)) = 0",
             "latex_goal": "\\int_{0}^{4} \\frac{\\log{x}}{\\sqrt{4 x - x ^ {2}}} \\,dx = 0",
@@ -325,7 +329,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         }
     ],
     "name": "chapter2_practice01"

@@ -1,6 +1,9 @@
 {
     "content": [
         {
+            "bad_parts": [
+                "cosh(x) != 0"
+            ],
             "finished": true,
             "goal": "(INT x:[-oo,oo]. 1 / cosh(x)) = pi",
             "latex_goal": "\\int_{-\\infty}^{\\infty} \\frac{1}{\\cosh{x}} \\,dx = \\pi",

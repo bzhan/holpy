@@ -1,6 +1,9 @@
 {
     "content": [
         {
+            "bad_parts": [
+                "tan(x) + 1 > 0"
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,pi / 4]. log(tan(x) + 1))",
             "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\int_{0}^{\\pi/4} \\log{(\\tan{x} + 1)} \\,dx",
@@ -56,7 +59,8 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "finished": true,

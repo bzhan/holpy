@@ -1,6 +1,10 @@
 {
     "content": [
         {
+            "bad_parts": [
+                "x ^ a + 1 > 0",
+                "x ^ 2 - b * x + 1 != 0"
+            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -152,6 +156,9 @@
             "wellformed": false
         },
         {
+            "bad_parts": [
+                "x ^ 2 - b * x + 1 != 0"
+            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)) = 0",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx = 0",

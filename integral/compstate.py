@@ -152,7 +152,7 @@ class Goal(StateItem):
 
         self.ctx = Context(ctx)
         self.ctx.extend_condition(self.conds)
-        self.wellformed = check_wellformed(goal, self.conds)
+        self.wellformed, self.bad_parts = check_wellformed(goal, self.conds)
 
     def __str__(self):
         if self.is_finished():
@@ -186,6 +186,7 @@ class Goal(StateItem):
             res['conds'] = self.conds.export()
         if not self.wellformed:
             res['wellformed'] = False
+            res['bad_parts'] = [str(e) for e in self.bad_parts]
         return res
 
     def export_book(self):
