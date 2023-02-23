@@ -961,7 +961,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 2.3, example 3
         file = compstate.CompFile("interesting", 'partialFraction03')
         file.add_definition("I(a) = (INT x:[0,oo]. 1 / (x^4 + 2*x^2*cos(2*a) + 1))")
-        goal01 = file.add_goal("I(a) = (INT x:[0,oo]. x^2 / (x^4 + 2*x^2*cos(2*a) + 1))", conds=["2*a!=k*pi", "is_int(k)"])
+        goal01 = file.add_goal("I(a) = (INT x:[0,oo]. x^2 / (x^4 + 2*x^2*cos(2*a) + 1))")
         proof = goal01.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
@@ -1002,7 +1002,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Substitution("x", "-x"))
         calc.perform_rule(rules.FullSimplify())
 
-        goal03 = file.add_goal("I(a) = (1/4 * (INT x:[-oo,oo]. 1 / (cos(a) ^ 2 + x ^ 2)))", conds=["cos(a) !=0"])
+        goal03 = file.add_goal("I(a) = (1/4 * (INT x:[-oo,oo]. 1 / (cos(a) ^ 2 + x ^ 2)))")
         proof = goal03.proof_by_rewrite_goal(begin=goal02)
         calc = proof.begin
         calc.perform_rule(rules.SolveEquation("I(a)"))
@@ -1046,7 +1046,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # self.checkAndOutput(file)
+        self.checkAndOutput(file)
 
     def testLeibniz01(self):
         # Reference
