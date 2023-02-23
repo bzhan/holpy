@@ -1,9 +1,6 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "9 - 10 * p ^ 2 + p ^ 4 != 0"
-            ],
             "conds": [
                 {
                     "cond": "p > 3",
@@ -130,8 +127,95 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "sub_goals": [
+                {
+                    "conds": [
+                        {
+                            "cond": "p > 3",
+                            "latex_cond": "p > 3"
+                        }
+                    ],
+                    "finished": true,
+                    "goal": "9 - 10 * p ^ 2 + p ^ 4 != 0",
+                    "latex_goal": "9 - 10 p ^ {2} + p ^ {4} \\neq 0",
+                    "proof": {
+                        "finished": true,
+                        "goal": "9 - 10 * p ^ 2 + p ^ 4 != 0",
+                        "latex_goal": "9 - 10 p ^ {2} + p ^ {4} \\neq 0",
+                        "lhs_calc": {
+                            "latex_start": "9 - 10 p ^ {2} + p ^ {4}",
+                            "start": "9 - 10 * p ^ 2 + p ^ 4",
+                            "steps": [
+                                {
+                                    "latex_res": "(p ^ {2} - 5) ^ {2} - 16",
+                                    "res": "(p ^ 2 - 5) ^ 2 - 16",
+                                    "rule": {
+                                        "latex_str": "rewriting \\(9 - 10 p ^ {2} + p ^ {4}\\) to \\((p ^ {2} - 5) ^ {2} - 16\\)",
+                                        "name": "Equation",
+                                        "new_expr": "(p ^ 2 - 5) ^ 2 - 16",
+                                        "old_expr": "9 - 10 * p ^ 2 + p ^ 4",
+                                        "str": "rewriting 9 - 10 * p ^ 2 + p ^ 4 to (p ^ 2 - 5) ^ 2 - 16"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "rhs_calc": {
+                            "latex_start": "0",
+                            "start": "0",
+                            "steps": [],
+                            "type": "Calculation"
+                        },
+                        "type": "CalculationProof"
+                    },
+                    "type": "Goal"
+                }
+            ],
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "p > 3",
+                    "latex_cond": "p > 3"
+                }
+            ],
+            "finished": true,
+            "goal": "9 - 10 * p ^ 2 + p ^ 4 != 0",
+            "latex_goal": "9 - 10 p ^ {2} + p ^ {4} \\neq 0",
+            "proof": {
+                "finished": true,
+                "goal": "9 - 10 * p ^ 2 + p ^ 4 != 0",
+                "latex_goal": "9 - 10 p ^ {2} + p ^ {4} \\neq 0",
+                "lhs_calc": {
+                    "latex_start": "9 - 10 p ^ {2} + p ^ {4}",
+                    "start": "9 - 10 * p ^ 2 + p ^ 4",
+                    "steps": [
+                        {
+                            "latex_res": "(p ^ {2} - 5) ^ {2} - 16",
+                            "res": "(p ^ 2 - 5) ^ 2 - 16",
+                            "rule": {
+                                "latex_str": "rewriting \\(9 - 10 p ^ {2} + p ^ {4}\\) to \\((p ^ {2} - 5) ^ {2} - 16\\)",
+                                "name": "Equation",
+                                "new_expr": "(p ^ 2 - 5) ^ 2 - 16",
+                                "old_expr": "9 - 10 * p ^ 2 + p ^ 4",
+                                "str": "rewriting 9 - 10 * p ^ 2 + p ^ 4 to (p ^ 2 - 5) ^ 2 - 16"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "exp_sinh"

@@ -16,7 +16,7 @@ class IntegralTest(unittest.TestCase):
         # Test parsing of json file
         json_file = file.export()
         for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(file, item).export(), file.content[i].export())
+            self.assertEqual(compstate.parse_item(file.content[i].parent, item).export(), file.content[i].export())
 
         # Test goals are finished
         if not omit_finish:
@@ -2524,6 +2524,12 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal), "0.1"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "1"))
         calc.perform_rule(rules.FullSimplify())
+
+        sub_goal = file.add_goal(goal03.sub_goals[0])
+        proof = sub_goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("4 * x - x ^ 2", "x*(4 - x)"))
+
         self.checkAndOutput(file)
 
     def testChapter2Practice02(self):
@@ -2673,6 +2679,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("3/8 * (1 / (-p + 1)) - 1/8 * (1 / (-p + 3)) - 3/8 * (1 / (-p - 1)) + 1/8 * (1 / (-p - 3)) ",
                                          "6/(9-10*p^2+p^4)"))
+        sub_goal = file.add_goal(goal.sub_goals[0])
+        proof = sub_goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("9 - 10 * p ^ 2 + p ^ 4", "(p^2-5)^2-16"))
         self.checkAndOutput(file)
+
 if __name__ == "__main__":
     unittest.main()

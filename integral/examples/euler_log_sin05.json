@@ -1,17 +1,13 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "x ^ a + 1 > 0",
-                "x ^ 2 - b * x + 1 != 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
                     "latex_cond": "a > 0"
                 }
             ],
-            "finished": true,
+            "finished": false,
             "goal": "(INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) = (INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) - a * (INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1))",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx = (\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx) - a (\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx)",
             "proof": {
@@ -152,14 +148,37 @@
                 },
                 "type": "CalculationProof"
             },
+            "sub_goals": [
+                {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        }
+                    ],
+                    "finished": false,
+                    "goal": "x ^ 2 - b * x + 1 != 0",
+                    "latex_goal": "x ^ {2} - b x + 1 \\neq 0",
+                    "type": "Goal"
+                },
+                {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        }
+                    ],
+                    "finished": false,
+                    "goal": "x ^ a + 1 > 0",
+                    "latex_goal": "x ^ {a} + 1 > 0",
+                    "type": "Goal"
+                }
+            ],
             "type": "Goal",
             "wellformed": false
         },
         {
-            "bad_parts": [
-                "x ^ 2 - b * x + 1 != 0"
-            ],
-            "finished": true,
+            "finished": false,
             "goal": "(INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)) = 0",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx = 0",
             "proof": {
@@ -192,6 +211,14 @@
                 },
                 "type": "RewriteGoalProof"
             },
+            "sub_goals": [
+                {
+                    "finished": false,
+                    "goal": "x ^ 2 - b * x + 1 != 0",
+                    "latex_goal": "x ^ {2} - b x + 1 \\neq 0",
+                    "type": "Goal"
+                }
+            ],
             "type": "Goal",
             "wellformed": false
         }
