@@ -197,6 +197,7 @@ class Goal(StateItem):
             res['conds'] = self.conds.export()
         if not self.wellformed:
             res['wellformed'] = False
+            res['bad_parts'] = [str(e) for e in self.bad_parts]
         return res
 
     def export_book(self):
@@ -853,6 +854,10 @@ def parse_item(parent, item) -> StateItem:
             res.proof = parse_item(res, item['proof'])
         if 'wellformed' in item:
             res.wellformed = item['wellformed']
+            if not res.wellformed and 'bad_parts' in item:
+                res.bad_parts = set()
+                for bad_e in item['bad_parts']:
+                    res.bad_parts.add(parser.parse_expr(bad_e))
         if 'sub_goals' in item:
             res.sub_goals = list()
             for g in item['sub_goals']:
