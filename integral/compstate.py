@@ -122,10 +122,13 @@ class FuncDef(StateItem):
         return res
 
     def export_book(self):
+        p = self.parent
+        while (not isinstance(p, CompFile)):
+            p = p.parent
         res = {
             "type": "definition",
             "expr": str(self.eq),
-            "path": self.parent.name if isinstance(self.parent, CompFile) else str(self.parent)
+            "path": p.name
         }
         if self.conds.data:
             res["conds"] = [str(cond) for cond in self.conds.data]
@@ -153,11 +156,8 @@ class Goal(StateItem):
         self.ctx.extend_condition(self.conds)
         self.wellformed, self.bad_parts = check_wellformed(goal, self.ctx.get_conds())
         self.sub_goals:List['Goal'] = list()
-        self.is_sub_goal = False
         for p in self.bad_parts:
-            g = Goal(self, self.ctx, p, conds)
-            g.is_sub_goal = True
-            self.sub_goals.append(g)
+            self.sub_goals.append(Goal(self, self.ctx, p, conds))
 
     def __str__(self):
         if self.is_finished():
@@ -200,10 +200,13 @@ class Goal(StateItem):
         return res
 
     def export_book(self):
+        p = self.parent
+        while(not isinstance(p, CompFile)):
+            p = p.parent
         res = {
             "type": "problem",
             "expr": str(self.goal),
-            "path": self.parent.name if isinstance(self.parent, CompFile) else str(self.parent)
+            "path": p.name
         }
         if self.conds.data:
             res["conds"] = [str(cond) for cond in self.conds.data]
