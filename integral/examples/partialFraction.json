@@ -2,7 +2,6 @@
     "content": [
         {
             "bad_parts": [
-                "4 * cosh(a) != 0",
                 "x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1 != 0"
             ],
             "finished": true,

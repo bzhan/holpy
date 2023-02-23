@@ -43,6 +43,16 @@ class ConditionsTest(unittest.TestCase):
                 conds.add_condition(parser.parse_expr(s))
             self.assertEqual(conds.is_positive(e), res, msg="Failed with %s" % e)
 
+    def testIsNonzero(self):
+        test_data = [
+            ("x+a", ["x!=-a"], True),
+        ]
 
+        for a, conds_str, res in test_data:
+            e = parser.parse_expr(a)
+            conds = Conditions()
+            for s in conds_str:
+                conds.add_condition(parser.parse_expr(s))
+            self.assertEqual(conds.is_nonzero(e), res, msg="Failed with %s" % e)
 if __name__ == "__main__":
     unittest.main()
