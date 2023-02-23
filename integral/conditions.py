@@ -77,6 +77,8 @@ class Conditions:
                     tmp = expr.eval_expr(e.args[1])
                     if self.is_nonzero(e.args[0]) and tmp == int(tmp) and tmp % 2 == 0:
                         return True
+                elif self.is_positive(e.args[0]):
+                    return True
         elif e.is_fun():
             if e.func_name == 'abs':
                 if self.is_nonzero(e.args[0]):

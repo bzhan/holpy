@@ -36,7 +36,9 @@ class ConditionsTest(unittest.TestCase):
             ("sin(m * pi)", ["m>0", "m<1"], True),
 
             ("x*(4-x)", ["x>0", "4-x>0"], True),
-            ("x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1", [], True)
+            ("x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1", [], True),
+            ("x^a", ["x>0"], True),
+            ("x^a + 1", ["x>0"], True)
         ]
 
         for a, conds_str, res in test_data:

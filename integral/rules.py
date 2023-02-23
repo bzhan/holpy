@@ -211,6 +211,12 @@ def check_wellformed(e: Expr, conds: Conditions) -> bool:
             bad_parts = bad_parts.union(tmp1)
             bad_parts = bad_parts.union(tmp2)
             bad_parts = bad_parts.union(tmp3)
+        elif e.is_deriv():
+            f, tmp = check_wellformed(e.body, conds)
+            if f:
+                return (True, set())
+            else:
+                bad_parts = bad_parts.union(tmp)
         else:
             if len(bad_parts) == 0:
                 return (True, set())
