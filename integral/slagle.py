@@ -1,6 +1,4 @@
-import random, string
 import collections
-import heapq
 import functools
 import operator
 from integral.expr import *
@@ -1121,20 +1119,6 @@ class AndNode(GoalNode):
                 value = value.replace_trig(c.root, c.compute_value())
                 
             return value.normalize()
-
-def is_mono(var, e, lower, upper):
-    """Determine whether an expression is monotonic in the given interval."""
-    e_deriv = deriv(var, e)
-    zeros = solveset(sympy_style(e_deriv), sympy_style(var), Interval(sympy_style(lower), \
-                        sympy_style(upper), left_open=True, right_open=True))
-    return list([holpy_style(z) for z in zeros])
-
-def split_integral(e, points):
-    """"""
-    split_points = [e.lower] + [holpy_style(p) for p in points] + [e.upper]
-    split_integrals = [Integral(e.var, split_points[i], split_points[i+1], e.body) \
-                        for i in range(len(points) + 1)]
-    return sum(split_integrals[1:], split_integrals[0])
 
 def bfs(node):
     q = collections.deque()
