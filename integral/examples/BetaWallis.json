@@ -1474,6 +1474,425 @@
                 "type": "RewriteGoalProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0,1]. x ^ z * (1 - x) ^ z)",
+            "latex_goal": "\\frac{z! z!}{(2 z + 1)!} = \\int_{0}^{1} x ^ {z} (1 - x) ^ {z} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0,1]. x ^ z * (1 - x) ^ z)",
+                "latex_goal": "\\frac{z! z!}{(2 z + 1)!} = \\int_{0}^{1} x ^ {z} (1 - x) ^ {z} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "\\frac{z! z!}{(2 z + 1)!}",
+                    "start": "factorial(z) * factorial(z) / factorial(2 * z + 1)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {z} (1 - x) ^ {z} \\,dx",
+                    "start": "INT x:[0,1]. x ^ z * (1 - x) ^ z",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {z + 1 - 1} (1 - x) ^ {z} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (z + 1 - 1) * (1 - x) ^ z",
+                            "rule": {
+                                "latex_str": "rewriting \\(z\\) to \\(z + 1 - 1\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "Equation",
+                                "new_expr": "z + 1 - 1",
+                                "old_expr": "z",
+                                "str": "rewriting z to z + 1 - 1 at 0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {z + 1 - 1} (1 - x) ^ {z + 1 - 1} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (z + 1 - 1) * (1 - x) ^ (z + 1 - 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(z\\) to \\(z + 1 - 1\\) at 0.1",
+                                "loc": "0.1",
+                                "name": "Equation",
+                                "new_expr": "z + 1 - 1",
+                                "old_expr": "z",
+                                "str": "rewriting z to z + 1 - 1 at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "B(z + 1,z + 1)",
+                            "res": "B(z + 1,z + 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "FoldDefinition",
+                                "str": "fold definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\Gamma{(z + 1)} \\Gamma{(z + 1)}}{\\Gamma{(2 z + 2)}}",
+                            "res": "Gamma(z + 1) * Gamma(z + 1) / Gamma(2 * z + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(z + 1,z + 1)\\) to \\(\\frac{\\Gamma{(z + 1)} \\Gamma{(z + 1)}}{\\Gamma{(2 z + 2)}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(z + 1,z + 1)",
+                                "str": "rewrite B(z + 1,z + 1) to Gamma(z + 1) * Gamma(z + 1) / Gamma(2 * z + 2) using identity",
+                                "target": "Gamma(z + 1) * Gamma(z + 1) / Gamma(2 * z + 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! \\Gamma{(z + 1)}}{\\Gamma{(2 z + 2)}}",
+                            "res": "factorial(z) * Gamma(z + 1) / Gamma(2 * z + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(z + 1)}\\) to \\(z!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(z + 1)",
+                                "str": "rewrite Gamma(z + 1) to factorial(z) using identity",
+                                "target": "factorial(z)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{\\Gamma{(2 z + 2)}}",
+                            "res": "factorial(z) * factorial(z) / Gamma(2 * z + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(z + 1)}\\) to \\(z!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(z + 1)",
+                                "str": "rewrite Gamma(z + 1) to factorial(z) using identity",
+                                "target": "factorial(z)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!}",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(2 z + 2)}\\) to \\((2 z + 1)!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(2 * z + 2)",
+                                "str": "rewrite Gamma(2 * z + 2) to factorial(2 * z + 1) using identity",
+                                "target": "factorial(2 * z + 1)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
+            "latex_goal": "z! (z + \\frac{1}{2})! = 2 ^ {-2 z - 1}\\cdot \\sqrt{\\pi} (2 z + 1)!",
+            "proof": {
+                "finished": true,
+                "goal": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
+                "latex_goal": "z! (z + \\frac{1}{2})! = 2 ^ {-2 z - 1}\\cdot \\sqrt{\\pi} (2 z + 1)!",
+                "start": {
+                    "latex_start": "\\frac{z! z!}{(2 z + 1)!} = \\int_{0}^{1} x ^ {z} (1 - x) ^ {z} \\,dx",
+                    "start": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0,1]. x ^ z * (1 - x) ^ z)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\int_{-1}^{1} \\frac{1}{2} (-\\frac{1}{2} s + \\frac{1}{2}) ^ {z} (\\frac{1}{2} s + \\frac{1}{2}) ^ {z} \\,ds",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT s:[-1,1]. 1/2 * (-1/2 * s + 1/2) ^ z * (1/2 * s + 1/2) ^ z)",
+                            "rule": {
+                                "latex_str": "substitute \\(s\\) for \\(2 x - 1\\) at 1",
+                                "loc": "1",
+                                "name": "Substitution",
+                                "str": "substitute s for 2 * x - 1 at 1",
+                                "var_name": "s",
+                                "var_subst": "2 * x - 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\int_{-1}^{1} \\frac{1}{2} (\\frac{1}{2} (1 - s)) ^ {z} (\\frac{1}{2} s + \\frac{1}{2}) ^ {z} \\,ds",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT s:[-1,1]. 1/2 * (1/2 * (1 - s)) ^ z * (1/2 * s + 1/2) ^ z)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-\\frac{1}{2} s + \\frac{1}{2}\\) to \\(\\frac{1}{2} (1 - s)\\)",
+                                "name": "Equation",
+                                "new_expr": "1/2 * (1 - s)",
+                                "old_expr": "-1/2 * s + 1/2",
+                                "str": "rewriting -1/2 * s + 1/2 to 1/2 * (1 - s)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\int_{-1}^{1} \\frac{1}{2} (\\frac{1}{2} (1 - s)) ^ {z} (\\frac{1}{2} (1 + s)) ^ {z} \\,ds",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT s:[-1,1]. 1/2 * (1/2 * (1 - s)) ^ z * (1/2 * (1 + s)) ^ z)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} s + \\frac{1}{2}\\) to \\(\\frac{1}{2} (1 + s)\\)",
+                                "name": "Equation",
+                                "new_expr": "1/2 * (1 + s)",
+                                "old_expr": "1/2 * s + 1/2",
+                                "str": "rewriting 1/2 * s + 1/2 to 1/2 * (1 + s)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\int_{-1}^{1} \\frac{1}{2} ((\\frac{1}{2}) ^ {z} (1 - s) ^ {z}) (\\frac{1}{2} (1 + s)) ^ {z} \\,ds",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT s:[-1,1]. 1/2 * ((1/2) ^ z * (1 - s) ^ z) * (1/2 * (1 + s)) ^ z)",
+                            "rule": {
+                                "latex_str": "rewrite \\((\\frac{1}{2} (1 - s)) ^ {z}\\) to \\((\\frac{1}{2}) ^ {z} (1 - s) ^ {z}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(1/2 * (1 - s)) ^ z",
+                                "str": "rewrite (1/2 * (1 - s)) ^ z to (1/2) ^ z * (1 - s) ^ z using identity",
+                                "target": "(1/2) ^ z * (1 - s) ^ z"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\int_{-1}^{1} \\frac{1}{2} ((\\frac{1}{2}) ^ {z} (1 - s) ^ {z}) ((\\frac{1}{2}) ^ {z} (1 + s) ^ {z}) \\,ds",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT s:[-1,1]. 1/2 * ((1/2) ^ z * (1 - s) ^ z) * ((1/2) ^ z * (1 + s) ^ z))",
+                            "rule": {
+                                "latex_str": "rewrite \\((\\frac{1}{2} (1 + s)) ^ {z}\\) to \\((\\frac{1}{2}) ^ {z} (1 + s) ^ {z}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(1/2 * (1 + s)) ^ z",
+                                "str": "rewrite (1/2 * (1 + s)) ^ z to (1/2) ^ z * (1 + s) ^ z using identity",
+                                "target": "(1/2) ^ z * (1 + s) ^ z"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\int_{-1}^{1} (s + 1) ^ {z} (-s + 1) ^ {z} \\,ds)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (INT s:[-1,1]. (s + 1) ^ z * (-s + 1) ^ z)",
+                            "rule": {
+                                "loc": "1",
+                                "name": "FullSimplify",
+                                "str": "full simplify at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\int_{-1}^{1} ((s + 1) (-s + 1)) ^ {z} \\,ds)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (INT s:[-1,1]. ((s + 1) * (-s + 1)) ^ z)",
+                            "rule": {
+                                "latex_str": "rewrite \\((s + 1) ^ {z} (-s + 1) ^ {z}\\) to \\(((s + 1) (-s + 1)) ^ {z}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(s + 1) ^ z * (-s + 1) ^ z",
+                                "str": "rewrite (s + 1) ^ z * (-s + 1) ^ z to ((s + 1) * (-s + 1)) ^ z using identity",
+                                "target": "((s + 1) * (-s + 1)) ^ z"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\int_{-1}^{1} (1 - s ^ {2}) ^ {z} \\,ds)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (INT s:[-1,1]. (1 - s ^ 2) ^ z)",
+                            "rule": {
+                                "latex_str": "rewriting \\((s + 1) (-s + 1)\\) to \\(1 - s ^ {2}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 - s ^ 2",
+                                "old_expr": "(s + 1) * (-s + 1)",
+                                "str": "rewriting (s + 1) * (-s + 1) to 1 - s ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} ((\\int_{-1}^{0} (1 - s ^ {2}) ^ {z} \\,ds) + (\\int_{0}^{1} (1 - s ^ {2}) ^ {z} \\,ds))",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * ((INT s:[-1,0]. (1 - s ^ 2) ^ z) + (INT s:[0,1]. (1 - s ^ 2) ^ z))",
+                            "rule": {
+                                "c": "0",
+                                "name": "SplitRegion",
+                                "str": "split region at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} ((\\int_{0}^{1} (-s ^ {2} + 1) ^ {z} \\,ds) + (\\int_{0}^{1} (1 - s ^ {2}) ^ {z} \\,ds))",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * ((INT s:[0,1]. (-(s ^ 2) + 1) ^ z) + (INT s:[0,1]. (1 - s ^ 2) ^ z))",
+                            "rule": {
+                                "latex_str": "substitute \\(s\\) for \\(-s\\) at 1.1.0",
+                                "loc": "1.1.0",
+                                "name": "Substitution",
+                                "str": "substitute s for -s at 1.1.0",
+                                "var_name": "s",
+                                "var_subst": "-s"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = (\\frac{1}{2}) ^ {2 z} (\\int_{0}^{1} (-s ^ {2} + 1) ^ {z} \\,ds)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (1/2) ^ (2 * z) * (INT s:[0,1]. (-(s ^ 2) + 1) ^ z)",
+                            "rule": {
+                                "loc": "1",
+                                "name": "FullSimplify",
+                                "str": "full simplify at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = (\\frac{1}{2}) ^ {2 z} (\\int_{0}^{1} \\frac{1}{2} (\\frac{(-u + 1) ^ {z}}{\\sqrt{u}}) \\,du)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (1/2) ^ (2 * z) * (INT u:[0,1]. 1/2 * ((-u + 1) ^ z / sqrt(u)))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(s ^ {2}\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for s ^ 2",
+                                "var_name": "u",
+                                "var_subst": "s ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\int_{0}^{1} \\frac{(-u + 1) ^ {z}}{\\sqrt{u}} \\,du)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (INT u:[0,1]. (-u + 1) ^ z / sqrt(u))",
+                            "rule": {
+                                "loc": "1",
+                                "name": "FullSimplify",
+                                "str": "full simplify at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\int_{0}^{1} u ^ {1/2 - 1} (1 - u) ^ {z + 1 - 1} \\,du)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (INT u:[0,1]. u ^ (1/2 - 1) * (1 - u) ^ (z + 1 - 1))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{(-u + 1) ^ {z}}{\\sqrt{u}}\\) to \\(u ^ {1/2 - 1} (1 - u) ^ {z + 1 - 1}\\)",
+                                "name": "Equation",
+                                "new_expr": "u ^ (1/2 - 1) * (1 - u) ^ (z + 1 - 1)",
+                                "old_expr": "(-u + 1) ^ z / sqrt(u)",
+                                "str": "rewriting (-u + 1) ^ z / sqrt(u) to u ^ (1/2 - 1) * (1 - u) ^ (z + 1 - 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} B(\\frac{1}{2},z + 1)",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * B(1/2,z + 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "loc": "1.1",
+                                "name": "FoldDefinition",
+                                "str": "fold definition at 1.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\frac{\\Gamma{(\\frac{1}{2})} \\Gamma{(z + 1)}}{\\Gamma{(z + \\frac{3}{2})}})",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (Gamma(1/2) * Gamma(z + 1) / Gamma(z + 3/2))",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(\\frac{1}{2},z + 1)\\) to \\(\\frac{\\Gamma{(\\frac{1}{2})} \\Gamma{(z + 1)}}{\\Gamma{(z + \\frac{3}{2})}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(1/2,z + 1)",
+                                "str": "rewrite B(1/2,z + 1) to Gamma(1/2) * Gamma(z + 1) / Gamma(z + 3/2) using identity",
+                                "target": "Gamma(1/2) * Gamma(z + 1) / Gamma(z + 3/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\frac{\\sqrt{\\pi} \\Gamma{(z + 1)}}{\\Gamma{(z + \\frac{3}{2})}})",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (sqrt(pi) * Gamma(z + 1) / Gamma(z + 3/2))",
+                            "rule": {
+                                "eq": "Gamma(1/2) = sqrt(pi)",
+                                "latex_str": "apply equation \\(\\Gamma{(\\frac{1}{2})} = \\sqrt{\\pi}\\) at 1.1.0.0",
+                                "loc": "1.1.0.0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: Gamma(1/2) = sqrt(pi) at 1.1.0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\frac{\\sqrt{\\pi} z!}{\\Gamma{(z + \\frac{3}{2})}})",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (sqrt(pi) * factorial(z) / Gamma(z + 3/2))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(z + 1)}\\) to \\(z!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(z + 1)",
+                                "str": "rewrite Gamma(z + 1) to factorial(z) using identity",
+                                "target": "factorial(z)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{z! z!}{(2 z + 1)!} = \\frac{1}{2} (\\frac{1}{2}) ^ {2 z} (\\frac{\\sqrt{\\pi} z!}{(z + \\frac{1}{2})!})",
+                            "res": "factorial(z) * factorial(z) / factorial(2 * z + 1) = 1/2 * (1/2) ^ (2 * z) * (sqrt(pi) * factorial(z) / factorial(z + 1/2))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(z + \\frac{3}{2})}\\) to \\((z + \\frac{1}{2})!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(z + 3/2)",
+                                "str": "rewrite Gamma(z + 3/2) to factorial(z + 1/2) using identity",
+                                "target": "factorial(z + 1/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(2 z + 1)! = \\frac{2}{\\sqrt{\\pi}} (\\frac{1}{2}) ^ {-2 z} z! (z + \\frac{1}{2})!",
+                            "res": "factorial(2 * z + 1) = 2 / sqrt(pi) * (1/2) ^ (-2 * z) * factorial(z) * factorial(z + 1/2)",
+                            "rule": {
+                                "latex_str": "solve equation for \\((2 z + 1)!\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "factorial(2 * z + 1)",
+                                "str": "solve equation for factorial(2 * z + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(2 z + 1)! = \\frac{2}{\\sqrt{\\pi}} (\\frac{1}{2}) ^ {-2 z} (z! (z + \\frac{1}{2})!)",
+                            "res": "factorial(2 * z + 1) = 2 / sqrt(pi) * (1/2) ^ (-2 * z) * (factorial(z) * factorial(z + 1/2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{2}{\\sqrt{\\pi}} (\\frac{1}{2}) ^ {-2 z} z! (z + \\frac{1}{2})!\\) to \\(\\frac{2}{\\sqrt{\\pi}} (\\frac{1}{2}) ^ {-2 z} (z! (z + \\frac{1}{2})!)\\)",
+                                "name": "Equation",
+                                "new_expr": "2 / sqrt(pi) * (1/2) ^ (-2 * z) * (factorial(z) * factorial(z + 1/2))",
+                                "old_expr": "2 / sqrt(pi) * (1/2) ^ (-2 * z) * factorial(z) * factorial(z + 1/2)",
+                                "str": "rewriting 2 / sqrt(pi) * (1/2) ^ (-2 * z) * factorial(z) * factorial(z + 1/2) to 2 / sqrt(pi) * (1/2) ^ (-2 * z) * (factorial(z) * factorial(z + 1/2))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "z! (z + \\frac{1}{2})! = \\frac{\\sqrt{\\pi}}{2} (\\frac{1}{2}) ^ {2 z} (2 z + 1)!",
+                            "res": "factorial(z) * factorial(z + 1/2) = sqrt(pi) / 2 * (1/2) ^ (2 * z) * factorial(2 * z + 1)",
+                            "rule": {
+                                "latex_str": "solve equation for \\(z! (z + \\frac{1}{2})!\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "factorial(z) * factorial(z + 1/2)",
+                                "str": "solve equation for factorial(z) * factorial(z + 1/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "z! (z + \\frac{1}{2})! = \\sqrt{\\pi} 2 ^ {-1} (2 ^ {-1}) ^ {2 z} (2 z + 1)!",
+                            "res": "factorial(z) * factorial(z + 1/2) = sqrt(pi) * 2 ^ (-1) * 2 ^ (-1) ^ (2 * z) * factorial(2 * z + 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\sqrt{\\pi}}{2} (\\frac{1}{2}) ^ {2 z}\\) to \\(\\sqrt{\\pi} 2 ^ {-1} (2 ^ {-1}) ^ {2 z}\\)",
+                                "name": "Equation",
+                                "new_expr": "sqrt(pi) * 2 ^ (-1) * 2 ^ (-1) ^ (2 * z)",
+                                "old_expr": "sqrt(pi) / 2 * (1/2) ^ (2 * z)",
+                                "str": "rewriting sqrt(pi) / 2 * (1/2) ^ (2 * z) to sqrt(pi) * 2 ^ (-1) * 2 ^ (-1) ^ (2 * z)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "z! (z + \\frac{1}{2})! = \\sqrt{\\pi} 2 ^ {-1} 2 ^ {-2 z} (2 z + 1)!",
+                            "res": "factorial(z) * factorial(z + 1/2) = sqrt(pi) * 2 ^ (-1) * 2 ^ (-2 * z) * factorial(2 * z + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\((2 ^ {-1}) ^ {2 z}\\) to \\(2 ^ {-2 z}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "2 ^ (-1) ^ (2 * z)",
+                                "str": "rewrite 2 ^ (-1) ^ (2 * z) to 2 ^ (-2 * z) using identity",
+                                "target": "2 ^ (-2 * z)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "z! (z + \\frac{1}{2})! = 2 ^ {-2 z - 1}\\cdot \\sqrt{\\pi} (2 z + 1)!",
+                            "res": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{\\pi} 2 ^ {-1} 2 ^ {-2 z}\\) to \\(2 ^ {-2 z - 1}\\cdot \\sqrt{\\pi}\\)",
+                                "name": "Equation",
+                                "new_expr": "2 ^ (-2 * z - 1) * sqrt(pi)",
+                                "old_expr": "sqrt(pi) * 2 ^ (-1) * 2 ^ (-2 * z)",
+                                "str": "rewriting sqrt(pi) * 2 ^ (-1) * 2 ^ (-2 * z) to 2 ^ (-2 * z - 1) * sqrt(pi)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "BetaWallis"
