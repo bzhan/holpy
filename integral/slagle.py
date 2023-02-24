@@ -154,7 +154,7 @@ class AlgoNonLinearSubstitution(AlgorithmRule):
 def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
     rule = rules.Substitution(new_var, subst)
-    new_e = rule.eval(integral)
+    new_e = rule.eval(integral, ctx=ctx)
     steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f, loc=[])]
     return new_e, steps
 
@@ -196,7 +196,7 @@ class LinearSubstitution(AlgorithmRule):
                 continue
             step[0].prepend_loc(Location(loc))
             steps.append(step[0])
-            e = e.replace_trig(i, new_e_i)
+            e = e.replace(i, new_e_i)
         return e, steps
 
 class HalfAngleIdentity(AlgorithmRule):
@@ -231,27 +231,27 @@ class HalfAngleIdentity(AlgorithmRule):
 
         for t, loc, _ in sin_cos_expr:
             new_trig = half * sin(Const(2) * t.args[0].args[0])
-            e = e.replace_trig(t, new_trig)
+            e = e.replace(t, new_trig)
             steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in cos_sin_expr:
             new_trig = half * sin(Const(2) * t.args[0].args[0])
-            e = e.replace_trig(t, new_trig)
+            e = e.replace(t, new_trig)
             steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in sin_power_expr:
             new_trig = half - half * cos(Const(2) * t.args[0].args[0])
-            e = e.replace_trig(t, new_trig)
+            e = e.replace(t, new_trig)
             steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in cos_power_expr:
             new_trig = half + half * cos(Const(2) * t.args[0].args[0])
-            e = e.replace_trig(t, new_trig)
+            e = e.replace(t, new_trig)
             steps.append(calc.TrigIdentityStep(e, "TR7", t, new_trig, _loc+list(loc)))
         for t, loc, _ in y_sin_cos_expr:
             new_trig = half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0])
-            e = e.replace_trig(t, new_trig)
+            e = e.replace(t, new_trig)
             steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in y_cos_sin_expr:
             new_trig = half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0])
-            e = e.replace_trig(t, new_trig)
+            e = e.replace(t, new_trig)
             steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         return e, steps
 
@@ -285,20 +285,20 @@ class TrigIdentity(AlgorithmRule):
         for t, loc in sin_power_expr:
             sin_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
-            e = e.replace_trig(t, sin_coeff * (cos(body) ** Const(2)))
+            e = e.replace(t, sin_coeff * (cos(body) ** Const(2)))
             steps.append(calc.TrigIdentityStep(e, "TR5", t, sin_coeff * (cos(body) ** Const(2)), loc)) 
         for t, loc in cos_power_expr:
             cos_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
-            e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
+            e = e.replace(t, cos_coeff * (sin(body) ** Const(2)))
             steps.append(calc.TrigIdentityStep(e, "TR6", t, cos_coeff * (sin(body) ** Const(2)), loc))
         for t, loc, _ in sin_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
-            e = e.replace_trig(t, (cos(body) ** Const(2)))
+            e = e.replace(t, (cos(body) ** Const(2)))
             steps.append(calc.TrigIdentityStep(e, "TR5", t, cos(body) ** Const(2), loc)) 
         for t, loc, _ in cos_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
-            e = e.replace_trig(t, (sin(body) ** Const(2)))
+            e = e.replace(t, (sin(body) ** Const(2)))
             steps.append(calc.TrigIdentityStep(e, "TR6", t, sin(body) ** Const(2), loc))
         return e, steps
 
@@ -327,12 +327,12 @@ class ElimAbsRule(AlgorithmRule):
         # don't have zero point
         loc = loc if e.ty == INTEGRAL else loc + [1]
         if not rule.check_zero_point(integ):
-            result = e.replace_trig(integ, rule.eval(integ))
+            result = e.replace(integ, rule.eval(integ))
             step = calc.ElimAbsStep(result, loc)
             return result, [step]
         # handle zero point
         c = rule.get_zero_point(integ)
-        new_problem = e.replace_trig(integ, rule.eval(integ))
+        new_problem = e.replace(integ, rule.eval(integ))
         step = calc.ElimAbsStep(new_problem, loc, c)
         return new_problem, [step]
 
@@ -383,19 +383,19 @@ class TrigFunction(HeuristicRule):
         reason = "sine cosine"
 
         for t, loc, _ in tan_expr:
-            e = e.replace_trig(t, sin(t.args[0])/cos(t.args[0]))
+            e = e.replace(t, sin(t.args[0])/cos(t.args[0]))
             steps.append(calc.TrigIdentityStep(e, "TR2", t, sin(t.args[0])/cos(t.args[0]), loc))          
 
         for t, loc, _ in cot_expr:
-            e = e.replace_trig(t, cos(t.args[0])/sin(t.args[0]))
+            e = e.replace(t, cos(t.args[0])/sin(t.args[0]))
             steps.append(calc.TrigIdentityStep(e, "TR2", t, cos(t.args[0])/sin(t.args[0]), loc))  
 
         for t, loc, _ in sec_expr:
-            e = e.replace_trig(t, Const(1)/cos(t.args[0]))
+            e = e.replace(t, Const(1)/cos(t.args[0]))
             steps.append(calc.TrigIdentityStep(e, "TR1", t, Const(1)/cos(t.args[0]), loc))
 
         for t, loc, _ in csc_expr:
-            e = e.replace_trig(t, Const(1)/sin(t.args[0]))
+            e = e.replace(t, Const(1)/sin(t.args[0]))
             steps.append(calc.TrigIdentityStep(e, "TR1", t, Const(1)/sin(t.args[0]), loc))
 
         return e, steps
@@ -428,19 +428,19 @@ class TrigFunction(HeuristicRule):
         reason = "tangent secant"
 
         for t, loc, _ in sin_expr:
-            e = e.replace_trig(t, tan(t.args[0])/sec(t.args[0]))
+            e = e.replace(t, tan(t.args[0])/sec(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, tan(t.args[0])/sec(t.args[0]), reason))
 
         for t, loc, _ in cos_expr:
-            e = e.replace_trig(t, Const(1)/sec(t.args[0]))
+            e = e.replace(t, Const(1)/sec(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sec(t.args[0]), reason))
 
         for t, loc, _ in cot_expr:
-            e = e.replace_trig(t, Const(1)/tan(t.args[0]))
+            e = e.replace(t, Const(1)/tan(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/tan(t.args[0]), reason))
 
         for t, loc, _ in csc_expr:
-            e = e.replace_trig(t, sec(t.args[0])/tan(t.args[0]))
+            e = e.replace(t, sec(t.args[0])/tan(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, sec(t.args[0])/tan(t.args[0]), reason))
 
         return e, steps
@@ -468,19 +468,19 @@ class TrigFunction(HeuristicRule):
         reason = "cotangent cosecant"
 
         for t, loc, _ in sin_expr:
-            e = e.replace_trig(t, Const(1)/csc(t.args[0]))
+            e = e.replace(t, Const(1)/csc(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/csc(t.args[0]), reason))
 
         for t, loc, _ in cos_expr:
-            e = e.replace_trig(t, cot(t.args[0])/csc(t.args[0]))
+            e = e.replace(t, cot(t.args[0])/csc(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, cot(t.args[0])/csc(t.args[0]), reason))
 
         for t, loc, _ in tan_expr:
-            e = e.replace_trig(t, Const(1)/cot(t.args[0]))
+            e = e.replace(t, Const(1)/cot(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/cot(t.args[0]), reason))
 
         for t, loc, _ in sec_expr:
-            e = e.replace_trig(t, csc(t.args[0])/cot(t.args[0]))
+            e = e.replace(t, csc(t.args[0])/cot(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, csc(t.args[0])/cot(t.args[0]), reason))
 
         return e, steps
@@ -886,7 +886,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
             v = Symbol("v", [VAR, OP, FUN])
             pat1 = sin(v)
             s = find_pattern(e_body, pat1)[0]
-            new_e_body = e_body.replace_trig(s, parse_expr('2*u/(1+u^2)')) * parse_expr('2/(1+u^2)')
+            new_e_body = e_body.replace(s, parse_expr('2*u/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2)
             upper = tan(e.upper/2)
             return [(Integral("u", lower, upper, new_e_body), None)]
@@ -898,7 +898,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
             v = Symbol("v", [VAR, OP, FUN])
             pat1 = sin(v)
             s = find_pattern(e_body, pat1)[0]
-            new_e_body = e_body.replace_trig(s, parse_expr('(1-u^2)/(1+u^2)')) * parse_expr('2/(1+u^2)')
+            new_e_body = e_body.replace(s, parse_expr('(1-u^2)/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2)
             upper = tan(e.upper/2)
             return [(Integral("u", lower, upper, new_e_body), None)]
@@ -1107,7 +1107,7 @@ class AndNode(GoalNode):
             return self.root.normalize()
         else:
             for c in self.children:
-                value = value.replace_trig(c.root, c.compute_value())
+                value = value.replace(c.root, c.compute_value())
                 
             return value.normalize()
 
