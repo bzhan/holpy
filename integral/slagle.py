@@ -1,16 +1,14 @@
 import collections
 import functools
 import operator
+import math
+import multiprocessing.pool
 from integral.expr import *
 from integral.parser import parse_expr
 from integral import rules
 from integral import calc
 from integral import latex
-import math
-import multiprocessing.pool
-import json
-from sympy.solvers import solveset
-from sympy import Interval
+from integral import context
 from integral.poly import from_poly, to_poly
 
 a = Symbol('a', [CONST])
@@ -26,6 +24,9 @@ pat5 = x + a
 
 linear_pat = [pat0, pat1, pat2, pat4, pat5]
 
+
+ctx = context.Context()
+ctx.load_book("base")
 
 def gen_rand_letter(ex):
     return "u" if ex != "u" else "v"
@@ -67,25 +68,14 @@ class HeuristicRule:
         """
         pass
 
-class FullSimplify(AlgorithmRule):
-    """
-    Compose Linearity, CommonIntegral and Simplify.
-    """
-    def eval(self, e, loc=[]):
-        s = rules.FullSimplify().eval(e)
-        if s == e:
-            return e, None
-        else:
-            return s, [calc.SimplifyStep(s, loc)]
-
 class CommonIntegral(AlgorithmRule):
     """Evaluate common integrals."""
 
     def eval(self, e):
-        new_e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
+        new_e = rules.OnSubterm(rules.DefiniteIntegralIdentity()).eval(e, ctx=ctx)
         steps = []
         if new_e != e:
-            steps.append(calc.CommonIntegralStep(new_e))
+            steps.append(calc.DefiniteIntegralIdentityStep(new_e))
         return new_e, steps
 
 
@@ -352,8 +342,9 @@ algorithm_rules = [
     DividePolynomial,
     LinearSubstitution,
     TrigIdentity,
-    ElimAbsRule,
-    HalfAngleIdentity,    
+    # ElimAbsRule,
+    HalfAngleIdentity,
+    CommonIntegral   
 ]
 
 class TrigFunction(HeuristicRule):
@@ -700,7 +691,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
 
         res = []        
         factors = decompose_expr_factor(e.body)
-        
+        factors = factors[0] + factors[1]
         if len(factors) == 1:
             factors.append(Const(1))
         
@@ -708,7 +699,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
             h = factors[i]
             rest_factor = [f for f in factors if f != h]
             G = functools.reduce(operator.mul, rest_factor)
-            H = rules.CommonIntegral().eval(Integral(e.var, e.lower, e.upper, h))
+            H = rules.DefiniteIntegralIdentity().eval(Integral(e.var, e.lower, e.upper, h), ctx=ctx)
             if H.body != h or h == exp(Var(e.var)):
                 u = G
                 v = H.body
@@ -1005,7 +996,7 @@ class OrNode(GoalNode):
             if rule == AlgoNonLinearSubstitution:
                 continue
         
-            norm_integral = rules.FullSimplify().eval(cur_integral)
+            norm_integral = rules.FullSimplify().eval(cur_integral, ctx=ctx)
             if norm_integral != cur_integral:
                 algo_steps.append(calc.SimplifyStep(norm_integral, self.loc))
                 cur_integral = norm_integral

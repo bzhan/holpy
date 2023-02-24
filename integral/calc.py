@@ -80,22 +80,22 @@ class LinearityStep(IntegrationStep):
             "reason": "Linearity"
         }
         
-class CommonIntegralStep(IntegrationStep):
+class DefiniteIntegralIdentityStep(IntegrationStep):
     def __init__(self, e, loc=[]):
         self.e = e
-        self.reason = "CommonIntegral"
+        self.reason = "DefiniteIntegralIdentity"
         self.latex = latex.convert_expr(e)
         self.loc = Location(loc)
 
     def __str__(self):
-        return "Common integral on %s" % self.loc
+        return "Apply definite integral identity %s" % self.loc
 
     def info(self):
         return {
             "text": str(self.e),
             "latex": self.latex,
             "location": str(self.loc),
-            "reason": "CommonIntegral"
+            "reason": "DefiniteIntegralIdentity"
         }
 
 class SubstitutionStep(IntegrationStep):

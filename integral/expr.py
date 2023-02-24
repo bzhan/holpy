@@ -731,7 +731,8 @@ class Expr:
                 traverse(exp.body)
 
         traverse(self)
-        subs.remove(self)
+        if self in subs:
+            subs.remove(self)
         return tuple(subs)
 
     def inst_pat(self, mapping: Dict) -> "Expr":
