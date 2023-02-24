@@ -1,9 +1,6 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1 != 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. 1 / (x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1)) = pi / (4 * cosh(a))",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{1}{x ^ {4} + 2 x ^ {2} \\cosh{(2 a)} + 1} \\,dx = \\frac{\\pi}{4 \\cosh{a}}",
@@ -134,8 +131,7 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         }
     ],
     "name": "partialFraction"

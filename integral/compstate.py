@@ -122,10 +122,13 @@ class FuncDef(StateItem):
         return res
 
     def export_book(self):
+        p = self.parent
+        while (not isinstance(p, CompFile)):
+            p = p.parent
         res = {
             "type": "definition",
             "expr": str(self.eq),
-            "path": self.parent.name
+            "path": p.name
         }
         if self.conds.data:
             res["conds"] = [str(cond) for cond in self.conds.data]
@@ -149,10 +152,12 @@ class Goal(StateItem):
             conds = Conditions()
         self.conds = conds
         self.proof = None
-
         self.ctx = Context(ctx)
         self.ctx.extend_condition(self.conds)
         self.wellformed, self.bad_parts = check_wellformed(goal, self.ctx.get_conds())
+        self.sub_goals:List['Goal'] = list()
+        for p in self.bad_parts:
+            self.sub_goals.append(Goal(self, self.ctx, p, conds))
 
     def __str__(self):
         if self.is_finished():
@@ -168,7 +173,11 @@ class Goal(StateItem):
             self.proof == other.proof
 
     def is_finished(self):
-        return self.proof is not None and self.proof.is_finished()
+        if self.sub_goals == list():
+            return self.proof is not None and self.proof.is_finished()
+        else:
+            self.wellformed = all(g.is_finished() for g in self.sub_goals)
+            return self.proof is not None and self.proof.is_finished() and self.wellformed
 
     def clear(self):
         self.proof = None
@@ -180,6 +189,8 @@ class Goal(StateItem):
             "latex_goal": latex.convert_expr(self.goal),
             "finished": self.is_finished(),
         }
+        if self.sub_goals != list():
+            res['sub_goals'] = [g.export() for g in self.sub_goals]
         if self.proof:
             res['proof'] = self.proof.export()
         if self.conds.data:
@@ -190,10 +201,13 @@ class Goal(StateItem):
         return res
 
     def export_book(self):
+        p = self.parent
+        while(not isinstance(p, CompFile)):
+            p = p.parent
         res = {
             "type": "problem",
             "expr": str(self.goal),
-            "path": self.parent.name
+            "path": p.name
         }
         if self.conds.data:
             res["conds"] = [str(cond) for cond in self.conds.data]
@@ -348,15 +362,15 @@ class CalculationProof(StateItem):
 
     """
     def __init__(self, parent, goal: Expr):
-        if not goal.is_equals():
-            raise AssertionError("CalculationProof: goal is not an equality.")
+        # if not goal.is_equals():
+        #     raise AssertionError("CalculationProof: goal is not an equality.")
 
         self.parent = parent
         self.goal = goal
         self.ctx = parent.ctx
-
-        self.lhs_calc = Calculation(self, self.ctx, self.goal.lhs)
-        self.rhs_calc = Calculation(self, self.ctx, self.goal.rhs)
+        self.predicate = goal.op
+        self.lhs_calc = Calculation(self, self.ctx, self.goal.args[0])
+        self.rhs_calc = Calculation(self, self.ctx, self.goal.args[1])
 
     def __str__(self):
         if self.is_finished():
@@ -372,7 +386,19 @@ class CalculationProof(StateItem):
         return res
 
     def is_finished(self):
-        return self.lhs_calc.last_expr == self.rhs_calc.last_expr
+        if self.predicate == '=':
+            return self.lhs_calc.last_expr == self.rhs_calc.last_expr
+        elif self.predicate == '>':
+            return self.ctx.get_conds().is_greater(self.lhs_calc.last_expr,self.rhs_calc.last_expr)
+        elif self.predicate == '<':
+            return self.ctx.get_conds().is_less(self.lhs_calc.last_expr, self.rhs_calc.last_expr)
+        elif self.predicate == '<=':
+            return self.ctx.get_conds().is_not_greater(self.lhs_calc.last_expr, self.rhs_calc.last_expr)
+        elif self.predicate == '>=':
+            return self.ctx.get_conds().is_not_less(self.lhs_calc.last_expr, self.rhs_calc.last_expr)
+        elif self.predicate == '!=':
+            return self.ctx.get_conds().is_not_equal(self.lhs_calc.last_expr, self.rhs_calc.last_expr)
+        raise NotImplementedError
 
     def export(self):
         return {
@@ -657,7 +683,7 @@ class CompFile:
             raise NotImplementedError
         return self.content[-1]
 
-    def add_goal(self, goal: Union[str, Expr], *, conds: List[Union[str, Expr]] = None) -> Goal:
+    def add_goal(self, goal: Union[str, Expr, Goal], *, conds: List[Union[str, Expr]] = None) -> Goal:
         """Add a goal.
 
         goal: statement of the goal.
@@ -665,6 +691,9 @@ class CompFile:
                is already of type Goal.
 
         """
+        if isinstance(goal, Goal):
+            self.content.append(goal)
+            return self.content[-1]
         if conds is not None:
             for i in range(len(conds)):
                 if isinstance(conds[i], str):
@@ -823,6 +852,16 @@ def parse_item(parent, item) -> StateItem:
         res = Goal(parent, ctx, goal, conds=conds)
         if 'proof' in item:
             res.proof = parse_item(res, item['proof'])
+        if 'wellformed' in item:
+            res.wellformed = item['wellformed']
+            if not res.wellformed and 'bad_parts' in item:
+                res.bad_parts = set()
+                for bad_e in item['bad_parts']:
+                    res.bad_parts.add(parser.parse_expr(bad_e))
+        if 'sub_goals' in item:
+            res.sub_goals = list()
+            for g in item['sub_goals']:
+                res.sub_goals.append(parse_item(res, g))
         return res
     elif item['type'] == 'CalculationProof':
         goal = parser.parse_expr(item['goal'])

@@ -249,10 +249,11 @@ class Context:
         if isinstance(eq, str):
             eq = parser.parse_expr(eq)
         if not eq.is_equals():
-            raise TypeError
-
-        # Note: no conversion to symbols for lemmas within a file.        
-        self.lemmas.append(Identity(eq.lhs, eq.rhs))
+            # raise TypeError
+            pass
+        else:
+            # Note: no conversion to symbols for lemmas within a file.
+            self.lemmas.append(Identity(eq.lhs, eq.rhs))
 
     def add_induct_hyp(self, eq: Expr):
         if not eq.is_equals():
