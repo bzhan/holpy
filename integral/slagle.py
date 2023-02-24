@@ -127,7 +127,7 @@ class Linearity(AlgorithmRule):
     
     """
     def eval(self, e):
-        new_e = rules.Linearity().eval(e)
+        new_e = rules.Linearity().eval(e, ctx=ctx)
         if new_e != e:
             steps = [calc.LinearityStep(new_e)]
             return new_e, steps
@@ -704,7 +704,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
                 u = G
                 v = H.body
                 try: # can't deriv abs now
-                    new_integral = rules.IntegrationByParts(u, v).eval(e)
+                    new_integral = rules.IntegrationByParts(u, v).eval(e, ctx=ctx)
                 except:
                     continue
                 step = [calc.IntegrationByPartsStep(new_integral, u, v, loc)]
@@ -804,7 +804,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
             
             elif a < 0 and b > 0:
                 subst = Op("^", Const(Fraction(-a, b)), Const(Fraction(1,2))).normalize() * sec(new_var)
-            new_integral = rules.SubstitutionInverse(str(new_var), subst).eval(e)
+            new_integral = rules.SubstitutionInverse(str(new_var), subst).eval(e, ctx=ctx)
             step = [calc.SubstitutionInverseStep(new_integral, str(new_var), subst)]
             res.append((new_integral, step))
 
@@ -1009,7 +1009,7 @@ class OrNode(GoalNode):
                     if steps:
                         for step in steps:
                             step.prepend_loc(self.loc)
-                        norm_r = rules.FullSimplify().eval(r)
+                        norm_r = rules.FullSimplify().eval(r, ctx=ctx)
                         if norm_r != r:
                             steps.append(calc.SimplifyStep(norm_r, self.loc))
                         if norm_r.ty == INTEGRAL and norm_r not in not_solved_integral:
@@ -1175,7 +1175,7 @@ def perform_steps(node):
         loc = step.loc
         if step.reason == "Simplification":
             rule = rules.FullSimplify()
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1184,7 +1184,7 @@ def perform_steps(node):
             })
         elif step.reason == "Substitution":
             rule = rules.Substitution(step.var_name, step.var_subst)
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1200,7 +1200,7 @@ def perform_steps(node):
             })
         elif step.reason == "Integrate by parts":
             rule = rules.IntegrationByParts(step.u, step.v)
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1215,7 +1215,7 @@ def perform_steps(node):
             })
         elif step.reason == "Rewrite trigonometric":
             rule = rules.RewriteTrigonometric(step.rule_name)
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "reason": step.reason,
                 "text": str(current),
@@ -1231,7 +1231,7 @@ def perform_steps(node):
             })
         elif step.reason == "Elim abs":
             rule = rules.ElimAbs()
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             info = {
                 "reason": step.reason,
                 "text": str(current),
@@ -1245,7 +1245,7 @@ def perform_steps(node):
             real_steps.append(info)
         elif step.reason == "Substitution inverse":
             rule = rules.SubstitutionInverse(step.var_name, step.var_subst)
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1262,7 +1262,7 @@ def perform_steps(node):
             })
         elif step.reason == "Unfold power":
             rule = rules.UnfoldPower()
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1271,7 +1271,7 @@ def perform_steps(node):
             })
         elif step.reason == "Rewrite fraction":
             rule = rules.PolynomialDivision()
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1284,7 +1284,7 @@ def perform_steps(node):
             })
         elif step.reason == "Split region":
             rule = rules.SplitRegion(step.zero_point)
-            current = rules.OnLocation(rule, loc).eval(current)
+            current = rules.OnLocation(rule, loc).eval(current, ctx=ctx)
             real_steps.append({
                 "text": str(current),
                 "latex": latex.convert_expr(current),
@@ -1300,7 +1300,7 @@ def perform_steps(node):
     last_expr = parse_expr(real_steps[-1]["text"])
     if last_expr.is_constant() and last_expr.normalize() == last_expr:
         return real_steps
-    final_expr = rules.FullSimplify().eval(last_expr)
+    final_expr = rules.FullSimplify().eval(last_expr, ctx=ctx)
     real_steps.append({
         "text": str(final_expr),
         "latex": latex.convert_expr(final_expr),
