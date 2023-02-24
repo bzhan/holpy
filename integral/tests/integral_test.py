@@ -2455,6 +2455,47 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "0"))
         calc.perform_rule(rules.SolveEquation("Gamma(m) * Gamma(1 - m)"))
 
+        goal22 = file.add_goal("factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0, 1]. x ^ z * (1 - x) ^ z)")
+        proof_of_goal22 = goal22.proof_by_calculation()
+        calc = proof_of_goal22.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.Equation("z", "(z + 1) - 1"), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("z", "(z + 1) - 1"), "0.1"))
+        calc.perform_rule(rules.FoldDefinition("B"))
+        calc.perform_rule(rules.ApplyIdentity("B(z + 1, z + 1)", "Gamma(z + 1) * Gamma(z + 1) / Gamma(2 * z + 2)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(2 * z + 2)", "factorial(2 * z + 1)"))
+
+        goal23 = file.add_goal("factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)")
+        proof_of_goal23 = goal23.proof_by_rewrite_goal(begin=goal22)
+        calc = proof_of_goal23.begin
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="s", var_subst="2 * x - 1"), "1"))
+        calc.perform_rule(rules.Equation("-1/2 * s + 1/2", "1/2 * (1 - s)"))
+        calc.perform_rule(rules.Equation("1/2 * s + 1/2", "1/2 * (1 + s)"))
+        calc.perform_rule(rules.ApplyIdentity("(1/2 * (1 - s)) ^ z", "(1/2) ^ z * (1 - s) ^ z"))
+        calc.perform_rule(rules.ApplyIdentity("(1/2 * (1 + s)) ^ z", "(1/2) ^ z * (1 + s) ^ z"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "1"))
+        calc.perform_rule(rules.ApplyIdentity("(s + 1) ^ z * (-s + 1) ^ z", "((s + 1) * (-s + 1)) ^ z"))
+        calc.perform_rule(rules.Equation("(s + 1) * (-s + 1)", "(1 - s ^ 2)"))
+        calc.perform_rule(rules.SplitRegion("0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="s", var_subst="-s"), "1.1.0"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "1"))
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="s ^ 2"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "1"))
+        calc.perform_rule(rules.Equation("(-u + 1) ^ z / sqrt(u)", "u ^ (1/2 - 1) * (1 - u) ^ (z + 1 - 1)"))
+        calc.perform_rule(rules.OnLocation(rules.FoldDefinition("B"), "1.1"))
+        calc.perform_rule(rules.ApplyIdentity("B(1/2,z + 1)", "Gamma(1/2) * Gamma(z + 1) / Gamma(z + 3/2)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal10.goal), "1.1.0.0"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 1)", "factorial(z)"))
+        calc.perform_rule(rules.ApplyIdentity("Gamma(z + 3/2)", "factorial(z + 1/2)"))
+        calc.perform_rule(rules.SolveEquation("factorial(2 * z + 1)"))
+        calc.perform_rule(rules.Equation("2 / sqrt(pi) * (1/2) ^ (-2 * z) * factorial(z) * factorial(z + 1/2)",
+                                         "2 / sqrt(pi) * (1/2) ^ (-2 * z) * (factorial(z) * factorial(z + 1/2))"))
+        calc.perform_rule(rules.SolveEquation("factorial(z) * factorial(z + 1/2)"))
+        calc.perform_rule(rules.Equation("sqrt(pi) / 2 * (1/2) ^ (2 * z)", "sqrt(pi) * 2 ^ (-1) * (2 ^ (-1)) ^ (2 * z)"))
+        calc.perform_rule(rules.ApplyIdentity("(2 ^ (-1)) ^ (2 * z)", "2 ^ (-2 * z)"))
+        calc.perform_rule(rules.Equation("sqrt(pi) * 2 ^ (-1) * 2 ^ (-2 * z)", "2 ^ (-2 * z - 1) * sqrt(pi)"))
+
         self.checkAndOutput(file)
 
 

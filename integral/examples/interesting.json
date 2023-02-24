@@ -480,6 +480,11 @@
             "path": "BetaWallis"
         },
         {
+            "type": "problem",
+            "expr": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
+            "path": "BetaWallis"
+        },
+        {
             "type": "header",
             "name": "5. Using Power Series to Evaluate Integrals",
             "level": 1
