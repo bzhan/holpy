@@ -48,7 +48,7 @@ def solve_equation(f: Expr, a: Expr, x: str, conds: Conditions) -> Optional[Expr
         if not u.contains_var(x) and conds.is_nonzero(u):
             # u * v = a  ==>  v = a / u
             return solve_equation(v, a / u, x, conds)
-        if not v.contains_var(x) and conds.is_nonzero(u):
+        if not v.contains_var(x) and conds.is_nonzero(v):
             # u * v = a  ==>  u = a / v
             return solve_equation(u, a / v, x, conds)
     if f.is_divides():

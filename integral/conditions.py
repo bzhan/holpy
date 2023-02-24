@@ -66,18 +66,25 @@ class Conditions:
     def is_positive(self, e: Expr) -> bool:
         """Return whether conditions imply e is positive."""
         if e.is_op():
-            if e.op in ['+', '*', '/']:
+            if e.op in ['*', '/']:
                 if all(self.is_positive(arg) for arg in e.args):
+                    return True
+            elif e.op == '+':
+                if all(self.is_not_negative(arg) for arg in e.args) and any(self.is_positive(arg) for arg in e.args):
                     return True
             elif e.op == '^':
                 if e.args[1].is_evaluable():
                     tmp = expr.eval_expr(e.args[1])
                     if self.is_nonzero(e.args[0]) and tmp == int(tmp) and tmp % 2 == 0:
                         return True
+                elif self.is_positive(e.args[0]):
+                    return True
         elif e.is_fun():
             if e.func_name == 'abs':
                 if self.is_nonzero(e.args[0]):
                     return True
+            elif e.func_name == 'cosh':
+                return True
         interval = self.get_bounds_for_expr(e)
         if interval is None:
             return False
@@ -86,6 +93,17 @@ class Conditions:
     
     def is_not_negative(self, e: Expr) -> bool:
         """Return whether conditions imply e is not negative."""
+        if self.is_positive(e):
+            return True
+        if e.is_op():
+            if e.op in ['+', '*']:
+                if all(self.is_not_negative(arg) for arg in e.args):
+                    return True
+            elif e.op == '^':
+                if e.args[1].is_evaluable():
+                    tmp = expr.eval_expr(e.args[1])
+                    if tmp == int(tmp) and tmp > 0 and tmp % 2 == 0:
+                        return True
         interval = self.get_bounds_for_expr(e)
         if interval is None:
             return False
@@ -141,3 +159,18 @@ class Conditions:
         if self.is_negative(e):
             return True
         return False
+
+    def is_greater(self, e1: Expr, e2: Expr) -> bool:
+        return self.is_positive(e1 - e2)
+
+    def is_less(self, e1: Expr, e2:Expr) -> bool:
+        return self.is_negative(e1 - e2)
+
+    def is_not_less(self, e1:Expr, e2:Expr):
+        return self.is_not_negative(e1 - e2)
+
+    def is_not_greater(self, e1:Expr, e2:Expr):
+        return self.is_not_positive(e1 - e2)
+
+    def is_not_equal(self, e1: Expr, e2: Expr):
+        return self.is_nonzero(e1 - e2)

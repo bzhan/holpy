@@ -316,9 +316,6 @@
             "wellformed": false
         },
         {
-            "bad_parts": [
-                "cos(a) ^ 2 + x ^ 2 != 0"
-            ],
             "conds": [
                 {
                     "cond": "cos(a) != 0",
@@ -511,8 +508,7 @@
                 },
                 "type": "RewriteGoalProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "type": "Goal"
         },
         {
             "conds": [

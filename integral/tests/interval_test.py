@@ -58,6 +58,7 @@ class IntervalTest(unittest.TestCase):
                      (["m>=0"], "(2*m+1)/2", "[1/2, oo)"),
                      (["x>=1/2"], "2^x", "[sqrt(2), oo)"),
                      (["x>=1/2","b>0"], "b^x", "(0, oo)"),
+                     (["b>-2", "b<2"], "1/4 * b^2", "[0, 1)")
                     ]
         for c, e, res in test_data:
             conds = conditions.Conditions()
