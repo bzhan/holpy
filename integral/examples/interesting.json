@@ -407,11 +407,18 @@
         {
             "type": "problem",
             "expr": "B(m, n) = 2 * (INT x:[0, pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
+            "conds":[
+                "m > 0",
+                "n > 0"
+            ],
             "path": "BetaWallis"
         },
         {
             "type": "problem",
             "expr": "(INT x:[0, 1]. (x - x ^ 2) ^ n) = (factorial(n) ^ 2) / (factorial(2 * n + 1))",
+            "conds":[
+                "n > -1"
+            ],
             "path": "BetaWallis"
         },
         {
@@ -467,21 +474,36 @@
         {
             "type": "problem",
             "expr": "(INT x:[0, oo]. x ^ (m - 1) / (x + 1)) = B(m, 1 - m)",
+            "conds":[
+                "m > 0",
+                "m < 1"
+            ],
             "path": "BetaWallis"
         },
         {
             "type": "problem",
             "expr": "B(m, 1 - m) = Gamma(m) * Gamma(1 - m)",
+            "conds":[
+                "m > 0",
+                "m < 1"
+            ],
             "path": "BetaWallis"
         },
         {
             "type": "problem",
             "expr": "Gamma(m) * Gamma(1 - m) = pi / sin(m * pi)",
+            "conds":[
+                "m > 0",
+                "m < 1"
+            ],
             "path": "BetaWallis"
         },
         {
             "type": "problem",
             "expr": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
+            "conds":[
+                "z > -1"
+            ],
             "path": "BetaWallis"
         },
         {

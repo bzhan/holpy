@@ -17,6 +17,16 @@
             "type": "FuncDef"
         },
         {
+            "conds": [
+                {
+                    "cond": "m > 0",
+                    "latex_cond": "m > 0"
+                },
+                {
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0"
+                }
+            ],
             "finished": true,
             "goal": "B(m,n) = 2 * (INT x:[0,pi / 2]. cos(x) ^ (2 * m - 1) * sin(x) ^ (2 * n - 1))",
             "latex_goal": "B(m,n) = 2 (\\int_{0}^{\\pi/2} \\cos^{2 m - 1}(x) \\sin^{2 n - 1}(x) \\,dx)",
@@ -86,6 +96,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "n > -1",
+                    "latex_cond": "n > -1"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
             "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
@@ -1204,6 +1220,16 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "m > 0",
+                    "latex_cond": "m > 0"
+                },
+                {
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0"
+                }
+            ],
             "finished": true,
             "goal": "B(m,n) = (INT x:[0,oo]. x ^ (m - 1) / (x + 1) ^ (m + n))",
             "latex_goal": "B(m,n) = \\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{(x + 1) ^ {m + n}} \\,dx",
@@ -1308,6 +1334,16 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "m > 0",
+                    "latex_cond": "m > 0"
+                },
+                {
+                    "cond": "m < 1",
+                    "latex_cond": "m < 1"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,oo]. x ^ (m - 1) / (x + 1)) = B(m,1 - m)",
             "latex_goal": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx = B(m,1 - m)",
@@ -1353,6 +1389,16 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "m > 0",
+                    "latex_cond": "m > 0"
+                },
+                {
+                    "cond": "m < 1",
+                    "latex_cond": "m < 1"
+                }
+            ],
             "finished": true,
             "goal": "B(m,1 - m) = Gamma(m) * Gamma(1 - m)",
             "latex_goal": "B(m,1 - m) = \\Gamma{(m)} \\Gamma{(1 - m)}",
@@ -1432,6 +1478,16 @@
                 "goal": "Gamma(m) * Gamma(1 - m) = pi / sin(m * pi)",
                 "latex_goal": "\\Gamma{(m)} \\Gamma{(1 - m)} = \\frac{\\pi}{\\sin{(m\\cdot \\pi)}}",
                 "start": {
+                    "conds": [
+                        {
+                            "cond": "m > 0",
+                            "latex_cond": "m > 0"
+                        },
+                        {
+                            "cond": "m < 1",
+                            "latex_cond": "m < 1"
+                        }
+                    ],
                     "latex_start": "\\int_{0}^{\\infty} \\frac{x ^ {m - 1}}{x + 1} \\,dx = B(m,1 - m)",
                     "start": "(INT x:[0,oo]. x ^ (m - 1) / (x + 1)) = B(m,1 - m)",
                     "steps": [
@@ -1476,6 +1532,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "z > -1",
+                    "latex_cond": "z > -1"
+                }
+            ],
             "finished": true,
             "goal": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0,1]. x ^ z * (1 - x) ^ z)",
             "latex_goal": "\\frac{z! z!}{(2 z + 1)!} = \\int_{0}^{1} x ^ {z} (1 - x) ^ {z} \\,dx",
@@ -1585,6 +1647,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "z > -1",
+                    "latex_cond": "z > -1"
+                }
+            ],
             "finished": true,
             "goal": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
             "latex_goal": "z! (z + \\frac{1}{2})! = 2 ^ {-2 z - 1}\\cdot \\sqrt{\\pi} (2 z + 1)!",
@@ -1593,6 +1661,12 @@
                 "goal": "factorial(z) * factorial(z + 1/2) = 2 ^ (-2 * z - 1) * sqrt(pi) * factorial(2 * z + 1)",
                 "latex_goal": "z! (z + \\frac{1}{2})! = 2 ^ {-2 z - 1}\\cdot \\sqrt{\\pi} (2 z + 1)!",
                 "start": {
+                    "conds": [
+                        {
+                            "cond": "z > -1",
+                            "latex_cond": "z > -1"
+                        }
+                    ],
                     "latex_start": "\\frac{z! z!}{(2 z + 1)!} = \\int_{0}^{1} x ^ {z} (1 - x) ^ {z} \\,dx",
                     "start": "factorial(z) * factorial(z) / factorial(2 * z + 1) = (INT x:[0,1]. x ^ z * (1 - x) ^ z)",
                     "steps": [
