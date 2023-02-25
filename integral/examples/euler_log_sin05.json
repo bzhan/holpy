@@ -1,10 +1,6 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "x ^ 2 - b * x + 1 != 0",
-                "x ^ a + 1 > 0"
-            ],
             "conds": [
                 {
                     "cond": "a > 0",
@@ -174,6 +170,10 @@
                         {
                             "cond": "b < 2",
                             "latex_cond": "b < 2"
+                        },
+                        {
+                            "cond": "x > 0",
+                            "latex_cond": "x > 0"
                         }
                     ],
                     "finished": true,
@@ -289,6 +289,10 @@
                         {
                             "cond": "b < 2",
                             "latex_cond": "b < 2"
+                        },
+                        {
+                            "cond": "x > 0",
+                            "latex_cond": "x > 0"
                         }
                     ],
                     "finished": true,
@@ -355,6 +359,10 @@
                 {
                     "cond": "b < 2",
                     "latex_cond": "b < 2"
+                },
+                {
+                    "cond": "x > 0",
+                    "latex_cond": "x > 0"
                 }
             ],
             "finished": true,
@@ -414,6 +422,10 @@
                 {
                     "cond": "b < 2",
                     "latex_cond": "b < 2"
+                },
+                {
+                    "cond": "x > 0",
+                    "latex_cond": "x > 0"
                 }
             ],
             "finished": true,

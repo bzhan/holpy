@@ -2,7 +2,7 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from typing import Optional, Dict, Tuple, Union, List
+from typing import Optional, Dict, Tuple, Union, List, Set
 import functools
 import operator
 
@@ -149,10 +149,29 @@ def deriv(var: str, e: Expr, ctx: Context) -> Expr:
 
     return rec(e)
 
+class BadPart:
+    def __init__(self, e:Expr, conds:Conditions):
+        self.e = e
+        self.conds = conds
+
+    def __eq__(self, other:'BadPart'):
+        return self.e == other.e and self.conds == other.conds
+
+    def __le__(self, other:'BadPart'):
+        return self.e <= other.e and self.conds <= other.conds
+
+    def __hash__(self):
+        return hash((self.e, self.conds))
+
+    def export(self):
+        res = {
+            'expr': str(self.e),
+            'conds': self.conds.export()
+        }
+        return res
 
 def check_wellformed(e: Expr, conds: Conditions) -> bool:
-
-    bad_parts = set()
+    bad_parts: Set['BadPart'] = set()
     def rec(e:Expr, conds:Conditions):
         nonlocal bad_parts
         if e.is_var() or e.is_const():
@@ -169,15 +188,15 @@ def check_wellformed(e: Expr, conds: Conditions) -> bool:
                 elif not flag:
                     if e.args[1].is_fun():
                         if e.args[1].func_name == 'sqrt':
-                            bad_parts.remove(Op('>=', e.args[1].args[0], Const(0)))
-                            bad_parts.add(Op('>', e.args[1].args[0], Const(0)))
+                            bad_parts.remove(BadPart(Op('>=', e.args[1].args[0], Const(0)), conds))
+                            bad_parts.add(BadPart(Op('>', e.args[1].args[0], Const(0)), conds))
                         elif e.args[1].func_name == 'log':
-                            bad_parts.remove(Op('>', e.args[1].args[0], Const(0)))
-                            bad_parts.add(Op('>', e.args[1].args[0], Const(1)))
+                            bad_parts.remove(BadPart(Op('>', e.args[1].args[0], Const(0)), conds))
+                            bad_parts.add(BadPart(Op('>', e.args[1].args[0], Const(1)), conds))
                         else:
-                            bad_parts.add(Op("!=", e.args[1], Const(0)))
+                            bad_parts.add(BadPart(Op("!=", e.args[1], Const(0)), conds))
                     else:
-                        bad_parts.add(Op("!=", e.args[1], Const(0)))
+                        bad_parts.add(BadPart(Op("!=", e.args[1], Const(0)), conds))
             else:
                 # TODO: add checks for power
                 if len(bad_parts) == 0:
@@ -191,18 +210,20 @@ def check_wellformed(e: Expr, conds: Conditions) -> bool:
                 if conds.is_positive(e.args[0]):
                     return (True, set())
                 else:
-                    bad_parts.add(Op(">", e.args[0], Const(0)))
+                    bad_parts.add(BadPart(Op(">", e.args[0], Const(0)),conds))
             elif e.func_name == 'sqrt':
                 if conds.is_not_negative(e.args[0]):
                     return (True, set())
                 else:
-                    bad_parts.add(Op(">=", e.args[0], Const(0)))
+                    bad_parts.add(BadPart(Op(">=", e.args[0], Const(0)), conds))
             if len(bad_parts) == 0:
                 return (True,set())
         elif e.is_integral():
             conds2 = Conditions(conds)
-            conds2.add_condition(expr.Op(">", Var(e.var), e.lower))
-            conds2.add_condition(expr.Op("<", Var(e.var), e.upper))
+            if e.lower != NEG_INF:
+                conds2.add_condition(expr.Op(">", Var(e.var), e.lower))
+            if e.upper != POS_INF:
+                conds2.add_condition(expr.Op("<", Var(e.var), e.upper))
             f1, tmp1 = check_wellformed(e.lower, conds)
             f2, tmp2 = check_wellformed(e.upper, conds)
             f3, tmp3 = check_wellformed(e.body, conds2)
@@ -217,6 +238,16 @@ def check_wellformed(e: Expr, conds: Conditions) -> bool:
                 return (True, set())
             else:
                 bad_parts = bad_parts.union(tmp)
+        elif e.is_summation():
+            conds2 = Conditions(conds)
+            # TODO: add integer constraint to index variable
+            if e.lower != NEG_INF:
+                conds2.add_condition(expr.Op(">=", Var(e.index_var), e.lower))
+            if e.upper != POS_INF:
+                conds2.add_condition(expr.Op("<=", Var(e.index_var), e.upper))
+            f, tmp = check_wellformed(e.body, conds2)
+            if f and len(bad_parts) == 0:
+                return (True, set())
         else:
             if len(bad_parts) == 0:
                 return (True, set())
@@ -538,7 +569,8 @@ class ApplyIdentity(Rule):
             if inst is not None:
                 expected_rhs = identity.rhs.inst_pat(inst)
                 if full_normalize(expected_rhs, ctx) == full_normalize(self.target, ctx):
-                    return self.target
+                    if check_wellformed(self.target, ctx.get_conds()):
+                        return self.target
 
         raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
 
@@ -566,7 +598,13 @@ class DefiniteIntegralIdentity(Rule):
         if not (e.is_integral() or e.is_indefinite_integral()):
             sep_ints = e.separate_integral()
             for _, loc in sep_ints:
-                e = OnLocation(self, loc).eval(e, ctx)
+                if e.is_summation():
+                    ctx2 = Context(ctx)
+                    ctx2.add_condition(Op(">=", Var(e.index_var), e.lower))
+                    ctx2.add_condition(Op("<=", Var(e.index_var), e.upper))
+                    e = OnLocation(self, loc).eval(e, ctx2)
+                else:
+                    e = OnLocation(self, loc).eval(e, ctx)
             return e
 
         # First, look for indefinite integrals identities

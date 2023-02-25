@@ -436,6 +436,11 @@
         },
         {
             "type": "axiom",
+            "expr": "tan(x) = sin(x) / cos(x)",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
             "expr": "cos(-u) = cos(u)",
             "category": "trigonometric"
         },
