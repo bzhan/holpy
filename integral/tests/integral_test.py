@@ -1752,7 +1752,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 6.1
         file = compstate.CompFile("interesting", "BernoulliIntegral")
 
-        goal = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))", conds=["k>=0", "a >= 0"])
+        goal = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))", conds=["a >= 0"])
         proof_of_goal = goal.proof_by_calculation()
         calc = proof_of_goal.lhs_calc
         calc.perform_rule(rules.Equation("x^(c*x^a)", "exp(log(x^(c*x^a)))"))

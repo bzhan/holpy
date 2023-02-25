@@ -3,10 +3,6 @@
         {
             "conds": [
                 {
-                    "cond": "k >= 0",
-                    "latex_cond": "k \\ge 0"
-                },
-                {
                     "cond": "a >= 0",
                     "latex_cond": "a \\ge 0"
                 }
