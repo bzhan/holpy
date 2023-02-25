@@ -178,17 +178,17 @@
             "type": "Goal"
         },
         {
-            "conds": [
+            "bad_parts": [
                 {
-                    "cond": "I(t) > 0",
-                    "latex_cond": "I{(t)} > 0"
+                    "conds": [],
+                    "expr": "I(t) > 0"
                 }
             ],
-            "finished": true,
+            "finished": false,
             "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
             "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
             "proof": {
-                "finished": true,
+                "finished": false,
                 "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                 "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                 "lhs_calc": {
@@ -217,8 +217,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0",
-                            "res": "0",
+                            "latex_res": "-\\frac{t I{(t)}}{I{(t)}} + t",
+                            "res": "-(t * I(t) / I(t)) + t",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -236,13 +236,25 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal"
+            "sub_goals": [
+                {
+                    "finished": false,
+                    "goal": "I(t) > 0",
+                    "latex_goal": "I{(t)} > 0",
+                    "type": "Goal"
+                }
+            ],
+            "type": "Goal",
+            "wellformed": false
         },
         {
             "bad_parts": [
-                "I(t) > 0"
+                {
+                    "conds": [],
+                    "expr": "I(t) > 0"
+                }
             ],
-            "finished": true,
+            "finished": false,
             "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
             "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
             "proof": {
@@ -250,12 +262,6 @@
                 "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
                 "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
                 "start": {
-                    "conds": [
-                        {
-                            "cond": "I(t) > 0",
-                            "latex_cond": "I{(t)} > 0"
-                        }
-                    ],
                     "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                     "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                     "steps": [
@@ -282,6 +288,14 @@
                 },
                 "type": "RewriteGoalProof"
             },
+            "sub_goals": [
+                {
+                    "finished": false,
+                    "goal": "I(t) > 0",
+                    "latex_goal": "I{(t)} > 0",
+                    "type": "Goal"
+                }
+            ],
             "type": "Goal",
             "wellformed": false
         },
@@ -339,9 +353,12 @@
         },
         {
             "bad_parts": [
-                "I(t) > 0"
+                {
+                    "conds": [],
+                    "expr": "I(t) > 0"
+                }
             ],
-            "finished": true,
+            "finished": false,
             "goal": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
             "latex_goal": "\\log{(I{(t)})} = \\frac{-t ^ {2}}{2} + \\log{(\\sqrt{\\frac{\\pi}{2}})}",
             "proof": {
@@ -405,6 +422,14 @@
                 },
                 "type": "CalculationProof"
             },
+            "sub_goals": [
+                {
+                    "finished": false,
+                    "goal": "I(t) > 0",
+                    "latex_goal": "I{(t)} > 0",
+                    "type": "Goal"
+                }
+            ],
             "type": "Goal",
             "wellformed": false
         },

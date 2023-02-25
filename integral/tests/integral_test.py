@@ -858,6 +858,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyIdentity("sec(u) ^ 2" , "tan(u)^2 + 1"))
         calc.perform_rule(rules.FullSimplify())
 
+        sub_goal = file.add_goal(goal01.sub_goals[0])
+        proof = sub_goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("tan(x)", "sin(x) / cos(x)"), "0"))
+
         goal02 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2 + 1)) "\
                                 +"= (pi / 4 * log(2) - (INT x:[0,1]. log(x+1) / (x^2 + 1)))")
         proof = goal02.proof_by_calculation()
@@ -1253,6 +1258,7 @@ class IntegralTest(unittest.TestCase):
             "exp(-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2)",
             "2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)"))
         calc.perform_rule(rules.FullSimplify())
+
         self.checkAndOutput(file)
 
     def testEulerLogSineIntegral(self):
@@ -1746,7 +1752,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 6.1
         file = compstate.CompFile("interesting", "BernoulliIntegral")
 
-        goal = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))", conds=["k >= 0", "a >= 0"])
+        goal = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))", conds=["k>=0", "a >= 0"])
         proof_of_goal = goal.proof_by_calculation()
         calc = proof_of_goal.lhs_calc
         calc.perform_rule(rules.Equation("x^(c*x^a)", "exp(log(x^(c*x^a)))"))
@@ -2563,7 +2569,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
-        goal03 = file.add_goal("(INT x:[0,4]. log(x)/sqrt(4*x-x^2)) = 0", conds=["x>0", "x<4"])
+        goal03 = file.add_goal("(INT x:[0,4]. log(x)/sqrt(4*x-x^2)) = 0")
         proof = goal03.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("y", "x/4"))

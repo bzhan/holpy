@@ -18,6 +18,9 @@ class Conditions:
         elif conds is not None:
             self.data.extend(conds)
 
+    def __hash__(self):
+        return hash(tuple(self.data))
+
     def __str__(self):
         return ", ".join(str(cond) for cond in self.data)
 

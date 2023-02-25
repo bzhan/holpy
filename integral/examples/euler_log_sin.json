@@ -1,12 +1,24 @@
 {
     "content": [
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "eq": "I(a) = (INT x:[0,pi / 2]. log(a * sin(x)))",
             "latex_eq": "I{(a)} = \\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx",
             "latex_lhs": "I{(a)}",
             "type": "FuncDef"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "eq": "J(a) = (INT x:[0,pi / 2]. log(a * sin(2 * x)))",
             "latex_eq": "J{(a)} = \\int_{0}^{\\pi/2} \\log{(a \\sin{(2 x)})} \\,dx",
             "latex_lhs": "J{(a)}",

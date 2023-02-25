@@ -1,9 +1,6 @@
 {
     "content": [
         {
-            "bad_parts": [
-                "tan(x) + 1 > 0"
-            ],
             "finished": true,
             "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,pi / 4]. log(tan(x) + 1))",
             "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\int_{0}^{\\pi/4} \\log{(\\tan{x} + 1)} \\,dx",
@@ -59,8 +56,105 @@
                 },
                 "type": "CalculationProof"
             },
-            "type": "Goal",
-            "wellformed": false
+            "sub_goals": [
+                {
+                    "conds": [
+                        {
+                            "cond": "x > 0",
+                            "latex_cond": "x > 0"
+                        },
+                        {
+                            "cond": "x < pi / 4",
+                            "latex_cond": "x < \\frac{\\pi}{4}"
+                        }
+                    ],
+                    "finished": true,
+                    "goal": "tan(x) + 1 > 0",
+                    "latex_goal": "\\tan{x} + 1 > 0",
+                    "proof": {
+                        "finished": true,
+                        "goal": "tan(x) + 1 > 0",
+                        "latex_goal": "\\tan{x} + 1 > 0",
+                        "lhs_calc": {
+                            "latex_start": "\\tan{x} + 1",
+                            "start": "tan(x) + 1",
+                            "steps": [
+                                {
+                                    "latex_res": "\\frac{\\sin{x}}{\\cos{x}} + 1",
+                                    "res": "sin(x) / cos(x) + 1",
+                                    "rule": {
+                                        "latex_str": "rewrite \\(\\tan{x}\\) to \\(\\frac{\\sin{x}}{\\cos{x}}\\) using identity at 0",
+                                        "loc": "0",
+                                        "name": "ApplyIdentity",
+                                        "source": "tan(x)",
+                                        "str": "rewrite tan(x) to sin(x) / cos(x) using identity at 0",
+                                        "target": "sin(x) / cos(x)"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "rhs_calc": {
+                            "latex_start": "0",
+                            "start": "0",
+                            "steps": [],
+                            "type": "Calculation"
+                        },
+                        "type": "CalculationProof"
+                    },
+                    "type": "Goal"
+                }
+            ],
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "x > 0",
+                    "latex_cond": "x > 0"
+                },
+                {
+                    "cond": "x < pi / 4",
+                    "latex_cond": "x < \\frac{\\pi}{4}"
+                }
+            ],
+            "finished": true,
+            "goal": "tan(x) + 1 > 0",
+            "latex_goal": "\\tan{x} + 1 > 0",
+            "proof": {
+                "finished": true,
+                "goal": "tan(x) + 1 > 0",
+                "latex_goal": "\\tan{x} + 1 > 0",
+                "lhs_calc": {
+                    "latex_start": "\\tan{x} + 1",
+                    "start": "tan(x) + 1",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\sin{x}}{\\cos{x}} + 1",
+                            "res": "sin(x) / cos(x) + 1",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\tan{x}\\) to \\(\\frac{\\sin{x}}{\\cos{x}}\\) using identity at 0",
+                                "loc": "0",
+                                "name": "ApplyIdentity",
+                                "source": "tan(x)",
+                                "str": "rewrite tan(x) to sin(x) / cos(x) using identity at 0",
+                                "target": "sin(x) / cos(x)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         },
         {
             "finished": true,

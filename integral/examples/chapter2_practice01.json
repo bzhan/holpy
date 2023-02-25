@@ -179,16 +179,6 @@
             "type": "Goal"
         },
         {
-            "conds": [
-                {
-                    "cond": "x > 0",
-                    "latex_cond": "x > 0"
-                },
-                {
-                    "cond": "x < 4",
-                    "latex_cond": "x < 4"
-                }
-            ],
             "finished": true,
             "goal": "(INT x:[0,4]. log(x) / sqrt(4 * x - x ^ 2)) = 0",
             "latex_goal": "\\int_{0}^{4} \\frac{\\log{x}}{\\sqrt{4 x - x ^ {2}}} \\,dx = 0",

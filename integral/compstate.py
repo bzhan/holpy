@@ -157,7 +157,7 @@ class Goal(StateItem):
         self.wellformed, self.bad_parts = check_wellformed(goal, self.ctx.get_conds())
         self.sub_goals:List['Goal'] = list()
         for p in self.bad_parts:
-            self.sub_goals.append(Goal(self, self.ctx, p, conds))
+            self.sub_goals.append(Goal(self, self.ctx, p.e, p.conds))
 
     def __str__(self):
         if self.is_finished():
@@ -197,7 +197,7 @@ class Goal(StateItem):
             res['conds'] = self.conds.export()
         if not self.wellformed:
             res['wellformed'] = False
-            res['bad_parts'] = [str(e) for e in self.bad_parts]
+            res['bad_parts'] = [p.export() for p in self.bad_parts]
         return res
 
     def export_book(self):
@@ -856,8 +856,10 @@ def parse_item(parent, item) -> StateItem:
             res.wellformed = item['wellformed']
             if not res.wellformed and 'bad_parts' in item:
                 res.bad_parts = set()
-                for bad_e in item['bad_parts']:
-                    res.bad_parts.add(parser.parse_expr(bad_e))
+                for bad_part in item['bad_parts']:
+                    e = parser.parse_expr(bad_part['expr'])
+                    c = parse_conds(bad_part)
+                    res.bad_parts.add(rules.BadPart(e, c))
         if 'sub_goals' in item:
             res.sub_goals = list()
             for g in item['sub_goals']:
