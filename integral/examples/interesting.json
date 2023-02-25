@@ -38,21 +38,33 @@
         {
             "type": "problem",
             "expr": "(INT x:[1,oo]. 1 / ((x+a)*sqrt(x-1))) = pi / sqrt(a+1)",
+            "conds": [
+                "a > -1"
+            ],
             "path": "easy01"
         },
         {
             "type": "problem",
-            "expr": "(INT x:[0, oo]. log(1 + a^2 / x^2)) = pi*a",
+            "expr": "(INT x:[0, oo]. log(1 + a^2 / x^2)) = pi * a",
+            "conds": [
+                "a > 0"
+            ],
             "path": "easy02"
         },
         {
             "type": "problem",
             "expr": "(INT x:[0, oo]. log(x) / (x^2+b^2)) = pi * log(b) / (2*b)",
+            "conds": [
+                "b > 0"
+            ],
             "path": "easy03"
         },
         {
             "type": "problem",
             "expr": "(INT x:[0, oo]. 1/(1 + exp(a*x))) = log(2)/a",
+            "conds": [
+                "a > 0"
+            ],
             "path": "easy04"
         },
         {
@@ -89,6 +101,9 @@
         {
             "type": "problem",
             "expr": "(INT t:[0,a]. log(t+a) / (t^2 + a^2)) = pi /(8*a) * log(2*a^2)",
+            "conds": [
+                "a > 0"
+            ],
             "path": "trick2e"
         },
         {
@@ -114,6 +129,9 @@
         {
             "type": "problem",
             "expr": "(INT x:[0,pi/2]. log(a * sin(x))) = pi/2 * log(a/2)",
+            "conds": [
+                "a > 0"
+            ],
             "path": "euler_log_sin"
         },
         {
@@ -124,6 +142,10 @@
         {
             "type": "problem",
             "expr": "(INT x:[0,oo]. log(x) / (x^2-b*x+1)) = 0",
+            "conds": [
+                "b > -2",
+                "b < 2"
+            ],
             "path": "euler_log_sin05"
         },
         {
@@ -144,16 +166,25 @@
         {
             "type": "problem",
             "expr": "(INT x:[0,oo]. 1 / (x^2 + a^2)) = pi / (2 * a)",
+            "conds": [
+                "a > 0"
+            ],
             "path": "leibniz01"
         },
         {
             "type": "problem",
             "expr": "(INT x:[0,oo]. 1 / (x^2 + a^2)^2) = pi / (4 * a^3)",
+            "conds": [
+                "a > 0"
+            ],
             "path": "leibniz01"
         },
         {
             "type": "problem",
             "expr": "(INT x:[0,oo]. 1 / (x^2 + a^2)^3) = 3*pi / (16 * a^5)",
+            "conds": [
+                "a > 0"
+            ],
             "path": "leibniz01"
         },
         {
@@ -214,6 +245,10 @@
         {
             "type": "problem",
             "expr": "(INT x:[0,oo]. (atan(a*x) - atan(b*x))/x) = 1/2 * pi * log(a) - 1/2 * pi * log(b)",
+            "conds": [
+                "a > 0",
+                "b > 0"
+            ],
             "path": "FrullaniIntegral"
         },
         {
@@ -224,6 +259,9 @@
         {
             "type": "problem",
             "expr": "(INT x:[0, 1]. (x ^ a - 1) / log(x)) = log(a + 1)",
+            "conds": [
+                "a >= 0"
+            ],
             "path": "flipside03"
         },
         {

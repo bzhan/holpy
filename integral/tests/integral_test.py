@@ -1261,10 +1261,10 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile("interesting", "euler_log_sin")
 
         # Define I(a)
-        file.add_definition("I(a) = INT x:[0,pi/2]. log(a * sin(x))")
+        file.add_definition("I(a) = INT x:[0,pi/2]. log(a * sin(x))", conds=["a > 0"])
 
         # Define J(a)
-        file.add_definition("J(a) = INT x:[0,pi/2]. log(a * sin(2*x))")
+        file.add_definition("J(a) = INT x:[0,pi/2]. log(a * sin(2*x))", conds=["a > 0"])
 
         # Prove J(a) = I(a)
         goal1 = file.add_goal("J(a) = I(a)")
@@ -1282,7 +1282,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition("I"))
 
         # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
-        goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)", conds=["a>0"])
+        goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)", conds=["a > 0"])
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("J"))
@@ -1307,7 +1307,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Finally show I(a) = pi/2 * log(a/2)
-        goal3 = file.add_goal("I(a) = pi/2 * log(a/2)", conds=["a>0"])
+        goal3 = file.add_goal("I(a) = pi/2 * log(a/2)", conds=["a > 0"])
         proof = goal3.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
@@ -2547,7 +2547,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal01.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.SubstitutionInverse("x", "sin(x)^2"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("sin(x)^2","1-cos(x)^2"), "0.0.1.1.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("sin(x)^2", "1-cos(x)^2"), "0.0.1.1.0.1"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
